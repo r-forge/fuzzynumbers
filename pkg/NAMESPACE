@@ -1,0 +1,2 @@
+exportClasses(FuzzyNumber)
+exportClasses(TrapezoidalFuzzyNumber)

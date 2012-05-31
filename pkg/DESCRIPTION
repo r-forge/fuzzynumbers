@@ -1,4 +1,4 @@
-Package: CITAN
+Package: FuzzyNumbers
 License: LGPL (>= 3)
 Maintainer: Marek Gagolewski <gagolews@ibspan.waw.pl>
 BugReports: https://r-forge.r-project.org/tracker/?atid=5289&group_id=1408
@@ -7,14 +7,21 @@ Title: Fuzzy Numbers
 Type: Package
 Author: Marek Gagolewski <gagolews@ibspan.waw.pl>
 Description: FuzzyNumbers is an open source (LGPL 3) package for R.
-   It provides S4 classes and methods to deal with Fuzzy Numbers.
-   It may be used both by the practitioners (computations of many
-   operations on fuzzy numbers, approximation by trapezoidal and piecewise
-   linear fuzzy numbers, etc.) but also by the researchers
-   in fuzzy numbers theory.
-Version: 0.01-svn
+    It provides S4 classes and methods to deal with Fuzzy Numbers.
+    It may be used both by the practitioners (computations of many
+    operations on fuzzy numbers, approximation by trapezoidal and piecewise
+    linear fuzzy numbers, etc.) but also by the researchers
+    in fuzzy numbers theory.
+Version: 0.01
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
 Date: 2012-05-31
 Depends:
-    R (>= 2.15.0)
-    
+    R (>= 2.15.0),
+    methods
+Collate:
+    'fn-def.R'
+    'fn-ops.R'
+    'fn-plot.R'
+    'fn-tapprox.R'
+    'tfn-def.R'
+    'tfn-ops.R'
