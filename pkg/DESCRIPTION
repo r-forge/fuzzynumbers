@@ -1,9 +1,9 @@
 Package: FuzzyNumbers
 License: LGPL (>= 3)
 Maintainer: Marek Gagolewski <gagolews@ibspan.waw.pl>
-BugReports: https://r-forge.r-project.org/tracker/?atid=5289&group_id=1408
+BugReports: http://r-forge.r-project.org/tracker/?atid=5289&group_id=1408
 LazyData: true
-Title: Fuzzy Numbers
+Title: Tools to deal with fuzzy numbers in R
 Type: Package
 Author: Marek Gagolewski <gagolews@ibspan.waw.pl>
 Description: FuzzyNumbers is an open source (LGPL 3) package for R.
