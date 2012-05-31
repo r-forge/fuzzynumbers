@@ -68,7 +68,7 @@ setMethod(
       
       if (is.na(intLower) && is.na(intAlphaTimesLower))
       {
-         if (is.na(object@lower(0))) error("Integral for lower alphacut bound cannot be computed");
+         if (is.na(object@lower(0))) stop("Integral for lower alphacut bound cannot be computed");
          
          intLower <- integrate(object@lower, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
          intAlphaTimesLower <- integrate(function(alpha) object@lower(alpha)*alpha, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
@@ -76,7 +76,7 @@ setMethod(
       
       if (is.na(intUpper) && is.na(intAlphaTimesUpper))
       {
-         if (is.na(object@lower(0))) error("Integral for upper alphacut bound cannot be computed");
+         if (is.na(object@lower(0))) stop("Integral for upper alphacut bound cannot be computed");
          
          intUpper <- integrate(object@upper, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
          intAlphaTimesUpper <- integrate(function(alpha) object@upper(alpha)*alpha, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
