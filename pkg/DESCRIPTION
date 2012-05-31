@@ -25,3 +25,5 @@ Collate:
     'fn-tapprox.R'
     'tfn-def.R'
     'tfn-ops.R'
+    'FuzzyNumbers-package.R'
+    'tfn-plot.R'

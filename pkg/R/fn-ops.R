@@ -1,5 +1,39 @@
-setGeneric("evaluate", function(object, x) standardGeneric("evaluate"));
+## This file is part of the FuzzyNumbers library.
+##
+## Copyright 2012 Marek Gagolewski
+##
+##
+## FuzzyNumbers is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## FuzzyNumbers is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
 
+
+setGeneric("evaluate", function(object, x) standardGeneric("evaluate"));
+setGeneric("alphacut", function(object, alpha) standardGeneric("alphacut"));
+setGeneric("supp", function(object) standardGeneric("supp"));
+setGeneric("core", function(object) standardGeneric("core"));
+setGeneric("expectedInterval", function(object, ...) standardGeneric("expectedInterval"));
+setGeneric("expectedValue", function(object, ...) standardGeneric("expectedValue"));
+setGeneric("weightedExpectedValue", function(object, w, ...) standardGeneric("weightedExpectedValue"));
+setGeneric("value", function(object, ...) standardGeneric("value"));
+setGeneric("width", function(object, ...) standardGeneric("width"));
+setGeneric("ambiguity", function(object, ...) standardGeneric("ambiguity"));
+setGeneric("distance", function(object1, object2, ...) standardGeneric("distance"));
+
+
+
+#' TO DO
+#'
+#' @exportMethod evaluate
 setMethod(
    f="evaluate",
    signature(object="FuzzyNumber", x="numeric"),
@@ -13,8 +47,10 @@ setMethod(
    });     
 
 
-setGeneric("alphacut", function(object, alpha) standardGeneric("alphacut"));
 
+#' TO DO
+#'
+#' @exportMethod alphacut
 setMethod(
    f="alphacut",
    signature(object="FuzzyNumber", alpha="numeric"),
@@ -38,8 +74,10 @@ setMethod(
 
 
 
-setGeneric("supp", function(object) standardGeneric("supp"));
 
+#' TO DO
+#'
+#' @exportMethod supp
 setMethod(
    f="supp",
    signature(object="FuzzyNumber"),
@@ -50,8 +88,10 @@ setMethod(
 
 
 
-setGeneric("core", function(object) standardGeneric("core"));
 
+#' TO DO
+#'
+#' @exportMethod core
 setMethod(
    f="core",
    signature(object="FuzzyNumber"),
@@ -61,8 +101,10 @@ setMethod(
    });
 
 
-setGeneric("expectedInterval", function(object, ...) standardGeneric("expectedInterval"));
 
+#' TO DO
+#'
+#' @exportMethod expectedInterval
 setMethod(
    f="expectedInterval",
    signature(object="FuzzyNumber"),
@@ -77,8 +119,10 @@ setMethod(
    });
 
 
-setGeneric("expectedValue", function(object, ...) standardGeneric("expectedValue"));
 
+#' TO DO
+#'
+#' @exportMethod expectedValue
 setMethod(
    f="expectedValue",
    signature(object="FuzzyNumber"),
@@ -88,8 +132,10 @@ setMethod(
    });
 
 
-setGeneric("weightedExpectedValue", function(object, w, ...) standardGeneric("weightedExpectedValue"));
 
+#' TO DO
+#'
+#' @exportMethod weightedExpectedValue
 setMethod(
    f="weightedExpectedValue",
    signature(object="FuzzyNumber", w="numeric"),
@@ -100,8 +146,10 @@ setMethod(
    });
 
 
-setGeneric("value", function(object, ...) standardGeneric("value"));
 
+#' TO DO
+#'
+#' @exportMethod value   
 setMethod(
    f="value",
    signature(object="FuzzyNumber"),
@@ -118,9 +166,9 @@ setMethod(
 
 
 
-
-setGeneric("width", function(object, ...) standardGeneric("width"));
-
+#' TO DO
+#'
+#' @exportMethod width
 setMethod(
    f="width",
    signature(object="FuzzyNumber"),
@@ -130,9 +178,9 @@ setMethod(
    });
 
 
-
-setGeneric("ambiguity", function(object, ...) standardGeneric("ambiguity"));
-
+#' TO DO
+#'
+#' @exportMethod ambiguity
 setMethod(
    f="ambiguity",
    signature(object="FuzzyNumber"),
@@ -148,8 +196,9 @@ setMethod(
    });
 
 
-setGeneric("distance", function(object1, object2, ...) standardGeneric("distance"));
-
+#' TO DO
+#'
+#' @exportMethod distance
 setMethod(
    f="distance",
    signature(object1="FuzzyNumber", object2="FuzzyNumber"),

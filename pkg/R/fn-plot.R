@@ -1,3 +1,30 @@
+## This file is part of the FuzzyNumbers library.
+##
+## Copyright 2012 Marek Gagolewski
+##
+##
+## FuzzyNumbers is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## FuzzyNumbers is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+
+
+#' TO DO
+#'
+#' @exportMethod plot
+#'
+#' @examples
+#' plot(FuzzyNumber(0,1,2,3), col="gray")
+#' plot(FuzzyNumber(0,1,2,3, left=function(x) x^2, right=function(x) 1-x^3), add=TRUE)
+#' plot(FuzzyNumber(0,1,2,3, lower=function(x) x, upper=function(x) 1-x), add=TRUE, col=2)
 setMethod(
    f="plot",
    signature(x="FuzzyNumber", y="missing"),
@@ -68,3 +95,4 @@ setMethod(
       
              
    });
+   

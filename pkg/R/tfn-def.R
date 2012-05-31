@@ -1,35 +1,55 @@
-#' S4 class to represent a trapezoidal fuzzy number.
-#' 
-#' @slot a1
-#' @slot a2
-#' @slot a3
-#' @slot a4
-#' @export
+## This file is part of the FuzzyNumbers library.
+##
+## Copyright 2012 Marek Gagolewski
+##
+##
+## FuzzyNumbers is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## FuzzyNumbers is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+
+
+#' S4 class representing a trapezoidal fuzzy number
+#'
+#' TO DO
+#' @exportClass TrapezoidalFuzzyNumber
+#' @name TrapezoidalFuzzyNumber-class
+#' @docType class
 setClass("TrapezoidalFuzzyNumber",
-      contains="FuzzyNumber"
+      contains="FuzzyNumber",
+      prototype=list(left=function(x) x, right=function(x) 1-x, lower=function(x) x, upper=function(x) 1-x)
    );
 
+
+#' Creates a trapezoidal fuzzy number
+#'   
+#' For convenience, objects of class \code{TrapezoidalFuzzyNumber}
+#' may be created with the following function.
+#' @param a1 TO DO
+#' @param a2 TO DO
+#' @param a3 TO DO
+#' @param a4 TO DO
+#' @export   
 TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
-   new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);
-
-setMethod(f="initialize", signature(.Object="TrapezoidalFuzzyNumber"),
-          definition=function(.Object,
-             a1=numeric(0), a2=numeric(0), a3=numeric(0), a4=numeric(0))
-          {
-             .Object@left  <- function(x) x;
-             .Object@right <- function(x) 1-x;
-             .Object@lower <- function(x) x;
-             .Object@upper <- function(x) 1-x;
-             .Object@a1 <- a1;
-             .Object@a2 <- a2;
-             .Object@a3 <- a3;
-             .Object@a4 <- a4;
-             
-             callNextMethod();
-             .Object;
-          });
+   {
+      .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);
+      validObject(.Object);
+      .Object;
+   }
 
 
+
+#' TO DO
+#'
+#' @exportMethod show
 setMethod(f="show", signature(object="TrapezoidalFuzzyNumber"),
           definition=function(object) {
              cat(sprintf("Trapezoidal fuzzy number with support=[%g,%g] and core=[%g,%g].\n",

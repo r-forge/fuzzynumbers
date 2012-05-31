@@ -1,46 +1,59 @@
+## This file is part of the FuzzyNumbers library.
+##
+## Copyright 2012 Marek Gagolewski
+##
+##
+## FuzzyNumbers is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## FuzzyNumbers is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+
+
 setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("trapezoidalApproximation"));
 
-# Naive
-# We have core(A)==core(T(A)) and supp(A)==supp(T(A))
-
-# ExpectedIntervalPreserving
-# L2-nearest trapezoidal approximation preserving the expected interval given in
-# (Grzegorzewski, 2010; Ban, 2008; Yeh, 2008)
-# Unfortunately, for highly skewed membership functions this approximation operator may have
-# quite unfavourable behavior. E.g. if Val(A) < EV_{1/3}(A) or Val(A) > EV_{2/3}(A),
-# then it may happen that the core of the output 
-# and the core of the original fuzzy number A are disjoint
-# (cf. Grzegorzewski, Pasternak-Winiarska, 2011)
-
-# SupportCoreRestricted
-# This method was proposed in (Grzegorzewski, Pasternak-Winiarska, 2011).
-# L2-nearest trapezoidal approximation with constraints
-# core(A) \subseteq core(T(A)) and supp(T(A)) \subseteq supp(A), i.e.
-# for which each point that surely belongs to A also belongs to T(A),
-# and each point that surely does not belong to A also does not belong to T(A).
-
-
-   
-# Ban A.I. (2008), Approximation of fuzzy numbers by trapezoidal fuzzy numbers
-# preserving the expected interval, Fuzzy Sets and Systems 159, pp. 1327-1344.
-# Grzegorzewski P. (2010), Algorithms for trapezoidal approximations of fuzzy numbers
-# preserving the expected interval, in: Bouchon-Meunier B. et al (Eds.),
-# Foundations of Reasoning Under Uncertainty, Springer, pp. 85-98.
-# Grzegorzewski P, Pasternak-Winiarska K. (2011), Trapezoidal approximations of fuzzy numbers
-# with restrictions on the support and core, Proc. EUSFLAT/LFA 2011, Atlantic Press, pp. 749-756.
-
-# Yeh C.-T. (2008), Trapezoidal and triangular approximations preserving the expected interval,
-# Fuzzy Sets and Systems 159, pp. 1345-1353.
-
-# > (A <- FuzzyNumber(-1,0,1,40,lower=function(x) sqrt(x),upper=function(x) 1-sqrt(x)))
-# Fuzzy number with support=[-1,40] and core=[0,1].
-# > (S <- trapezoidalApproximation(D, "ExpectedIntervalPreserving")) # Note that cores are disjoint!
-# Trapezoidal fuzzy number with support=[-0.333333,28.3333] and core=[-0.333333,-0.333333].
-# > expectedInterval(A)
-# [1] -0.3333333 13.9999971
-# > expectedInterval(S)
-# [1] -0.3333333 13.9999971
-
+#' Trapezoidal approximation of fuzzy numbers
+#'
+#' This method finds the best trapezoidal approximator \eqn{T(A)}
+#' of a given fuzzy number \eqn{A} by using a method specified by the
+#' \code{method} parameter.
+#'
+#' \code{method} may be one of:
+#' \enumerate{
+#' \item \code{Naive}:
+#' We have core(A)==core(T(A)) and supp(A)==supp(T(A))
+#'
+#' \item \code{ExpectedIntervalPreserving}:
+#' L2-nearest trapezoidal approximation preserving the expected interval given in
+#' (Grzegorzewski, 2010; Ban, 2008; Yeh, 2008)
+#' Unfortunately, for highly skewed membership functions this approximation operator may have
+#' quite unfavourable behavior. E.g. if Val(A) < EV_{1/3}(A) or Val(A) > EV_{2/3}(A),
+#' then it may happen that the core of the output 
+#' and the core of the original fuzzy number A are disjoint
+#' (cf. Grzegorzewski, Pasternak-Winiarska, 2011)
+#'
+#' \item \code{SupportCoreRestricted}:
+#' This method was proposed in (Grzegorzewski, Pasternak-Winiarska, 2011).
+#' L2-nearest trapezoidal approximation with constraints
+#' core(A) \subseteq core(T(A)) and supp(T(A)) \subseteq supp(A), i.e.
+#' for which each point that surely belongs to A also belongs to T(A),
+#' and each point that surely does not belong to A also does not belong to T(A).
+#' }
+#'
+#' @examples
+#' (A <- FuzzyNumber(-1,0,1,40,lower=function(x) sqrt(x),upper=function(x) 1-sqrt(x)))
+#' (TA <- trapezoidalApproximation(A, "ExpectedIntervalPreserving")) # Note that cores are disjoint!
+#' expectedInterval(A)
+#' expectedInterval(TA)
+#' 
+#' @exportMethod trapezoidalApproximation
 setMethod(
    f="trapezoidalApproximation",
    signature(object="FuzzyNumber"),

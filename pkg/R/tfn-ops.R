@@ -1,16 +1,41 @@
+## This file is part of the FuzzyNumbers library.
+##
+## Copyright 2012 Marek Gagolewski
+##
+##
+## FuzzyNumbers is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## FuzzyNumbers is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+
+
+#' TO DO
+#'
+#' @exportMethod evaluate
 setMethod(
    f="evaluate",
    signature(object="TrapezoidalFuzzyNumber", x="numeric"),
    definition=function(object, x)
    {
       y <- rep(0.0, length(x));
-      y[x >= object@a1 & x <  object@a2] <- ((  x[x >= object@a1 & x <  object@a2]-object@a1)/(object@a2-object@a1));
-      y[x >  object@a3 & x <= object@a4] <- ((1-x[x >  object@a3 & x <= object@a4]-object@a3)/(object@a4-object@a3));
+      y[x >= object@a1 & x <  object@a2] <- ((x[x >= object@a1 & x <  object@a2]-object@a1)/(object@a2-object@a1));
+      y[x >  object@a3 & x <= object@a4] <- ((object@a4-x[x >  object@a3 & x <= object@a4])/(object@a4-object@a3));
       y[x >= object@a2 & x <= object@a3] <- 1.0;
       y;
    });     
 
 
+#' TO DO
+#'
+#' @exportMethod alphacut
 setMethod(
    f="alphacut",
    signature(object="TrapezoidalFuzzyNumber", alpha="numeric"),
@@ -35,6 +60,9 @@ setMethod(
 
 
 
+#' TO DO
+#'
+#' @exportMethod expectedInterval
 setMethod(
    f="expectedInterval",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -44,6 +72,10 @@ setMethod(
    });
 
 
+
+#' TO DO
+#'
+#' @exportMethod expectedValue
 setMethod(
    f="expectedValue",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -53,6 +85,9 @@ setMethod(
    });
 
 
+#' TO DO
+#'
+#' @exportMethod weightedExpectedValue
 setMethod(
    f="weightedExpectedValue",
    signature(object="TrapezoidalFuzzyNumber", w="numeric"),
@@ -63,6 +98,9 @@ setMethod(
    });
 
 
+#' TO DO
+#'
+#' @exportMethod value   
 setMethod(
    f="value",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -75,7 +113,9 @@ setMethod(
    });
 
 
-
+#' TO DO
+#'
+#' @exportMethod width
 setMethod(
    f="width",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -85,7 +125,9 @@ setMethod(
    });
 
 
-
+#' TO DO
+#'
+#' @exportMethod ambiguity
 setMethod(
    f="ambiguity",
    signature(object="TrapezoidalFuzzyNumber"),
