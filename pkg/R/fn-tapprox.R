@@ -124,6 +124,8 @@ setMethod(
          
       } else if (method == "SupportCoreRestricted")
       {
+         # Here we use the method given in (Grzegorzewski, Pasternak-Winiarska, 2011)
+      
          u1 <- 4*intLower - 6*intAlphaTimesLower;
          u2 <- 6*intAlphaTimesLower - 2*intLower;
          if (object@a2 > u2)
