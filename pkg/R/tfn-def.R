@@ -14,7 +14,7 @@
 ## GNU Lesser General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
-## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
 #' S4 class representing a trapezoidal fuzzy number
@@ -25,7 +25,8 @@
 #' @docType class
 setClass("TrapezoidalFuzzyNumber",
       contains="FuzzyNumber",
-      prototype=list(left=function(x) x, right=function(x) 1-x, lower=function(x) x, upper=function(x) 1-x)
+      prototype=list(left=function(x) x, right=function(x) 1-x,
+      lower=function(alpha) alpha, upper=function(alpha) 1-alpha)
    );
 
 

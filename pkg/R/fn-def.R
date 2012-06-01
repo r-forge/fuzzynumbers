@@ -14,7 +14,7 @@
 ## GNU Lesser General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
-## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
 #' S4 class representing a fuzzy number
@@ -152,3 +152,19 @@ setMethod(f="show", signature(object="FuzzyNumber"),
                          object@a1, object@a4, object@a2, object@a3))
           });
 
+
+#' TO DO
+#'
+#' @exportMethod [          
+setMethod(f="[",
+          signature=(x="FuzzyNumber"),
+          definition=function(x, i, j, drop) {
+             if (i == "a1") return(x@a1);
+             if (i == "a2") return(x@a2);
+             if (i == "a3") return(x@a3);
+             if (i == "a4") return(x@a4);
+             if (i == "left")  return(x@left);
+             if (i == "right") return(x@right);
+             if (i == "lower") return(x@lower);
+             if (i == "upper") return(x@upper);
+          });

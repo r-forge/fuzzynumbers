@@ -14,7 +14,7 @@
 ## GNU Lesser General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
-## along with FuzzyNumbers If not, see <http://www.gnu.org/licenses/>.
+## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
 #' TO DO
@@ -24,7 +24,7 @@ setMethod(
    f="plot",
    signature(x="TrapezoidalFuzzyNumber", y="missing"),
    definition=function(x, y, from=NULL, to=NULL, add=FALSE,
-      type="l", xlab="x", ylab="alpha", xlim=NULL, ylim=c(0,1),
+      type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
       col=1, lty=1, pch=1, ...)
    {
       drawX     <- !(is.na(x@left(0)));
