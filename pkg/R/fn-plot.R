@@ -30,7 +30,7 @@ setMethod(
    signature(x="FuzzyNumber", y="missing"),
    definition=function(x, y, from=NULL, to=NULL, n=101, add=FALSE,
       type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
-      col=1, lty=1, pch=1,
+      col=1, lty=1, pch=1, lwd=1,
       shadowdensity=15, shadowangle=45, shadowcol=col, shadowborder=NULL, ...)
    {
       drawX     <- !(is.na(x@left(0)));
@@ -73,23 +73,23 @@ setMethod(
          xvals <- seq(from, to, length.out=n);
          alpha <- evaluate(x, xvals);
          
-         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, add=add, ...);
+         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
       } else if (drawAlpha)
       {
          alpha <- seq(0, 1, length.out=n);
          xvals <- alphacut(x, alpha);
 
-         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch,add=add, ...);
-         matplot(c(from, x@a1), c(0,0), type=type, col=col, lty=lty, pch=pch, add=TRUE, ...);
-         matplot(c(x@a4, to), c(0,0), type=type, col=col, lty=lty, pch=pch, add=TRUE, ...);
-         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, add=TRUE, ...);
+         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
+         matplot(c(from, x@a1), c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+         matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
       } else
       {
-         matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch,add=add, ...);
-         matplot(c(x@a4, to), c(0,0), type=type, col=col, lty=lty, pch=pch, add=TRUE, ...);
-         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, add=TRUE, ...);
+         matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
          rect(x@a1, 0, x@a2, 1, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-         rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+         rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);         
+         matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
       }
             
       

@@ -25,7 +25,7 @@ setMethod(
    signature(x="TrapezoidalFuzzyNumber", y="missing"),
    definition=function(x, y, from=NULL, to=NULL, add=FALSE,
       type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
-      col=1, lty=1, pch=1, ...)
+      col=1, lty=1, pch=1, lwd=1, ...)
    {
       drawX     <- !(is.na(x@left(0)));
       drawAlpha <- !(is.na(x@lower(0)));
@@ -63,6 +63,6 @@ setMethod(
       }
       
       matplot(c(from, x@a1, x@a2, x@a3, x@a4, to), c(0,0,1,1,0,0),
-         type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, add=add, ...);
+         type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, add=add, lwd=lwd, ...);
    });
    
