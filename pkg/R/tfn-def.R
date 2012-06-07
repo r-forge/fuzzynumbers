@@ -23,11 +23,16 @@
 #' @exportClass TrapezoidalFuzzyNumber
 #' @name TrapezoidalFuzzyNumber-class
 #' @docType class
-setClass("TrapezoidalFuzzyNumber",
-      contains="FuzzyNumber",
-      prototype=list(left=function(x) x, right=function(x) 1-x,
-      lower=function(alpha) alpha, upper=function(alpha) 1-alpha)
-   );
+setClass(
+   Class="TrapezoidalFuzzyNumber",
+   prototype=prototype(
+      left=function(x) x,
+      right=function(x) 1-x,
+      lower=function(alpha) alpha,
+      upper=function(alpha) 1-alpha
+   ),
+   contains="FuzzyNumber"
+);
 
 
 #' Creates a trapezoidal fuzzy number
@@ -40,20 +45,25 @@ setClass("TrapezoidalFuzzyNumber",
 #' @param a4 TO DO
 #' @export   
 TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
-   {
-      .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);
-      validObject(.Object);
-      .Object;
-   }
+{
+   .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);
+   .Object;
+}
 
 
 
 #' TO DO
 #'
-#' @exportMethod show
-setMethod(f="show", signature(object="TrapezoidalFuzzyNumber"),
-          definition=function(object) {
-             cat(sprintf("Trapezoidal fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
-                   object@a1, object@a4, object@a2, object@a3))
-          });
+#' @export
+#' @rdname show-methods
+#' @docType methods
+setMethod(
+   f="show",
+   signature(object="TrapezoidalFuzzyNumber"),
+   definition=function(object)
+   {
+      cat(sprintf("Trapezoidal fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
+                  object@a1, object@a4, object@a2, object@a3))
+   }
+);
 

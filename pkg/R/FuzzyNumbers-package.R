@@ -83,5 +83,5 @@ NA
 
 .onLoad <- function(lib, pkg)
 {
-   packageStartupMessage("FuzzyNumbers loaded. For more information please visit http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/.");
+   packageStartupMessage("FuzzyNumbers loaded (http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/).");
 }

@@ -1,6 +1,8 @@
 export(FuzzyNumber)
+export(PiecewiseLinearFuzzyNumber)
 export(TrapezoidalFuzzyNumber)
 exportClasses(FuzzyNumber)
+exportClasses(PiecewiseLinearFuzzyNumber)
 exportClasses(TrapezoidalFuzzyNumber)
 exportMethods("[")
 exportMethods(alphacut)

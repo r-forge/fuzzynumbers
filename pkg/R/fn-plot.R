@@ -19,12 +19,13 @@
 
 #' TO DO
 #'
-#' @exportMethod plot
-#'
 #' @examples
 #' plot(FuzzyNumber(0,1,2,3), col="gray")
 #' plot(FuzzyNumber(0,1,2,3, left=function(x) x^2, right=function(x) 1-x^3), add=TRUE)
 #' plot(FuzzyNumber(0,1,2,3, lower=function(x) x, upper=function(x) 1-x), add=TRUE, col=2)
+#' @export
+#' @rdname plot-methods
+#' @docType methods
 setMethod(
    f="plot",
    signature(x="FuzzyNumber", y="missing"),
@@ -43,6 +44,8 @@ setMethod(
          warning("`add' will be ignored as there is no existing plot")
          add <- FALSE;
       }
+
+      if (n < 3) n <- 3;
       
       
       if (is.null(from) || is.null(to))
@@ -67,32 +70,43 @@ setMethod(
       {
          xlim <- c(from, to);  
       }
-      
-      if (drawX)
-      {
-         xvals <- seq(from, to, length.out=n);
-         alpha <- evaluate(x, xvals);
-         
-         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
-      } else if (drawAlpha)
-      {
-         alpha <- seq(0, 1, length.out=n);
-         xvals <- alphacut(x, alpha);
 
-         matplot(xvals, alpha, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
-         matplot(c(from, x@a1), c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-         matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-      } else
+      if (from > x@a1) from <- x@a1;
+      if (to   < x@a4) to   <- x@a4;
+
+      if (!drawX && !drawAlpha)
       {
          matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
          rect(x@a1, 0, x@a2, 1, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-         rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);         
+         rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
          matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
          matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+      } else
+      {   
+         if (drawX)
+         {
+            xvals1 <- seq(x@a1, x@a2, length.out=n); xvals1 <- xvals1[-c(1,n)];
+            xvals2 <- seq(x@a3, x@a4, length.out=n); xvals2 <- xvals2[-c(1,n)];
+            alpha1 <- evaluate(x, xvals1);
+            alpha2 <- evaluate(x, xvals2);
+
+         } else if (drawAlpha)
+         {
+            alpha <- seq(0, 1, length.out=n); alpha <- alpha[-c(1,n)];
+            xvals <- alphacut(x, alpha);
+
+            xvals1 <- xvals[,1];
+            xvals2 <- rev(xvals[,2]);
+            alpha1 <- alpha;
+            alpha2 <- rev(alpha);
+         }
+
+         matplot(c(from, x@a1, xvals1, x@a2, x@a3, xvals2, x@a4, to),
+                 c(0,    0,    alpha1, 1,    1,    alpha2, 0,    0),
+                 type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
+                 lty=lty, pch=pch, lwd=lwd, add=add, ...);
+
       }
-            
-      
-             
-   });
+   }
+);
    

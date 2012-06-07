@@ -17,17 +17,38 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
-setGeneric("evaluate", function(object, x) standardGeneric("evaluate"));
-setGeneric("alphacut", function(object, alpha) standardGeneric("alphacut"));
-setGeneric("supp", function(object) standardGeneric("supp"));
-setGeneric("core", function(object) standardGeneric("core"));
-setGeneric("expectedInterval", function(object, ...) standardGeneric("expectedInterval"));
-setGeneric("expectedValue", function(object, ...) standardGeneric("expectedValue"));
-setGeneric("weightedExpectedValue", function(object, w, ...) standardGeneric("weightedExpectedValue"));
-setGeneric("value", function(object, ...) standardGeneric("value"));
-setGeneric("width", function(object, ...) standardGeneric("width"));
-setGeneric("ambiguity", function(object, ...) standardGeneric("ambiguity"));
-setGeneric("distance", function(object1, object2, ...) standardGeneric("distance"));
+setGeneric("evaluate",
+           function(object, x) standardGeneric("evaluate"));
+           
+setGeneric("alphacut",
+           function(object, alpha) standardGeneric("alphacut"));
+           
+setGeneric("supp",
+           function(object) standardGeneric("supp"));
+           
+setGeneric("core",
+           function(object) standardGeneric("core"));
+           
+setGeneric("expectedInterval",
+           function(object, ...) standardGeneric("expectedInterval"));
+           
+setGeneric("expectedValue",
+           function(object, ...) standardGeneric("expectedValue"));
+           
+setGeneric("weightedExpectedValue",
+           function(object, w, ...) standardGeneric("weightedExpectedValue"));
+           
+setGeneric("value",
+           function(object, ...) standardGeneric("value"));
+           
+setGeneric("width",
+           function(object, ...) standardGeneric("width"));
+           
+setGeneric("ambiguity",
+           function(object, ...) standardGeneric("ambiguity"));
+           
+setGeneric("distance",
+           function(object1, object2, ...) standardGeneric("distance"));
 
 
 
@@ -39,12 +60,15 @@ setMethod(
    signature(object="FuzzyNumber", x="numeric"),
    definition=function(object, x)
    {
+#       print("DEBUG: Evaluate call for PiecewiseLinearFuzzyNumber");
+   
       y <- rep(0.0, length(x));
       y[x >= object@a1 & x <  object@a2] <- object@left ((x[x >= object@a1 & x <  object@a2]-object@a1)/(object@a2-object@a1));
       y[x >  object@a3 & x <= object@a4] <- object@right((x[x >  object@a3 & x <= object@a4]-object@a3)/(object@a4-object@a3));
       y[x >= object@a2 & x <= object@a3] <- 1.0;
       y;
-   });     
+   }
+);
 
 
 
@@ -70,7 +94,8 @@ setMethod(
       {
          return(x);  
       }
-   });
+   }
+);
 
 
 
@@ -84,7 +109,8 @@ setMethod(
    definition=function(object)
    {
       c(object@a1, object@a4);
-   });
+   }
+);
 
 
 
@@ -98,7 +124,8 @@ setMethod(
    definition=function(object)
    {
       c(object@a2, object@a3);
-   });
+   }
+);
 
 
 
@@ -116,7 +143,8 @@ setMethod(
       eu <- object@a3+(object@a4-object@a3)*integrate(object@upper, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
       
       return(c(el, eu));         
-   });
+   }
+);
 
 
 
@@ -129,7 +157,8 @@ setMethod(
    definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
    {
       return(mean(expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
-   });
+   }
+);
 
 
 
@@ -143,7 +172,8 @@ setMethod(
    {
       EI <- expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol);
       return((1-w)*EI[1] + w*EI[2]);
-   });
+   }
+);
 
 
 
@@ -162,7 +192,8 @@ setMethod(
       }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
       
       return(v);
-   });
+   }
+);
 
 
 
@@ -175,7 +206,8 @@ setMethod(
    definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
    {
       return(diff(expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
-   });
+   }
+);
 
 
 #' TO DO
@@ -193,7 +225,8 @@ setMethod(
       }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
       
       return(v);
-   });
+   }
+);
 
 
 #' TO DO
@@ -202,7 +235,8 @@ setMethod(
 setMethod(
    f="distance",
    signature(object1="FuzzyNumber", object2="FuzzyNumber"),
-   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"), subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"),
+                       subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
    {
       if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
       type = match.arg(type);
@@ -218,6 +252,10 @@ setMethod(
          }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value
          
          if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
+      } else
+      {
+         return(NA);
       }
-   });
+   }
+);
 

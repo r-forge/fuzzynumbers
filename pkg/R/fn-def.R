@@ -51,11 +51,24 @@
 #' @exportClass FuzzyNumber
 #' @name FuzzyNumber-class
 #' @docType class
-setClass("FuzzyNumber",
+setClass(
+   Class="FuzzyNumber",
    representation(
-      a1="numeric",a2="numeric",a3="numeric",a4="numeric",
-      lower="function",upper="function",
-      left="function", right="function"),
+      a1="numeric",
+      a2="numeric",
+      a3="numeric",
+      a4="numeric",
+      lower="function",
+      upper="function",
+      left="function",
+      right="function"
+   ),
+   prototype=prototype(
+      left=function(x) NA,
+      right=function(x) NA,
+      lower=function(alpha) NA,
+      upper=function(alpha) NA
+   ),   
    validity=function(object)
    {
 #       print("DEBUG: Validity call for FuzzyNumber");
@@ -67,17 +80,6 @@ setClass("FuzzyNumber",
 
       if (object@a1 > object@a2 || object@a2 > object@a3 || object@a3 > object@a4)
          return("Please provide a1 <= a2 <= a3 <= a4");
-
-
-      # Check given functions
-#       if (length(formals(object@lower)) != length(formals(object@upper)))
-#          return("Either all or none of `lower' and `upper' should be NULL");
-
-#       if (length(formals(object@left)) != length(formals(object@right)))
-#          return("Either all or none of `left' and `right' should be NULL");
-
-#       if (length(formals(object@lower)) == 0 && length(formals(object@left)) == 0)
-#          return("Please provide left and right side functions or lower and upper alpha-cut bounds");
 
 
       if (length(formals(object@lower)) != 1)
@@ -112,6 +114,14 @@ setClass("FuzzyNumber",
          return("`right' should be a decreasing function [0,1]->[1,0]");
       }
 
+
+      if (is.na(object@right(0)) != is.na(object@left(0)))
+         return("Either all or none of `left' and `right' should return NA");
+
+      if (is.na(object@upper(0)) != is.na(object@lower(0)))
+         return("Either all or none of `lower' and `upper' should return NA");
+
+
       # Everything is O.K.
       return(TRUE);
    }
@@ -134,37 +144,45 @@ setClass("FuzzyNumber",
 FuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(x) NA, upper=function(x) NA,
    left=function(x)  NA, right=function(x) NA)
-   {
-      .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
-          lower=lower, upper=upper, left=left, right=right);
-      validObject(.Object);
-      .Object;
-   }
+{
+   .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
+       lower=lower, upper=upper, left=left, right=right);
+   .Object;
+}
 
 
 
 #' TO DO
 #'
-#' @exportMethod show
-setMethod(f="show", signature(object="FuzzyNumber"),
-          definition=function(object) {
-             cat(sprintf("Fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
-                         object@a1, object@a4, object@a2, object@a3))
-          });
+#' @export
+#' @rdname show-methods
+#' @docType methods
+setMethod(
+   f="show",
+   signature(object="FuzzyNumber"),
+   definition=function(object)
+   {
+      cat(sprintf("Fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
+                  object@a1, object@a4, object@a2, object@a3))
+   }
+);
 
 
 #' TO DO
 #'
 #' @exportMethod [          
-setMethod(f="[",
-          signature=(x="FuzzyNumber"),
-          definition=function(x, i, j, drop) {
-             if (i == "a1") return(x@a1);
-             if (i == "a2") return(x@a2);
-             if (i == "a3") return(x@a3);
-             if (i == "a4") return(x@a4);
-             if (i == "left")  return(x@left);
-             if (i == "right") return(x@right);
-             if (i == "lower") return(x@lower);
-             if (i == "upper") return(x@upper);
-          });
+setMethod(
+   f="[",
+   signature=(x="FuzzyNumber"),
+   definition=function(x, i, j, drop)
+   {
+      if (i == "a1") return(x@a1);
+      if (i == "a2") return(x@a2);
+      if (i == "a3") return(x@a3);
+      if (i == "a4") return(x@a4);
+      if (i == "left")  return(x@left);
+      if (i == "right") return(x@right);
+      if (i == "lower") return(x@lower);
+      if (i == "upper") return(x@upper);
+   }
+);

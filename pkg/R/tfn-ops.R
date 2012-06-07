@@ -30,7 +30,8 @@ setMethod(
       y[x >  object@a3 & x <= object@a4] <- ((object@a4-x[x >  object@a3 & x <= object@a4])/(object@a4-object@a3));
       y[x >= object@a2 & x <= object@a3] <- 1.0;
       y;
-   });     
+   }
+);
 
 
 #' TO DO
@@ -55,7 +56,8 @@ setMethod(
       {
          return(x);  
       }
-   });
+   }
+);
 
 
 
@@ -69,7 +71,8 @@ setMethod(
    definition=function(object)
    {
       return(c((object@a1+object@a2)*0.5, (object@a3+object@a4)*0.5));         
-   });
+   }
+);
 
 
 
@@ -82,7 +85,8 @@ setMethod(
    definition=function(object)
    {
       return(mean(expectedInterval(object)));
-   });
+   }
+);
 
 
 #' TO DO
@@ -95,7 +99,8 @@ setMethod(
    {
       EI <- expectedInterval(object);
       return((1-w)*EI[1] + w*EI[2]);
-   });
+   }
+);
 
 
 #' TO DO
@@ -110,7 +115,8 @@ setMethod(
          object@a1*0.5+(object@a2-object@a1)/3 +
          object@a3*0.5+(object@a4-object@a3)/6
       );
-   });
+   }
+);
 
 
 #' TO DO
@@ -122,7 +128,8 @@ setMethod(
    definition=function(object)
    {
       return(diff(expectedInterval(A)));
-   });
+   }
+);
 
 
 #' TO DO
@@ -137,4 +144,5 @@ setMethod(
          object@a3*0.5+(object@a4-object@a3)/6 -
          object@a1*0.5+(object@a2-object@a1)/3
       );
-   });
+   }
+);

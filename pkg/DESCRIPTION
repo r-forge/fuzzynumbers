@@ -27,3 +27,6 @@ Collate:
     'tfn-ops.R'
     'FuzzyNumbers-package.R'
     'tfn-plot.R'
+    'plfn-def.R'
+    'plfn-ops.R'
+    'plfn-plot.R'
