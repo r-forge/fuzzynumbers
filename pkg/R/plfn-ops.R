@@ -27,12 +27,12 @@ setMethod(
    {
       xl <- c(object@a1, object@knot.left,  object@a2);
       xr <- c(object@a3, object@knot.right, object@a4);
-      al <- c(0,     object@knot.alpha,  1);
-      ar <- c(1, rev(object@knot.alpha), 0);
+      dal <- diff(c(0,     object@knot.alpha,  1));
+      dar <- diff(c(1, rev(object@knot.alpha), 0));
 
       return(c(
-         sum( (xl[-object@knot.n-2]+0.5*diff(xl))*diff(al) ),
-         sum(-(xr[-object@knot.n-2]+0.5*diff(xr))*diff(ar) )
+         sum( (xl[-object@knot.n-2]+0.5*diff(xl))*dal ),
+         sum(-(xr[-object@knot.n-2]+0.5*diff(xr))*dar )
       ));
    }
 );
@@ -68,27 +68,6 @@ setMethod(
 
 #' TO DO
 #'
-#' @exportMethod value   
-setMethod(
-   f="value",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
-   {
-      xl <- c(object@a1, object@knot.left,  object@a2);
-      xr <- c(object@a3, object@knot.right, object@a4);
-      al <- c(0,     object@knot.alpha,  1);
-      ar <- c(1, rev(object@knot.alpha), 0);
-
-      return(
-         sum( ( xl[-object@knot.n-2]-xl[-1])/3*(diff(al)^3) + xl[-1]/2*(diff(al)^2)) +
-         sum( ( xr[-object@knot.n-2]-xr[-1])/3*(diff(ar)^3) + xr[-object@knot.n-2]/2*(diff(ar)^2))
-      );
-   }
-);
-
-
-#' TO DO
-#'
 #' @exportMethod width
 setMethod(
    f="width",
@@ -102,15 +81,53 @@ setMethod(
 
 #' TO DO
 #'
+#' @exportMethod value   
+setMethod(
+   f="alphaInterval",
+   signature(object="PiecewiseLinearFuzzyNumber"),
+   definition=function(object)
+   {
+      xl <- c(object@a1, object@knot.left,  object@a2);
+      xr <- c(object@a3, object@knot.right, object@a4);
+      al <- c(0,     object@knot.alpha,  1);
+      ar <- c(1, rev(object@knot.alpha), 0);
+      dxl <- diff(xl);
+      dxr <- diff(xr);
+      dal <- diff(al);
+      dar <- diff(ar);
+
+      return(c(
+         sum( diff(al^2)*(xl[-object@knot.n-2]-al[-object@knot.n-2]*dxl/dal)/2+diff(al^3)*dxl/dal/3 ),
+        -sum( diff(ar^2)*(xr[-object@knot.n-2]-ar[-object@knot.n-2]*dxr/dar)/2+diff(ar^3)*dxr/dar/3 )
+      ));
+   }
+);
+
+
+
+
+
+#' TO DO
+#'
+#' @exportMethod value
+setMethod(
+   f="value",
+   signature(object="PiecewiseLinearFuzzyNumber"),
+   definition=function(object)
+   {
+      return(sum(alphaInterval(object)));
+   }
+);
+
+
+#' TO DO
+#'
 #' @exportMethod ambiguity
 setMethod(
    f="ambiguity",
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object)
    {
-#       return(
-#          object@a3*0.5+(object@a4-object@a3)/6 -
-#          object@a1*0.5+(object@a2-object@a1)/3
-#       );
+      return(diff(alphaInterval(object)));
    }
 );

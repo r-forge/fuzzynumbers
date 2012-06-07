@@ -37,12 +37,15 @@ setGeneric("expectedValue",
            
 setGeneric("weightedExpectedValue",
            function(object, w, ...) standardGeneric("weightedExpectedValue"));
-           
-setGeneric("value",
-           function(object, ...) standardGeneric("value"));
-           
+
 setGeneric("width",
            function(object, ...) standardGeneric("width"));
+
+setGeneric("alphaInterval",
+           function(object, ...) standardGeneric("alphaInterval"));
+
+setGeneric("value",
+           function(object, ...) standardGeneric("value"));
            
 setGeneric("ambiguity",
            function(object, ...) standardGeneric("ambiguity"));
@@ -176,27 +179,6 @@ setMethod(
 );
 
 
-
-#' TO DO
-#'
-#' @exportMethod value   
-setMethod(
-   f="value",
-   signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
-   {
-      if (is.na(object@lower(0))) return(c(NA, NA));
-      
-      v <- integrate(function(x) {
-         x*(object@a1+(object@a2-object@a1)*object@lower(x)+object@a3+(object@a4-object@a3)*object@upper(x))
-      }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-      
-      return(v);
-   }
-);
-
-
-
 #' TO DO
 #'
 #' @exportMethod width
@@ -212,19 +194,53 @@ setMethod(
 
 #' TO DO
 #'
+#' @exportMethod alphaInterval
+setMethod(
+   f="alphaInterval",
+   signature(object="FuzzyNumber"),
+   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   {
+      if (is.na(object@lower(0))) return(c(NA, NA));
+
+      return(c(
+         integrate(function(x) {
+            x*(object@a1+(object@a2-object@a1)*object@lower(x))
+         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value,
+         integrate(function(x) {
+            x*(object@a3+(object@a4-object@a3)*object@upper(x))
+         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value
+      ));
+   }
+);
+
+
+
+#' TO DO
+#'
+#' @exportMethod value   
+setMethod(
+   f="value",
+   signature(object="FuzzyNumber"),
+   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   {
+      return(sum(alphaInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
+   }
+);
+
+
+
+
+
+
+#' TO DO
+#'
 #' @exportMethod ambiguity
 setMethod(
    f="ambiguity",
    signature(object="FuzzyNumber"),
    definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
    {
-      if (is.na(object@lower(0))) return(c(NA, NA));
-      
-      v <- integrate(function(x) {
-         x*(object@a3+(object@a4-object@a3)*object@upper(x)-object@a1+(object@a2-object@a1)*object@lower(x))
-      }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-      
-      return(v);
+      return(diff(alphaInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
    }
 );
 

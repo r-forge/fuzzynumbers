@@ -105,22 +105,6 @@ setMethod(
 
 #' TO DO
 #'
-#' @exportMethod value   
-setMethod(
-   f="value",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      return(
-         object@a1*0.5+(object@a2-object@a1)/3 +
-         object@a3*0.5+(object@a4-object@a3)/6
-      );
-   }
-);
-
-
-#' TO DO
-#'
 #' @exportMethod width
 setMethod(
    f="width",
@@ -134,15 +118,41 @@ setMethod(
 
 #' TO DO
 #'
+#' @exportMethod value   
+setMethod(
+   f="alphaInterval",
+   signature(object="TrapezoidalFuzzyNumber"),
+   definition=function(object)
+   {
+      return(c(
+         object@a1*0.5+(object@a2-object@a1)/3,
+         object@a3*0.5+(object@a4-object@a3)/6
+      ));
+   }
+);
+
+
+#' TO DO
+#'
+#' @exportMethod value
+setMethod(
+   f="value",
+   signature(object="TrapezoidalFuzzyNumber"),
+   definition=function(object)
+   {
+      return(sum(alphaInterval(object)));
+   }
+);
+
+
+#' TO DO
+#'
 #' @exportMethod ambiguity
 setMethod(
    f="ambiguity",
    signature(object="TrapezoidalFuzzyNumber"),
    definition=function(object)
    {
-      return(
-         object@a3*0.5+(object@a4-object@a3)/6 -
-         object@a1*0.5+(object@a2-object@a1)/3
-      );
+      return(diff(alphaInterval(object)));
    }
 );
