@@ -67,8 +67,8 @@ setMethod(
       if (from > x@a1) from <- x@a1;
       if (to   < x@a4) to   <- x@a4;
 
-      matplot(c(from, x@a1, x@knot.left,  x@a2, x@a3, x@knot.right, x@a4, to),
-              c(0,    0,    x@knot.alpha, 1,    1,    x@knot.alpha, 0,    0),
+      matplot(c(from, x@a1, x@knot.left,  x@a2, x@a3, x@knot.right,      x@a4, to),
+              c(0,    0,    x@knot.alpha, 1,    1,    rev(x@knot.alpha), 0,    0),
          type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
          lty=lty, pch=pch, lwd=lwd, add=add, ...);
    }

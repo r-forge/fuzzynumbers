@@ -70,7 +70,7 @@ setMethod(
    signature(object="TrapezoidalFuzzyNumber"),
    definition=function(object)
    {
-      return(c((object@a1+object@a2)*0.5, (object@a3+object@a4)*0.5));         
+      return(0.5*c((object@a2+object@a1), (object@a4+object@a3)));
    }
 );
 

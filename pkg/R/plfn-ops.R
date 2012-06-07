@@ -25,8 +25,17 @@ setMethod(
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object)
    {
-#       return(c((object@a1+object@a2)*0.5, (object@a3+object@a4)*0.5));         
-   });
+      xl <- c(object@a1, object@knot.left,  object@a2);
+      xr <- c(object@a3, object@knot.right, object@a4);
+      al <- c(0,     object@knot.alpha,  1);
+      ar <- c(1, rev(object@knot.alpha), 0);
+
+      return(c(
+         sum( (xl[-object@knot.n-2]+0.5*diff(xl))*diff(al) ),
+         sum(-(xr[-object@knot.n-2]+0.5*diff(xr))*diff(ar) )
+      ));
+   }
+);
 
 
 
@@ -38,8 +47,9 @@ setMethod(
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object)
    {
-#       return(mean(expectedInterval(object)));
-   });
+      return(mean(expectedInterval(object)));
+   }
+);
 
 
 #' TO DO
@@ -52,7 +62,8 @@ setMethod(
    {
       EI <- expectedInterval(object);
       return((1-w)*EI[1] + w*EI[2]);
-   });
+   }
+);
 
 
 #' TO DO
@@ -63,11 +74,17 @@ setMethod(
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object)
    {
-#       return(
-#          object@a1*0.5+(object@a2-object@a1)/3 +
-#          object@a3*0.5+(object@a4-object@a3)/6
-#       );
-   });
+      xl <- c(object@a1, object@knot.left,  object@a2);
+      xr <- c(object@a3, object@knot.right, object@a4);
+      al <- c(0,     object@knot.alpha,  1);
+      ar <- c(1, rev(object@knot.alpha), 0);
+
+      return(
+         sum( ( xl[-object@knot.n-2]-xl[-1])/3*(diff(al)^3) + xl[-1]/2*(diff(al)^2)) +
+         sum( ( xr[-object@knot.n-2]-xr[-1])/3*(diff(ar)^3) + xr[-object@knot.n-2]/2*(diff(ar)^2))
+      );
+   }
+);
 
 
 #' TO DO
@@ -79,7 +96,8 @@ setMethod(
    definition=function(object)
    {
       return(diff(expectedInterval(A)));
-   });
+   }
+);
 
 
 #' TO DO
@@ -94,4 +112,5 @@ setMethod(
 #          object@a3*0.5+(object@a4-object@a3)/6 -
 #          object@a1*0.5+(object@a2-object@a1)/3
 #       );
-   });
+   }
+);
