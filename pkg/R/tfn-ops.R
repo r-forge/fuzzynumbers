@@ -17,9 +17,8 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
-#' TO DO
-#'
-#' @exportMethod evaluate
+#' @aliases evaluate,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
+#' @rdname evaluate-methods
 setMethod(
    f="evaluate",
    signature(object="TrapezoidalFuzzyNumber", x="numeric"),

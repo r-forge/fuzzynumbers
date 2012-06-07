@@ -114,11 +114,8 @@ PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
 
 
 
-#' TO DO
-#'
-#' @export
 #' @rdname show-methods
-#' @docType methods
+#' @aliases show,PiecewiseLinearFuzzyNumber,PiecewiseLinearFuzzyNumber-method
 setMethod(
    f="show",
    signature(object="PiecewiseLinearFuzzyNumber"),

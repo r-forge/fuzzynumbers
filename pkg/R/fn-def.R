@@ -151,12 +151,11 @@ FuzzyNumber <- function(a1, a2, a3, a4,
 }
 
 
-
-#' TO DO
-#'
+#' Print basic information
 #' @export
-#' @rdname show-methods
 #' @docType methods
+#' @rdname show-methods
+#' @aliases show,FuzzyNumber,FuzzyNumber-method
 setMethod(
    f="show",
    signature(object="FuzzyNumber"),

@@ -16,7 +16,20 @@
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
-
+#' Evaluate the membership function
+#'
+#' This function returns the value(s) of the membership function
+#' of a fuzzy number at given point(s).
+#'
+#' @param object an instance of \code{FuzzyNumber} class
+#' @param x a numeric vector
+#' @return Value of the membership function at \code{x}
+#' @export
+#' @rdname evaluate-methods
+#' @docType methods
+#' @examples
+#' T <- TrapezoidalFuzzyNumber(1,2,3,4);
+#' print(evaluate(T, seq(0,5,by=0.5)));
 setGeneric("evaluate",
            function(object, x) standardGeneric("evaluate"));
            
@@ -55,9 +68,8 @@ setGeneric("distance",
 
 
 
-#' TO DO
-#'
-#' @exportMethod evaluate
+#' @aliases evaluate,FuzzyNumber,FuzzyNumber-method
+#' @rdname evaluate-methods
 setMethod(
    f="evaluate",
    signature(object="FuzzyNumber", x="numeric"),
