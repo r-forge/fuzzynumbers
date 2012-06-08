@@ -93,15 +93,16 @@ setMethod(
 #' Creates a piecewise linear fuzzy number
 #'   
 #' For convenience, objects of class \code{PiecewiseLinearFuzzyNumber}
-#' may be created with the following function.
-#' @param a1 TO DO
-#' @param a2 TO DO
-#' @param a3 TO DO
-#' @param a4 TO DO
-#' @param knot.n
-#' @param knot.alpha
-#' @param knot.left
-#' @param knot.right
+#' may be created with this function.
+#'
+#' @param a1 a number specyfing left bound of the support
+#' @param a2 a number specyfing left bound of the core
+#' @param a3 a number specyfing right bound of the core
+#' @param a4 a number specyfing right bound of the support
+#' @param knot.n the number of knots
+#' @param knot.alpha \code{knot.n} alpha-cut values at knots
+#' @param knot.left \code{knot.n} knots on the left side; a nondecreasingly sorted vector with elements in [\code{a1},\code{a2}]
+#' @param knot.right \code{knot.n} knots on the right side; a nondecreasingly sorted vector with elements in [\code{a3},\code{a4}]
 #' @export
 PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
    knot.n=0, knot.alpha=numeric(0),
@@ -109,6 +110,32 @@ PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
 {
    .Object <- new("PiecewiseLinearFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
          knot.n=knot.n, knot.alpha=knot.alpha, knot.left=knot.left, knot.right=knot.right);
+   .Object;
+}
+
+
+
+
+#' Coverts a trapezoidal fuzzy number object to a piecewise linear fuzzy number
+#'
+#' @param object a trapezoidal fuzzy number
+#' @param knot.n the number of knots
+#' @param knot.alpha \code{knot.n} alpha-cut values at knots
+#' @export
+as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0))
+{
+   if (class(object) != "TrapezoidalFuzzyNumber") stop("`object' is not an instance of the TrapezoidalFuzzyNumber class");
+
+   left  <- approxfun(c(0,1), c(object@a1,object@a2), method="linear");
+   right <- approxfun(c(1,0), c(object@a3,object@a4), method="linear");
+
+   if (knot.n < 0) stop("`knot.n' should be >= 0");
+   if (knot.n == 0) return(new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4));
+
+   if (knot.n != length(knot.alpha)) stop("length of `knot.alpha' should be equal to `knot.n'");
+   
+   .Object <- new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
+         knot.n=knot.n, knot.alpha=knot.alpha, knot.left=left(knot.alpha), knot.right=right(rev(knot.alpha)));
    .Object;
 }
 

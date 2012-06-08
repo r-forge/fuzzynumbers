@@ -131,15 +131,16 @@ setClass(
 #' Creates a Fuzzy Number
 #'
 #' For convenience, objects of class \code{FuzzyNumber}
-#' may be created with the following function.
-#' @param a1 TO DO
-#' @param a2 TO DO
-#' @param a3 TO DO
-#' @param a4 TO DO
-#' @param lower TO DO
-#' @param upper TO DO
-#' @param left TO DO
-#' @param right TO DO
+#' may be created with this function.
+#'
+#' @param a1 a number specyfing left bound of the support
+#' @param a2 a number specyfing left bound of the core
+#' @param a3 a number specyfing right bound of the core
+#' @param a4 a number specyfing right bound of the support
+#' @param lower lower alpha-cut bound generator; a nondecreasing function [0,1]->[0,1] or returning NA
+#' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA
+#' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA
+#' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(x) NA, upper=function(x) NA,
@@ -147,6 +148,21 @@ FuzzyNumber <- function(a1, a2, a3, a4,
 {
    .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
        lower=lower, upper=upper, left=left, right=right);
+   .Object;
+}
+
+#' Coverts a trapezoidal of a piecewise linear fuzzy number object to a fuzzy number
+#'
+#' @param object a trapezoidal or piecewiselinear fuzzy number
+#' @export
+as.FuzzyNumber <- function(object)
+{
+   if (class(object) != "TrapezoidalFuzzyNumber"
+    && class(object) != "PiecewiseLinearFuzzyNumber")
+      stop("`object' is not an instance of the TrapezoidalFuzzyNumber or PiecewiseLinearFuzzyNumber class");
+
+   .Object <- new("FuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
+         left=object@left, right=object@right, lower=object@lower, upper=object@upper);
    .Object;
 }
 

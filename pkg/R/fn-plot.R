@@ -29,10 +29,11 @@
 setMethod(
    f="plot",
    signature(x="FuzzyNumber", y="missing"),
-   definition=function(x, y, from=NULL, to=NULL, n=101, add=FALSE,
-      type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
-      col=1, lty=1, pch=1, lwd=1,
-      shadowdensity=15, shadowangle=45, shadowcol=col, shadowborder=NULL, ...)
+   definition=function(x, y, from=NULL, to=NULL, n=101,
+      at.alpha=NULL, type="l", xlab="x", ylab=expression(alpha),
+      xlim=NULL, ylim=c(0,1), col=1, lty=1, pch=1, lwd=1,
+      shadowdensity=15, shadowangle=45, shadowcol=col, shadowborder=NULL,
+      add=FALSE, ...)
    {
       drawX     <- !(is.na(x@left(0)));
       drawAlpha <- !(is.na(x@lower(0)));
@@ -45,8 +46,7 @@ setMethod(
          add <- FALSE;
       }
 
-      if (n < 3) n <- 3;
-      
+      if (n <= 0) n <- 0;
       
       if (is.null(from) || is.null(to))
       {
@@ -83,22 +83,42 @@ setMethod(
          matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
       } else
       {   
-         if (drawX)
+         if (drawAlpha && (!drawX || !is.null(at.alpha)))
          {
-            xvals1 <- seq(x@a1, x@a2, length.out=n); xvals1 <- xvals1[-c(1,n)];
-            xvals2 <- seq(x@a3, x@a4, length.out=n); xvals2 <- xvals2[-c(1,n)];
+            if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
+                  any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
+            {
+               at.alpha <- seq(1/(n+1),1-1/(n+1),length.out=n);
+            }
+
+            if (length(at.alpha) == 0)
+            {
+               xvals1 <- numeric(0);
+               xvals2 <- numeric(0);
+               alpha1 <- numeric(0);
+               alpha2 <- numeric(0);
+            } else if (length(at.alpha) == 1)
+            {
+               xvals <- alphacut(x, at.alpha);
+               xvals1 <- xvals[1];
+               xvals2 <- rev(xvals[2]);
+               alpha1 <- at.alpha;
+               alpha2 <- at.alpha;
+            } else
+            {
+               xvals <- alphacut(x, at.alpha);
+
+               xvals1 <- xvals[,1];
+               xvals2 <- rev(xvals[,2]);
+               alpha1 <- at.alpha;
+               alpha2 <- rev(at.alpha);
+            }
+         } else
+         {
+            xvals1 <- seq(x@a1, x@a2, length.out=n+2); xvals1 <- xvals1[-c(1,n+2)];
+            xvals2 <- seq(x@a3, x@a4, length.out=n+2); xvals2 <- xvals2[-c(1,n+2)];
             alpha1 <- evaluate(x, xvals1);
             alpha2 <- evaluate(x, xvals2);
-
-         } else if (drawAlpha)
-         {
-            alpha <- seq(0, 1, length.out=n); alpha <- alpha[-c(1,n)];
-            xvals <- alphacut(x, alpha);
-
-            xvals1 <- xvals[,1];
-            xvals2 <- rev(xvals[,2]);
-            alpha1 <- alpha;
-            alpha2 <- rev(alpha);
          }
 
          matplot(c(from, x@a1, xvals1, x@a2, x@a3, xvals2, x@a4, to),

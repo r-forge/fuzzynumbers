@@ -38,11 +38,12 @@ setClass(
 #' Creates a trapezoidal fuzzy number
 #'   
 #' For convenience, objects of class \code{TrapezoidalFuzzyNumber}
-#' may be created with the following function.
-#' @param a1 TO DO
-#' @param a2 TO DO
-#' @param a3 TO DO
-#' @param a4 TO DO
+#' may be created with this function.
+#'
+#' @param a1 a number specyfing left bound of the support
+#' @param a2 a number specyfing left bound of the core
+#' @param a3 a number specyfing right bound of the core
+#' @param a4 a number specyfing right bound of the support
 #' @export   
 TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
 {

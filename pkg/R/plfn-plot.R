@@ -29,48 +29,9 @@ setMethod(
       type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
       col=1, lty=1, pch=1, lwd=1, ...)
    {
-      drawX     <- !(is.na(x@left(0)));
-      drawAlpha <- !(is.na(x@lower(0)));
-
-      add <- identical(add, TRUE);
-
-      if (dev.cur() == 1L && add)
-      {
-         warning("`add' will be ignored as there is no existing plot")
-         add <- FALSE;
-      }
-
-
-      if (is.null(from) || is.null(to))
-      {
-         xlim <-
-            if (!is.null(xlim))
-            {
-               xlim;
-            } else if (add)
-            {
-               usr <- par("usr")[1L:2L]
-               if (par("xaxs") == "r") usr <- extendrange(usr, f = -1.0/27.0);
-               usr
-            } else
-            {
-               extendrange(c(x@a1, x@a4), f = 1.0/27.0); # core + epsilon
-            }
-
-         if (is.null(from)) from <- xlim[1L];
-         if (is.null(to))   to <- xlim[2L];
-      } else if (is.null(xlim))
-      {
-         xlim <- c(from, to);
-      }
-
-      if (from > x@a1) from <- x@a1;
-      if (to   < x@a4) to   <- x@a4;
-
-      matplot(c(from, x@a1, x@knot.left,  x@a2, x@a3, x@knot.right,      x@a4, to),
-              c(0,    0,    x@knot.alpha, 1,    1,    rev(x@knot.alpha), 0,    0),
-         type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
-         lty=lty, pch=pch, lwd=lwd, add=add, ...);
+      callNextMethod(x, at.alpha=x@knot.alpha,
+         from=from, to=to, add=add, type=type, xlab=xlab, ylab=ylab,
+         xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, ...);
    }
 );
    

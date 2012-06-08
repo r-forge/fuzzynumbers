@@ -16,6 +16,8 @@
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
+
+
 #' Evaluate the membership function
 #'
 #' This function returns the value(s) of the membership function

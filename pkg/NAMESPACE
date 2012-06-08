@@ -1,3 +1,5 @@
+export(as.FuzzyNumber)
+export(as.PiecewiseLinearFuzzyNumber)
 export(FuzzyNumber)
 export(PiecewiseLinearFuzzyNumber)
 export(TrapezoidalFuzzyNumber)
