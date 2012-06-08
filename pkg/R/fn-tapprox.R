@@ -19,10 +19,10 @@
 
 setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("trapezoidalApproximation"));
 
-#' Trapezoidal approximation of fuzzy numbers
+#' Trapezoidal approximation of a fuzzy number
 #'
-#' This method finds the best trapezoidal approximator \eqn{T(A)}
-#' of a given fuzzy number \eqn{A} by using a method specified by the
+#' This method finds a trapezoidal approximation \eqn{T(A)}
+#' of a given fuzzy number \eqn{A} by using the algorithm specified by the
 #' \code{method} parameter.
 #'
 #' \code{method} may be one of:
@@ -180,5 +180,6 @@ setMethod(
          
          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
       }
-   });
+   }
+);
 
