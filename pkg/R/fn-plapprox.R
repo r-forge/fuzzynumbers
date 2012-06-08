@@ -19,6 +19,8 @@
 
 setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric("piecewiseLinearApproximation"));
 
+
+
 #' Piecewise linear approximation of a fuzzy number
 #'
 #' This method finds a piecewise linear approximation \eqn{P(A)}
@@ -167,6 +169,7 @@ setMethod(
 
          # All right, if we are here then we have to optimize on all knots altogether...
          # print("DEBUG: not disjoint");
+         # Open quesion: can we assume that a2==a3 ??? (currently we do not)
 
 ## ================== ApproximateBestEuclidean: PASS 2: use both sides together
             
@@ -196,6 +199,8 @@ setMethod(
             warning(paste("Nelder-Mead algorithm have not converged (", optres$message, ")", sep=""));
          res <- optres$par;
 
+         
+         # All right, we're done!
          return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
             knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
 
@@ -219,10 +224,10 @@ setMethod(
 #          if (optres$convergence != 0)
 #             warning(paste("L-BFGS-B algorithm have not converged (", optres$message, ")", sep=""));
 # 
-#          optres <- cma_es(res, target, ..., # another try: CMA-ES (global optimizer, slow as hell)
+#          optres <- cma_es(res, target, ...,               # another try: CMA-ES (global optimizer, slow as hell)
 #             lower=c(2*object@a1, rep(0, 2*knot.n+3)));
 # 
-# #          print(optres); # this may be printed in verbose mode
+# #          print(optres); # this may be printed out in verbose mode
 # 
 #          res <- optres$par;
 # 
