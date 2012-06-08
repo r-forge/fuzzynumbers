@@ -54,7 +54,7 @@ setClass(
          if (!is.finite(object@knot.left)  || any(object@knot.left < object@a1 | object@knot.left > object@a2))
             return("`knot.left' should be a vector with elements in [a1,a2]");
          if (!is.finite(object@knot.right) || any(object@knot.right < object@a3 | object@knot.left > object@a4))
-            return("`knot.left' should be a vector with elements in [a3,a4]");
+            return("`knot.right' should be a vector with elements in [a3,a4]");
 
          if (!is.finite(object@knot.alpha) || any(object@knot.alpha < 0 | object@knot.alpha > 1))
             return("`knot.alpha' should be a vector with elements in [0,1]");

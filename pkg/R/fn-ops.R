@@ -273,11 +273,11 @@ setMethod(
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
          dL <- integrate(function(alpha) {
-            (object1@a1+(object1@a2-object1@a1)*object1@lower(alpha) - object2@a1+(object2@a2-object2@a1)*object2@lower(alpha))^2
+            (object1@a1+(object1@a2-object1@a1)*object1@lower(alpha) - object2@a1-(object2@a2-object2@a1)*object2@lower(alpha))^2
          }, 0, 1, ...)$value
          
          dU <- integrate(function(alpha) {
-            (object1@a3+(object1@a4-object1@a3)*object1@upper(alpha) - object2@a3+(object2@a4-object2@a3)*object2@upper(alpha))^2
+            (object1@a3+(object1@a4-object1@a3)*object1@upper(alpha) - object2@a3-(object2@a4-object2@a3)*object2@upper(alpha))^2
          }, 0, 1, ...)$value
          
          if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);

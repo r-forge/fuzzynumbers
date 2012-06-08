@@ -40,16 +40,18 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 setMethod(
    f="piecewiseLinearApproximation",
    signature(object="FuzzyNumber"),
-   definition=function(object, method=c("Naive"),
+   definition=function(object, method=c("BestEuclidean","ApproximateBestEuclidean","Naive"),
       knot.n=1, knot.alpha=0.5,
-      expected.interval=NULL, alpha.interval=NULL, ...)
+#       expected.interval=NULL, alpha.interval=NULL,
+      optim.control=list(),
+      ...)
    {
       method <- match.arg(method);
 
       if (!is.numeric(knot.n) || length(knot.n) != 1 || knot.n <= 0)
          stop("`knot.n' should be >= 1");
 
-      if (length(knot.alpha) != knot.n || !is.numeric(knot.alpha) || any(knot.alpha <= 0 | knot.alpha >= 1))
+      if (length(knot.alpha) != knot.n || !is.numeric(knot.alpha) || any(!is.finite(knot.alpha) | knot.alpha <= 0 | knot.alpha >= 1))
          stop("incorrect `knot.alpha'");
 
       if (is.na(object@lower(0)) || is.na(object@upper(0)))
@@ -71,6 +73,62 @@ setMethod(
          
          return(PiecewiseLinearFuzzyNumber(object@a1, object@a2, object@a3, object@a4,
             knot.n=knot.n, knot.alpha=knot.alpha, knot.left=knot.left, knot.right=knot.right));
+      } else if (method == "ApproximateBestEuclidean")
+      {
+         a <- alphacut(object, knot.alpha);
+
+         if (knot.n > 1)
+         {
+            start.left0  <- a[,1];
+            start.right0 <- rev(a[,2]);
+         } else
+         {
+            start.left0  <- a[1];
+            start.right0 <- a[2];
+         }
+
+         res <- c(object@a1, start.left0, object@a2, object@a3, start.right0, object@a4);
+
+         # reparametrize: (a1, DELTA)
+         res <- c(res[1], diff(res));
+
+         target <- function(res, ...)
+            {
+               res <- cumsum(res);
+               distance(object,
+                  PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+                     knot.n=knot.n, knot.alpha=knot.alpha,
+                     knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]),
+                  type="EuclideanSquared", ...);
+            }
+
+         optres <- optim(res, target, ...,
+            method="L-BFGS-B", lower=c(2*object@a1, rep(0, 2*knot.n+3)), control=optim.control);
+
+         if (optres$convergence != 0)
+            warning(paste("L-BFGS-B algorithm have not converged (", optres$message, ")", sep=""));
+
+#          optres <- cma_es(res, target, ...,
+#             lower=c(2*object@a1, rep(0, 2*knot.n+3)));
+
+#          print(optres); # this may be printed in verbose mode
+
+         res <- optres$par;
+
+         # undo reparametrization:
+         res <- cumsum(res);
+         
+
+         return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+            knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+      
+      } else if (method == "BestEuclidean")
+      {
+         # This exact method was proposed by Coroianu, Gagolewski, Grzegorzewski (submitted)
+         
+         if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1");
+
+         
       }
 
 #       if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
