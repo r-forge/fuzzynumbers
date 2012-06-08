@@ -67,7 +67,7 @@ setMethod(
 setMethod(
    f="expectedInterval",
    signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
+   definition=function(object, ...)
    {
       return(0.5*c((object@a2+object@a1), (object@a4+object@a3)));
    }
@@ -77,81 +77,15 @@ setMethod(
 
 #' TO DO
 #'
-#' @exportMethod expectedValue
-setMethod(
-   f="expectedValue",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      return(mean(expectedInterval(object)));
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod weightedExpectedValue
-setMethod(
-   f="weightedExpectedValue",
-   signature(object="TrapezoidalFuzzyNumber", w="numeric"),
-   definition=function(object, w)
-   {
-      EI <- expectedInterval(object);
-      return((1-w)*EI[1] + w*EI[2]);
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod width
-setMethod(
-   f="width",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      return(diff(expectedInterval(A)));
-   }
-);
-
-
-#' TO DO
-#'
 #' @exportMethod value   
 setMethod(
    f="alphaInterval",
    signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
+   definition=function(object, ...)
    {
       return(c(
          object@a1*0.5+(object@a2-object@a1)/3,
          object@a3*0.5+(object@a4-object@a3)/6
       ));
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod value
-setMethod(
-   f="value",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      return(sum(alphaInterval(object)));
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod ambiguity
-setMethod(
-   f="ambiguity",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      return(diff(alphaInterval(object)));
    }
 );

@@ -152,12 +152,12 @@ setMethod(
 setMethod(
    f="expectedInterval",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
       if (is.na(object@lower(0))) return(c(NA, NA));
       
-      el <- object@a1+(object@a2-object@a1)*integrate(object@lower, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-      eu <- object@a3+(object@a4-object@a3)*integrate(object@upper, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
+      el <- object@a1+(object@a2-object@a1)*integrate(object@lower, 0, 1, ...)$value;
+      eu <- object@a3+(object@a4-object@a3)*integrate(object@upper, 0, 1, ...)$value;
       
       return(c(el, eu));         
    }
@@ -171,9 +171,9 @@ setMethod(
 setMethod(
    f="expectedValue",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
-      return(mean(expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
+      return(mean(expectedInterval(object, ...)));
    }
 );
 
@@ -185,9 +185,9 @@ setMethod(
 setMethod(
    f="weightedExpectedValue",
    signature(object="FuzzyNumber", w="numeric"),
-   definition=function(object, w, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, w, ...)
    {
-      EI <- expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol);
+      EI <- expectedInterval(object, ...);
       return((1-w)*EI[1] + w*EI[2]);
    }
 );
@@ -199,9 +199,9 @@ setMethod(
 setMethod(
    f="width",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
-      return(diff(expectedInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
+      return(diff(expectedInterval(object, ...)));
    }
 );
 
@@ -212,17 +212,17 @@ setMethod(
 setMethod(
    f="alphaInterval",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
       if (is.na(object@lower(0))) return(c(NA, NA));
 
       return(c(
          integrate(function(x) {
             x*(object@a1+(object@a2-object@a1)*object@lower(x))
-         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value,
+         }, 0, 1, ...)$value,
          integrate(function(x) {
             x*(object@a3+(object@a4-object@a3)*object@upper(x))
-         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value
+         }, 0, 1, ...)$value
       ));
    }
 );
@@ -235,9 +235,9 @@ setMethod(
 setMethod(
    f="value",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
-      return(sum(alphaInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
+      return(sum(alphaInterval(object, ...)));
    }
 );
 
@@ -252,9 +252,9 @@ setMethod(
 setMethod(
    f="ambiguity",
    signature(object="FuzzyNumber"),
-   definition=function(object, subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object, ...)
    {
-      return(diff(alphaInterval(object, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)));
+      return(diff(alphaInterval(object, ...)));
    }
 );
 
@@ -265,8 +265,7 @@ setMethod(
 setMethod(
    f="distance",
    signature(object1="FuzzyNumber", object2="FuzzyNumber"),
-   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"),
-                       subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"), ...)
    {
       if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
       type = match.arg(type);
@@ -275,11 +274,11 @@ setMethod(
       {
          dL <- integrate(function(alpha) {
             (object1@a1+(object1@a2-object1@a1)*object1@lower(alpha) - object2@a1+(object2@a2-object2@a1)*object2@lower(alpha))^2
-         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value
+         }, 0, 1, ...)$value
          
          dU <- integrate(function(alpha) {
             (object1@a3+(object1@a4-object1@a3)*object1@upper(alpha) - object2@a3+(object2@a4-object2@a3)*object2@upper(alpha))^2
-         }, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value
+         }, 0, 1, ...)$value
          
          if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
       } else

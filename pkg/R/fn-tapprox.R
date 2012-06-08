@@ -58,34 +58,33 @@ setMethod(
    f="trapezoidalApproximation",
    signature(object="FuzzyNumber"),
    definition=function(object, method=c("ExpectedIntervalPreserving", "SupportCoreRestricted", "Naive"),
-      intLower=NA, intUpper=NA, intAlphaTimesLower=NA, intAlphaTimesUpper=NA,
-      subdivisions=100, rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol)
+      expected.interval=NULL, alpha.interval=NULL, ...)
    {
       method <- match.arg(method);
       
       if (method == "Naive")
          return(TrapezoidalFuzzyNumber(object@a1, object@a2, object@a3, object@a4));
-      
-      if (is.na(intLower) && is.na(intAlphaTimesLower))
+
+      if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
       {
-         if (is.na(object@lower(0))) stop("Integral for lower alphacut bound cannot be computed");
-         
-         intLower <- integrate(object@lower, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-         intAlphaTimesLower <- integrate(function(alpha) object@lower(alpha)*alpha, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
+         if (is.na(object@lower(0)) || is.na(object@upper(0)))
+            stop("Integral of alphacut bounds cannot be computed");
+            
+         expected.interval <- expectedInterval(object, ...);
+      }
+
+      if (!is.numeric(alpha.interval) || length(alpha.interval) != 2 || any(!is.finite(alpha.interval)))
+      {
+         if (is.na(object@lower(0)) || is.na(object@upper(0)))
+            stop("Integral of alphacut bounds cannot be computed");
+
+         alpha.interval <- alphaInterval(object, ...);
       }
       
-      if (is.na(intUpper) && is.na(intAlphaTimesUpper))
-      {
-         if (is.na(object@lower(0))) stop("Integral for upper alphacut bound cannot be computed");
-         
-         intUpper <- integrate(object@upper, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-         intAlphaTimesUpper <- integrate(function(alpha) object@upper(alpha)*alpha, 0, 1, subdivisions=subdivisions, rel.tol=rel.tol, abs.tol=abs.tol)$value;
-      }    
-      
-      intLower <- object@a1+(object@a2-object@a1)*intLower;
-      intUpper <- object@a3+(object@a4-object@a3)*intUpper;
-      intAlphaTimesLower <- object@a1*0.5+(object@a2-object@a1)*intAlphaTimesLower;
-      intAlphaTimesUpper <- object@a3*0.5+(object@a4-object@a3)*intAlphaTimesUpper;
+      intLower <- expected.interval[1];
+      intUpper <- expected.interval[2];
+      intAlphaTimesLower <- alpha.interval[1];
+      intAlphaTimesUpper <- alpha.interval[2];
       
       if (method == "ExpectedIntervalPreserving")
       {

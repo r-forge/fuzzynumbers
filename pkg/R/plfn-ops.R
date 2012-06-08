@@ -23,7 +23,7 @@
 setMethod(
    f="expectedInterval",
    signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
+   definition=function(object, ...)
    {
       xl <- c(object@a1, object@knot.left,  object@a2);
       xr <- c(object@a3, object@knot.right, object@a4);
@@ -38,54 +38,13 @@ setMethod(
 );
 
 
-
-#' TO DO
-#'
-#' @exportMethod expectedValue
-setMethod(
-   f="expectedValue",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
-   {
-      return(mean(expectedInterval(object)));
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod weightedExpectedValue
-setMethod(
-   f="weightedExpectedValue",
-   signature(object="PiecewiseLinearFuzzyNumber", w="numeric"),
-   definition=function(object, w)
-   {
-      EI <- expectedInterval(object);
-      return((1-w)*EI[1] + w*EI[2]);
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod width
-setMethod(
-   f="width",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
-   {
-      return(diff(expectedInterval(A)));
-   }
-);
-
-
 #' TO DO
 #'
 #' @exportMethod value   
 setMethod(
    f="alphaInterval",
    signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
+   definition=function(object, ...)
    {
       xl <- c(object@a1, object@knot.left,  object@a2);
       xr <- c(object@a3, object@knot.right, object@a4);
@@ -100,34 +59,5 @@ setMethod(
          sum( diff(al^2)*(xl[-object@knot.n-2]-al[-object@knot.n-2]*dxl/dal)/2+diff(al^3)*dxl/dal/3 ),
         -sum( diff(ar^2)*(xr[-object@knot.n-2]-ar[-object@knot.n-2]*dxr/dar)/2+diff(ar^3)*dxr/dar/3 )
       ));
-   }
-);
-
-
-
-
-
-#' TO DO
-#'
-#' @exportMethod value
-setMethod(
-   f="value",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
-   {
-      return(sum(alphaInterval(object)));
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod ambiguity
-setMethod(
-   f="ambiguity",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object)
-   {
-      return(diff(alphaInterval(object)));
    }
 );
