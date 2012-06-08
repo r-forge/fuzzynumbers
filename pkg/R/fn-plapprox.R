@@ -44,6 +44,7 @@ setMethod(
       knot.n=1, knot.alpha=0.5,
 #       expected.interval=NULL, alpha.interval=NULL,
       optim.control=list(),
+#       optim.method=c("Nelder-Mead"),
       ...)
    {
       method <- match.arg(method);
@@ -59,6 +60,12 @@ setMethod(
       
       if (method == "Naive")
       {
+## ----------------------------------------------------------------------
+## ------------------------------------------------------ Naive ---------
+
+         # naive piecewise linear interpolation of points
+         # at given alpha-cuts, preserving original core and support
+         
          a <- alphacut(object, knot.alpha);
 
          if (knot.n > 1)
@@ -73,179 +80,178 @@ setMethod(
          
          return(PiecewiseLinearFuzzyNumber(object@a1, object@a2, object@a3, object@a4,
             knot.n=knot.n, knot.alpha=knot.alpha, knot.left=knot.left, knot.right=knot.right));
-      } else if (method == "ApproximateBestEuclidean")
+
+## ----------------------------------------------------- /Naive ---------
+## ----------------------------------------------------------------------
+      }
+
+
+      if (method == "ApproximateBestEuclidean")
       {
+## ----------------------------------------------------------------------
+## ----------------------------------- ApproximateBestEuclidean ---------
+
+
+         # Get the starting point ==> Naive approximator
          a <- alphacut(object, knot.alpha);
 
          if (knot.n > 1)
          {
-            start.left0  <- a[,1];
-            start.right0 <- rev(a[,2]);
+            start.left0  <- c(object@a1,     a[,1] , object@a2);
+            start.right0 <- c(object@a3, rev(a[,2]), object@a4);
          } else
          {
-            start.left0  <- a[1];
-            start.right0 <- a[2];
+            start.left0  <- c(object@a1, a[1], object@a2);
+            start.right0 <- c(object@a3, a[2], object@a4);
          }
 
-         res <- c(object@a1, start.left0, object@a2, object@a3, start.right0, object@a4);
+         alpha.left   <- c(0,knot.alpha,1);
+         alpha.right  <- c(1,rev(knot.alpha),0);
 
-         # reparametrize: (a1, DELTA)
-         res <- c(res[1], diff(res));
+         # First we try the "disjoint sides" version
 
-         target <- function(res, ...)
+         
+## ================== ApproximateBestEuclidean: PASS 1a: "disjoint" left optimizer
+
+         target.left <- function(res, ...)
             {
-               res <- cumsum(res);
-               distance(object,
-                  PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
-                     knot.n=knot.n, knot.alpha=knot.alpha,
-                     knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]),
-                  type="EuclideanSquared", ...);
+               if (any(diff(res) < 0)) return(NA);
+               left <- approxfun(alpha.left, res, method="linear");
+               integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
+                  },
+                  0, 1, ...)$value;  # Squared L2 - left
             }
 
-         optres <- optim(res, target, ...,
-            method="L-BFGS-B", lower=c(2*object@a1, rep(0, 2*knot.n+3)), control=optim.control);
+         optres <- optim(start.left0, target.left, ..., method="Nelder-Mead", control=optim.control);
+         if (optres$convergence == 1)
+            warning("Nelder-Mead algorithm have not converged [left side] (iteration limit reached)");
+         if (optres$convergence >  1)
+            warning(paste("Nelder-Mead algorithm have not converged [left side] (", optres$message, ")", sep=""));
+         res.left <- optres$par;
 
-         if (optres$convergence != 0)
-            warning(paste("L-BFGS-B algorithm have not converged (", optres$message, ")", sep=""));
-
-#          optres <- cma_es(res, target, ...,
-#             lower=c(2*object@a1, rep(0, 2*knot.n+3)));
-
-#          print(optres); # this may be printed in verbose mode
-
-         res <- optres$par;
-
-         # undo reparametrization:
-         res <- cumsum(res);
          
+## ================== ApproximateBestEuclidean: PASS 1b: "disjoint" right optimizer
+         
+         target.right <- function(res, ...)
+            {
+               if (any(diff(res) < 0)) return(NA);
+               right <- approxfun(alpha.right, res, method="linear");
+               integrate(function(alpha) 
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-right(alpha))^2
+                  },
+                  0, 1, ...)$value;   # Squared L2 - right
+            }
+
+
+         optres <- optim(start.right0, target.right, ..., method="Nelder-Mead", control=optim.control);
+         if (optres$convergence == 1)
+            warning("Nelder-Mead algorithm have not converged [right side] (iteration limit reached)");
+         if (optres$convergence >  1)
+            warning(paste("Nelder-Mead algorithm have not converged [right side] (", optres$message, ")", sep=""));
+         res.right <- optres$par;
+
+         
+## ================== ApproximateBestEuclidean: try left+right
+         
+         if (res.left[knot.n+2] <= res.right[1])
+         {
+            # the sides are disjoint => this is the "optimal" solution => FINISH
+            return(PiecewiseLinearFuzzyNumber(res.left[1], res.left[knot.n+2], res.right[1], res.right[knot.n+2],
+               knot.n=knot.n, knot.alpha=knot.alpha,
+               knot.left=res.left[-c(1,knot.n+2)], knot.right=res.right[-c(1,knot.n+2)]));
+         }
+
+
+         # All right, if we are here then we have to optimize on all knots altogether...
+         # print("DEBUG: not disjoint");
+
+## ================== ApproximateBestEuclidean: PASS 2: use both sides together
+            
+         target <- function(res, ...)
+            {
+               if (any(diff(res) < 0)) return(NA);
+
+               left <- approxfun(alpha.left, res[1:(knot.n+2)], method="linear");
+               d2l <- integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
+                  }, 0, 1, ...)$value;
+
+               right <- approxfun(alpha.right, res[-(1:(knot.n+2))], method="linear");
+               d2r <- integrate(function(alpha)
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-right(alpha))^2
+                  }, 0, 1, ...)$value;
+
+               return(d2l+d2r); # Squared L2
+            }
+
+         optres <- optim(c(start.left0, start.right0), target, ..., method="Nelder-Mead", control=optim.control);
+         if (optres$convergence == 1)
+            warning("Nelder-Mead algorithm have not converged (iteration limit reached)");
+         if (optres$convergence >  1)
+            warning(paste("Nelder-Mead algorithm have not converged (", optres$message, ")", sep=""));
+         res <- optres$par;
 
          return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
             knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
-      
-      } else if (method == "BestEuclidean")
+
+# ALTERNATIVE: The L-BFGS-B method (in reparametrized input space) - sometimes worse
+#          # reparametrize: (a1, DELTA)
+#          res <- c(res[1], diff(res));
+# 
+#          target <- function(res, ...)
+#             {
+#                res <- cumsum(res);
+#                distance(object,
+#                   PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+#                      knot.n=knot.n, knot.alpha=knot.alpha,
+#                      knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]),
+#                   type="EuclideanSquared", ...);
+#             }
+# 
+#          optres <- optim(res, target, ...,
+#             method="L-BFGS-B", lower=c(2*object@a1, rep(0, 2*knot.n+3)), control=optim.control);
+# 
+#          if (optres$convergence != 0)
+#             warning(paste("L-BFGS-B algorithm have not converged (", optres$message, ")", sep=""));
+# 
+#          optres <- cma_es(res, target, ..., # another try: CMA-ES (global optimizer, slow as hell)
+#             lower=c(2*object@a1, rep(0, 2*knot.n+3)));
+# 
+# #          print(optres); # this may be printed in verbose mode
+# 
+#          res <- optres$par;
+# 
+#          # undo reparametrization:
+#          res <- cumsum(res);
+         
+
+
+
+## ---------------------------------- /ApproximateBestEuclidean ---------
+## ----------------------------------------------------------------------
+      }
+
+
+      if (method == "BestEuclidean")
       {
+## ----------------------------------------------------------------------
+## ---------------------------------------------- BestEuclidean ---------
+
          # This exact method was proposed by Coroianu, Gagolewski, Grzegorzewski (submitted)
          
          if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1");
 
-         
+## --------------------------------------------- /BestEuclidean ---------
+## ----------------------------------------------------------------------
       }
 
-#       if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
-#       {
-#          if (is.na(object@lower(0)) || is.na(object@upper(0)))
-#             stop("Integral of alphacut bounds cannot be computed");
-#             
-#          expected.interval <- expectedInterval(object, ...);
-#       }
-# 
-#       if (!is.numeric(alpha.interval) || length(alpha.interval) != 2 || any(!is.finite(alpha.interval)))
-#       {
-#          if (is.na(object@lower(0)) || is.na(object@upper(0)))
-#             stop("Integral of alphacut bounds cannot be computed");
-# 
-#          alpha.interval <- alphaInterval(object, ...);
-#       }
-#       
-#       intLower <- expected.interval[1];
-#       intUpper <- expected.interval[2];
-#       intAlphaTimesLower <- alpha.interval[1];
-#       intAlphaTimesUpper <- alpha.interval[2];
-#       
-#       if (method == "ExpectedIntervalPreserving")
-#       {
-#          # Here we use the method given in (Grzegorzewski, 2010)
-#          
-#          if (intAlphaTimesUpper-intAlphaTimesLower >= (intUpper-intLower)/3 )
-#             # i.e. if ambiguity(A) >= width(A)/3
-#          {
-#             a1 <-  4*intLower-6*intAlphaTimesLower;
-#             a2 <- -2*intLower+6*intAlphaTimesLower;
-#             a3 <- -2*intUpper+6*intAlphaTimesUpper;
-#             a4 <-  4*intUpper-6*intAlphaTimesUpper;
-#          } else
-#          {
-#             Eval13 <- 2*intLower/3 +   intUpper/3; # Weighted Expected Value w=1/3
-#             Eval23 <-   intLower/3 + 2*intUpper/3; # Weighted Expected Value w=2/3
-#             Val <- intAlphaTimesLower + intAlphaTimesUpper; # Value
-#             
-#             if (Eval13 <= Val && Val <= Eval23)
-#             {
-#                a1 <-       3*intLower +   intUpper - 3*intAlphaTimesLower - 3*intAlphaTimesUpper;
-#                a2 <- a3 <-  -intLower -   intUpper + 3*intAlphaTimesLower + 3*intAlphaTimesUpper;
-#                a4 <-         intLower + 3*intUpper - 3*intAlphaTimesLower - 3*intAlphaTimesUpper;
-#             } else if (Val < Eval13)
-#             {
-#                a1 <- a2 <- a3 <- intLower;
-#                a4 <- 2*intUpper - intLower;
-#             } else
-#             {
-#                a1 <- 2*intLower - intUpper;
-#                a2 <- a3 <- a4 <- intUpper;
-#             }
-#          }
-#          
-#          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
-#          
-#       } else if (method == "SupportCoreRestricted")
-#       {
-#          # Here we use the method given in (Grzegorzewski, Pasternak-Winiarska, 2011)
-#       
-#          u1 <- 4*intLower - 6*intAlphaTimesLower;
-#          u2 <- 6*intAlphaTimesLower - 2*intLower;
-#          if (object@a2 > u2)
-#          {
-#             if (object@a1 < u1)
-#             {
-#                a1 <- u1;
-#                a2 <- u2;
-#             } else
-#             {
-#                a1 <- object@a1;
-#                a2 <- 2*intLower-object@a1;
-#             }
-#          } else
-#          {
-#             if (object@a1 < u1)
-#             {
-#                a1 <- 2*intLower-object@a2;
-#                a2 <- object@a2;
-#             } else
-#             {
-#                a1 <- object@a1;
-#                a2 <- object@a2;
-#             }
-#          }
-#          
-#          
-#          u3 <- 6*intAlphaTimesUpper - 2*intUpper;
-#          u4 <- 4*intUpper - 6*intAlphaTimesUpper;
-#          if (object@a4 > u4)
-#          {
-#             if (object@a3 < u3)
-#             {
-#                a3 <- u3;
-#                a4 <- u4;
-#             } else
-#             {
-#                a3 <- object@a3;
-#                a4 <- 2*intUpper-object@a3;
-#             }
-#          } else
-#          {
-#             if (object@a3 < u3)
-#             {
-#                a3 <- 2*intUpper-object@a4;
-#                a4 <- object@a4;
-#             } else
-#             {
-#                a3 <- object@a3;
-#                a4 <- object@a4;
-#             }
-#          }
-#          
-#          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
-#       }
+
+      # None shall pass here
    }
 );
 

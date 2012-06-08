@@ -61,9 +61,20 @@ setMethod(
       expected.interval=NULL, alpha.interval=NULL, ...)
    {
       method <- match.arg(method);
-      
+
       if (method == "Naive")
+      {
+## ----------------------------------------------------------------------
+## ------------------------------------------------------ Naive ---------
+
          return(TrapezoidalFuzzyNumber(object@a1, object@a2, object@a3, object@a4));
+         
+## ----------------------------------------------------- /Naive ---------
+## ----------------------------------------------------------------------
+      }
+
+
+      # calculate proper integrals
 
       if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
       {
@@ -85,9 +96,14 @@ setMethod(
       intUpper <- expected.interval[2];
       intAlphaTimesLower <- alpha.interval[1];
       intAlphaTimesUpper <- alpha.interval[2];
+
+      
       
       if (method == "ExpectedIntervalPreserving")
       {
+## ----------------------------------------------------------------------
+## --------------------------------- ExpectedIntervalPreserving ---------
+
          # Here we use the method given in (Grzegorzewski, 2010)
          
          if (intAlphaTimesUpper-intAlphaTimesLower >= (intUpper-intLower)/3 )
@@ -121,8 +137,16 @@ setMethod(
          
          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
          
-      } else if (method == "SupportCoreRestricted")
+## --------------------------------- /ExpectedIntervalPreserving --------
+## ---------------------------------------------------------------------- 
+      }
+
+
+      if (method == "SupportCoreRestricted")
       {
+## ----------------------------------------------------------------------
+## -------------------------------------- SupportCoreRestricted ---------
+
          # Here we use the method given in (Grzegorzewski, Pasternak-Winiarska, 2011)
       
          u1 <- 4*intLower - 6*intAlphaTimesLower;
@@ -179,7 +203,12 @@ setMethod(
          }
          
          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
+
+## ------------------------------------- /SupportCoreRestricted ---------
+## ----------------------------------------------------------------------
       }
+
+      # None shall pass here
    }
 );
 

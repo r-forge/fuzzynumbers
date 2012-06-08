@@ -77,6 +77,10 @@ setMethod(
       
       if (draw.alphacuts)
       {
+## -----------------------------------------------------------------------
+## ----------------------------------------------  draw.alphacuts --------
+
+         # prepare ylim, from, to
          if (is.null(from) || is.null(to))
          {
             ylim <-
@@ -106,13 +110,20 @@ setMethod(
             
          if (!drawX && !drawAlpha)
          {
-            matplot(NA, NA, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
-            rect(0, x@a1, 1, x@a2, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-            rect(1, x@a3, 0, x@a4, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+## ========================================= draw.alpha: shadowed FN
+            matplot(NA, NA, type=type,
+               xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim,
+               col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
+            rect(0, x@a1, 1, x@a2, density=shadowdensity,
+               col=shadowcol, angle=shadowangle, border=shadowborder);
+            rect(1, x@a3, 0, x@a4, density=shadowdensity,
+               col=shadowcol, angle=shadowangle, border=shadowborder);
+## ==================================================================
          } else
          {
             if (drawAlpha)
             {
+## ========================================= draw.alpha: from alpha cuts
                if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
                      any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
                {
@@ -123,39 +134,35 @@ setMethod(
                {
                   xvals1 <- numeric(0);
                   xvals2 <- numeric(0);
-                  alpha1 <- numeric(0);
-                  alpha2 <- numeric(0);
                } else if (length(at.alpha) == 1)
                {
                   xvals <- alphacut(x, at.alpha);
                   xvals1 <- xvals[1];
                   xvals2 <- rev(xvals[2]);
-                  alpha1 <- at.alpha;
-                  alpha2 <- at.alpha;
                } else
                {
                   xvals <- alphacut(x, at.alpha);
-
                   xvals1 <- xvals[,1];
                   xvals2 <- rev(xvals[,2]);
-                  alpha1 <- at.alpha;
-                  alpha2 <- rev(at.alpha);
                }
+               alpha1 <- at.alpha;
+               alpha2 <- rev(at.alpha);
+## =====================================================================
             } else
             {
+## ================================= draw.alpha: from sides
                if (n == 0)
                {
                   xvals1 <- numeric(0);
                   xvals2 <- numeric(0);
-                  alpha1 <- numeric(0);
-                  alpha2 <- numeric(0);
                } else
                {
                   xvals1 <- seq(x@a1, x@a2, length.out=n+2); xvals1 <- xvals1[-c(1,n+2)];
                   xvals2 <- seq(x@a3, x@a4, length.out=n+2); xvals2 <- xvals2[-c(1,n+2)];
-                  alpha1 <- evaluate(x, xvals1);
-                  alpha2 <- evaluate(x, xvals2);
                }
+               alpha1 <- evaluate(x, xvals1);
+               alpha2 <- evaluate(x, xvals2);
+## =========================================================               
             }
 
             draw.y1 <- c(x@a1, xvals1, x@a2);
@@ -163,13 +170,20 @@ setMethod(
             draw.y2 <- c(x@a3, xvals2, x@a4);
             draw.x2 <- c(1,    alpha2, 0);
 
+            # draw from sides or alpha-cuts
             matplot(cbind(draw.x1, draw.x2), cbind(draw.y1, draw.y2),
                     type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
                     lty=lty, pch=pch, lwd=lwd, add=add, ...);
 
+## ---------------------------------------------  /draw.alphacuts --------
+## -----------------------------------------------------------------------
          }         
       } else if (draw.membership.function)
       {
+## -----------------------------------------------------------------------
+## ------------------------------------  draw.membership.function --------
+
+         # prepare xlim, from, to
          if (is.null(from) || is.null(to))
          {
             xlim <-
@@ -200,15 +214,24 @@ setMethod(
       
          if (!drawX && !drawAlpha)
          {
-            matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
-            rect(x@a1, 0, x@a2, 1, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-            rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-            matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-            matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+## ================================= draw.membership.funtion: shadowed FN
+            matplot(c(from, x@a1), c(0,0), type=type,
+               xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim,
+               col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
+            rect(x@a1, 0, x@a2, 1, density=shadowdensity,
+               col=shadowcol, angle=shadowangle, border=shadowborder);
+            rect(x@a3, 1, x@a4, 0, density=shadowdensity,
+               col=shadowcol, angle=shadowangle, border=shadowborder);
+            matplot(c(x@a4, to),   c(0,0), type=type,
+               col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+            matplot(c(x@a2, x@a3), c(1,1), type=type,
+               col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+## =======================================================================               
          } else
          {         
             if (drawAlpha && (!drawX || !is.null(at.alpha)))
             {
+## ================================= draw.membership.funtion: from alpha cuts
                if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
                      any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
                {
@@ -237,8 +260,10 @@ setMethod(
                   alpha1 <- at.alpha;
                   alpha2 <- rev(at.alpha);
                }
+## ===========================================================================
             } else
             {
+## ================================= draw.membership.funtion: from sides
                if (n == 0)
                {
                   xvals1 <- numeric(0);
@@ -252,15 +277,19 @@ setMethod(
                   alpha1 <- evaluate(x, xvals1);
                   alpha2 <- evaluate(x, xvals2);
                }
+## =====================================================================
             }
 
             draw.x <- c(from, x@a1, xvals1, x@a2, x@a3, xvals2, x@a4, to);
             draw.y <- c(0,    0,    alpha1, 1,    1,    alpha2, 0,    0);
 
+            # draw from sides or alpha-cuts
             matplot(draw.x, draw.y,
                     type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
                     lty=lty, pch=pch, lwd=lwd, add=add, ...);
 
+## ------------------------------------ /draw.membership.function --------
+## -----------------------------------------------------------------------
          }
       }
    }
