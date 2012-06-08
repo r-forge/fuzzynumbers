@@ -19,6 +19,8 @@
 
 #' TO DO
 #'
+#' if \code{from} > \code{a1} then it is set to \code{a1}.....
+#'
 #' @examples
 #' plot(FuzzyNumber(0,1,2,3), col="gray")
 #' plot(FuzzyNumber(0,1,2,3, left=function(x) x^2, right=function(x) 1-x^3), add=TRUE)
@@ -29,12 +31,37 @@
 setMethod(
    f="plot",
    signature(x="FuzzyNumber", y="missing"),
-   definition=function(x, y, from=NULL, to=NULL, n=101,
-      at.alpha=NULL, type="l", xlab="x", ylab=expression(alpha),
-      xlim=NULL, ylim=c(0,1), col=1, lty=1, pch=1, lwd=1,
+   definition=function(x, y, from=NULL, to=NULL, n=101, at.alpha=NULL,
+      draw.membership.function=TRUE, draw.alphacuts=!draw.membership.function,
+      xlab=NULL, ylab=NULL, xlim=NULL, ylim=NULL,
+      type="l", col=1, lty=1, pch=1, lwd=1,
       shadowdensity=15, shadowangle=45, shadowcol=col, shadowborder=NULL,
       add=FALSE, ...)
    {
+      draw.membership.function <- identical(draw.membership.function, TRUE);
+      draw.alphacuts <- identical(draw.alphacuts, TRUE);
+      
+      if (!draw.membership.function && !draw.alphacuts)
+         stop("Provide `draw.alphacuts' or `draw.membership.function'");
+
+      if (!draw.alphacuts && (is.null(ylim) || !is.numeric(ylim) || length(ylim) != 2))
+         ylim <- c(0,1);
+
+      if ( draw.alphacuts && (is.null(xlim) || !is.numeric(xlim) || length(xlim) != 2))
+         xlim <- c(0,1);
+
+      if (!draw.alphacuts && is.null(xlab))
+         xlab <- "x";
+
+      if (!draw.alphacuts && is.null(ylab))
+         ylab <- expression(alpha);
+
+      if ( draw.alphacuts && is.null(xlab))
+         xlab <- expression(alpha);
+
+      if ( draw.alphacuts && is.null(ylab))
+         ylab <- "x";
+   
       drawX     <- !(is.na(x@left(0)));
       drawAlpha <- !(is.na(x@lower(0)));
       
@@ -48,84 +75,193 @@ setMethod(
 
       if (n <= 0) n <- 0;
       
-      if (is.null(from) || is.null(to))
+      if (draw.alphacuts)
       {
-         xlim <-
-            if (!is.null(xlim))
-            {
-               xlim;
-            } else if (add)
-            {
-               usr <- par("usr")[1L:2L]
-               if (par("xaxs") == "r") usr <- extendrange(usr, f = -1.0/27.0);
-               usr
-            } else
-            {
-               extendrange(c(x@a1, x@a4), f = 1.0/27.0); # core + epsilon
-            }
-         
-         if (is.null(from)) from <- xlim[1L];
-         if (is.null(to))   to <- xlim[2L];
-      } else if (is.null(xlim))
-      {
-         xlim <- c(from, to);  
-      }
-
-      if (from > x@a1) from <- x@a1;
-      if (to   < x@a4) to   <- x@a4;
-
-      if (!drawX && !drawAlpha)
-      {
-         matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
-         rect(x@a1, 0, x@a2, 1, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-         rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
-         matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-         matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-      } else
-      {   
-         if (drawAlpha && (!drawX || !is.null(at.alpha)))
+         if (is.null(from) || is.null(to))
          {
-            if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
-                  any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
-            {
-               at.alpha <- seq(1/(n+1),1-1/(n+1),length.out=n);
-            }
+            ylim <-
+               if (is.numeric(ylim) && length(ylim) == 2)
+               {
+                  ylim;
+               } else if (add)
+               {
+                  usr <- par("usr")[3L:4L]
+                  if (par("yaxs") == "r") usr <- extendrange(usr, f = -1.0/27.0);
+                  usr
+               } else
+               {
+                  extendrange(c(x@a1, x@a4), f = 1.0/27.0); # core + epsilon
+               }
 
-            if (length(at.alpha) == 0)
-            {
-               xvals1 <- numeric(0);
-               xvals2 <- numeric(0);
-               alpha1 <- numeric(0);
-               alpha2 <- numeric(0);
-            } else if (length(at.alpha) == 1)
-            {
-               xvals <- alphacut(x, at.alpha);
-               xvals1 <- xvals[1];
-               xvals2 <- rev(xvals[2]);
-               alpha1 <- at.alpha;
-               alpha2 <- at.alpha;
-            } else
-            {
-               xvals <- alphacut(x, at.alpha);
-
-               xvals1 <- xvals[,1];
-               xvals2 <- rev(xvals[,2]);
-               alpha1 <- at.alpha;
-               alpha2 <- rev(at.alpha);
-            }
-         } else
+            if (is.null(from)) from <- ylim[1L];
+            if (is.null(to))   to <- ylim[2L];
+         } else if (is.null(ylim))
          {
-            xvals1 <- seq(x@a1, x@a2, length.out=n+2); xvals1 <- xvals1[-c(1,n+2)];
-            xvals2 <- seq(x@a3, x@a4, length.out=n+2); xvals2 <- xvals2[-c(1,n+2)];
-            alpha1 <- evaluate(x, xvals1);
-            alpha2 <- evaluate(x, xvals2);
+            ylim <- c(from, to);
          }
 
-         matplot(c(from, x@a1, xvals1, x@a2, x@a3, xvals2, x@a4, to),
-                 c(0,    0,    alpha1, 1,    1,    alpha2, 0,    0),
-                 type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
-                 lty=lty, pch=pch, lwd=lwd, add=add, ...);
+         if (from > x@a1) from <- x@a1;
+         if (to   < x@a4) to   <- x@a4;
+         
+            
+         if (!drawX && !drawAlpha)
+         {
+            matplot(NA, NA, type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
+            rect(0, x@a1, 1, x@a2, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+            rect(1, x@a3, 0, x@a4, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+         } else
+         {
+            if (drawAlpha)
+            {
+               if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
+                     any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
+               {
+                  at.alpha <- seq(1/(n+1),1-1/(n+1),length.out=n);
+               }
 
+               if (length(at.alpha) == 0)
+               {
+                  xvals1 <- numeric(0);
+                  xvals2 <- numeric(0);
+                  alpha1 <- numeric(0);
+                  alpha2 <- numeric(0);
+               } else if (length(at.alpha) == 1)
+               {
+                  xvals <- alphacut(x, at.alpha);
+                  xvals1 <- xvals[1];
+                  xvals2 <- rev(xvals[2]);
+                  alpha1 <- at.alpha;
+                  alpha2 <- at.alpha;
+               } else
+               {
+                  xvals <- alphacut(x, at.alpha);
+
+                  xvals1 <- xvals[,1];
+                  xvals2 <- rev(xvals[,2]);
+                  alpha1 <- at.alpha;
+                  alpha2 <- rev(at.alpha);
+               }
+            } else
+            {
+               if (n == 0)
+               {
+                  xvals1 <- numeric(0);
+                  xvals2 <- numeric(0);
+                  alpha1 <- numeric(0);
+                  alpha2 <- numeric(0);
+               } else
+               {
+                  xvals1 <- seq(x@a1, x@a2, length.out=n+2); xvals1 <- xvals1[-c(1,n+2)];
+                  xvals2 <- seq(x@a3, x@a4, length.out=n+2); xvals2 <- xvals2[-c(1,n+2)];
+                  alpha1 <- evaluate(x, xvals1);
+                  alpha2 <- evaluate(x, xvals2);
+               }
+            }
+
+            draw.y1 <- c(x@a1, xvals1, x@a2);
+            draw.x1 <- c(0,    alpha1, 1);
+            draw.y2 <- c(x@a3, xvals2, x@a4);
+            draw.x2 <- c(1,    alpha2, 0);
+
+            matplot(cbind(draw.x1, draw.x2), cbind(draw.y1, draw.y2),
+                    type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
+                    lty=lty, pch=pch, lwd=lwd, add=add, ...);
+
+         }         
+      } else if (draw.membership.function)
+      {
+         if (is.null(from) || is.null(to))
+         {
+            xlim <-
+               if (is.numeric(xlim) && length(xlim) == 2)
+               {
+                  xlim;
+               } else if (add)
+               {
+                  usr <- par("usr")[1L:2L]
+                  if (par("xaxs") == "r") usr <- extendrange(usr, f = -1.0/27.0);
+                  usr
+               } else
+               {
+                  extendrange(c(x@a1, x@a4), f = 1.0/27.0); # core + epsilon
+               }
+
+            if (is.null(from)) from <- xlim[1L];
+            if (is.null(to))   to <- xlim[2L];
+         } else if (is.null(xlim))
+         {
+            xlim <- c(from, to);
+         }
+
+         if (from > x@a1) from <- x@a1;
+         if (to   < x@a4) to   <- x@a4;
+
+            
+      
+         if (!drawX && !drawAlpha)
+         {
+            matplot(c(from, x@a1), c(0,0), type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, add=add, ...);
+            rect(x@a1, 0, x@a2, 1, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+            rect(x@a3, 1, x@a4, 0, density=shadowdensity, col=shadowcol, angle=shadowangle, border=shadowborder);
+            matplot(c(x@a4, to),   c(0,0), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+            matplot(c(x@a2, x@a3), c(1,1), type=type, col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
+         } else
+         {         
+            if (drawAlpha && (!drawX || !is.null(at.alpha)))
+            {
+               if (!is.numeric(at.alpha) || is.unsorted(at.alpha) ||
+                     any(at.alpha <= 0 | at.alpha >= 1) || length(at.alpha) == 0)
+               {
+                  at.alpha <- seq(1/(n+1),1-1/(n+1),length.out=n);
+               }
+
+               if (length(at.alpha) == 0)
+               {
+                  xvals1 <- numeric(0);
+                  xvals2 <- numeric(0);
+                  alpha1 <- numeric(0);
+                  alpha2 <- numeric(0);
+               } else if (length(at.alpha) == 1)
+               {
+                  xvals <- alphacut(x, at.alpha);
+                  xvals1 <- xvals[1];
+                  xvals2 <- rev(xvals[2]);
+                  alpha1 <- at.alpha;
+                  alpha2 <- at.alpha;
+               } else
+               {
+                  xvals <- alphacut(x, at.alpha);
+
+                  xvals1 <- xvals[,1];
+                  xvals2 <- rev(xvals[,2]);
+                  alpha1 <- at.alpha;
+                  alpha2 <- rev(at.alpha);
+               }
+            } else
+            {
+               if (n == 0)
+               {
+                  xvals1 <- numeric(0);
+                  xvals2 <- numeric(0);
+                  alpha1 <- numeric(0);
+                  alpha2 <- numeric(0);
+               } else
+               {
+                  xvals1 <- seq(x@a1, x@a2, length.out=n+2); xvals1 <- xvals1[-c(1,n+2)];
+                  xvals2 <- seq(x@a3, x@a4, length.out=n+2); xvals2 <- xvals2[-c(1,n+2)];
+                  alpha1 <- evaluate(x, xvals1);
+                  alpha2 <- evaluate(x, xvals2);
+               }
+            }
+
+            draw.x <- c(from, x@a1, xvals1, x@a2, x@a3, xvals2, x@a4, to);
+            draw.y <- c(0,    0,    alpha1, 1,    1,    alpha2, 0,    0);
+
+            matplot(draw.x, draw.y,
+                    type=type, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim, col=col,
+                    lty=lty, pch=pch, lwd=lwd, add=add, ...);
+
+         }
       }
    }
 );

@@ -25,13 +25,17 @@
 setMethod(
    f="plot",
    signature(x="TrapezoidalFuzzyNumber", y="missing"),
-   definition=function(x, y, from=NULL, to=NULL, add=FALSE,
-      type="l", xlab="x", ylab=expression(alpha), xlim=NULL, ylim=c(0,1),
-      col=1, lty=1, pch=1, lwd=1, ...)
+   definition=function(x, y, from=NULL, to=NULL,
+      draw.membership.function=TRUE, draw.alphacuts=!draw.membership.function,
+      xlab=NULL, ylab=NULL, xlim=NULL, ylim=NULL,
+      type="l", col=1, lty=1, pch=1, lwd=1,
+      add=FALSE, ...)
    {
       callNextMethod(x, n=0, at.alpha=numeric(0),
-         from=from, to=to, add=add, type=type, xlab=xlab, ylab=ylab,
-         xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd, ...);
+         from=from, to=to, type=type, xlab=xlab, ylab=ylab,
+         xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd,
+         draw.membership.function=draw.membership.function,
+         draw.alphacuts=draw.alphacuts, add=add, ...);
    }
 );
    
