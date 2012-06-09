@@ -56,6 +56,7 @@ setClass(
          if (!is.finite(object@knot.right) || any(object@knot.right < object@a3 | object@knot.left > object@a4))
             return("`knot.right' should be a vector with elements in [a3,a4]");
 
+         if (any(diff(object@knot.alpha) <= 0)) return("`knot.alpha' should be sorted nondecreasingly and be unique");
          if (!is.finite(object@knot.alpha) || any(object@knot.alpha < 0 | object@knot.alpha > 1))
             return("`knot.alpha' should be a vector with elements in [0,1]");
       }
@@ -80,10 +81,10 @@ setMethod(
       al <- c(0,.Object@knot.alpha,1);
       ar <- c(1,rev(.Object@knot.alpha),0);
 
-      .Object@left  <- approxfun(kl, al, method="linear", yleft=NA, yright=NA);
-      .Object@right <- approxfun(kr, ar, method="linear", yleft=NA, yright=NA);
-      .Object@lower <- approxfun(al, kl, method="linear", yleft=NA, yright=NA);
-      .Object@upper <- approxfun(ar, kr, method="linear", yleft=NA, yright=NA);
+      .Object@left  <- approxfun(kl, al, method="linear", yleft=NA, yright=NA, ties="ordered"); # be careful for equal knot positions! (ties="ordered" solves that)
+      .Object@right <- approxfun(kr, ar, method="linear", yleft=NA, yright=NA, ties="ordered");
+      .Object@lower <- approxfun(al, kl, method="linear", yleft=NA, yright=NA); # no ties to specify - knot.alpha is unique
+      .Object@upper <- approxfun(ar, kr, method="linear", yleft=NA, yright=NA); # no ties to specify - knot.alpha is unique
 
       return(.Object);
    }
@@ -126,8 +127,8 @@ as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0
 {
    if (class(object) != "TrapezoidalFuzzyNumber") stop("`object' is not an instance of the TrapezoidalFuzzyNumber class");
 
-   left  <- approxfun(c(0,1), c(object@a1,object@a2), method="linear");
-   right <- approxfun(c(1,0), c(object@a3,object@a4), method="linear");
+   left  <- approxfun(c(0,1), c(object@a1,object@a2), method="linear");  # no ties to specify - knot.alpha is unique
+   right <- approxfun(c(1,0), c(object@a3,object@a4), method="linear");  # no ties to specify - knot.alpha is unique
 
    if (knot.n < 0) stop("`knot.n' should be >= 0");
    if (knot.n == 0) return(new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4));
@@ -165,8 +166,20 @@ setMethod(
       if (i == "knot.alpha") return(x@knot.alpha);
       if (i == "knot.left")  return(x@knot.left);
       if (i == "knot.right") return(x@knot.right);
-      if (i == "knots")      return(matrix(c(x@knot.alpha, x@knot.left, rev(x@knot.right)), ncol=3));
-      if (i == "allknots")   return(matrix(c(c(0,x@knot.alpha,1), c(x@a1, x@knot.left, x@a2), c(x@a4, rev(x@knot.right), x@a3)), ncol=3));
+      if (i == "knots")      return(matrix(c(x@knot.alpha, x@knot.left, rev(x@knot.right)),
+                                           ncol=3,
+                                           dimnames=list(
+                                              paste("knot_", 1:x@knot.n, sep=""),
+                                              c("alpha", "left", "right")
+                                           )
+                                    ));
+      if (i == "allknots")   return(matrix(c(0,x@knot.alpha,1,  x@a1, x@knot.left, x@a2, x@a4, rev(x@knot.right), x@a3),
+                                           ncol=3,
+                                           dimnames=list(
+                                              c("supp", paste("knot_", 1:x@knot.n, sep=""), "core"),
+                                              c("alpha", "left", "right")
+                                           )
+                                    ));
 
       if (i == "a1") return(x@a1);
       if (i == "a2") return(x@a2);

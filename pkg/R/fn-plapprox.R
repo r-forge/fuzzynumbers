@@ -118,7 +118,7 @@ setMethod(
          target.left <- function(res, ...)
             {
                if (any(diff(res) < 0)) return(NA);
-               left <- approxfun(alpha.left, res, method="linear");
+               left <- approxfun(alpha.left, res, method="linear");  # no ties to specify - knot.alpha is unique
                integrate(function(alpha)
                   {
                      (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
@@ -177,13 +177,13 @@ setMethod(
             {
                if (any(diff(res) < 0)) return(NA);
 
-               left <- approxfun(alpha.left, res[1:(knot.n+2)], method="linear");
+               left <- approxfun(alpha.left, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
                d2l <- integrate(function(alpha)
                   {
                      (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
                   }, 0, 1, ...)$value;
 
-               right <- approxfun(alpha.right, res[-(1:(knot.n+2))], method="linear");
+               right <- approxfun(alpha.right, res[-(1:(knot.n+2))], method="linear");  # no ties to specify - knot.alpha is unique
                d2r <- integrate(function(alpha)
                   {
                      (object@a3+(object@a4-object@a3)*object@upper(alpha)-right(alpha))^2
@@ -327,10 +327,40 @@ setMethod(
                knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
          }
 
-## ================== BestEuclidean: PASS 2: calculate with z!=0
+## ================== BestEuclidean: PASS 2: calculate with z!=0 (d[-1]<0-based)
+
+         Phi <- matrix(c(
+            2, -(knot.alpha-4)/2, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+            -(knot.alpha-4)/2, -(2*knot.alpha-6)/3, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+            -(knot.alpha-3)/2, -(knot.alpha-3)/2, -(knot.alpha-4)/3, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+            1, 1, 1, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+            (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (2*knot.alpha+1)/3, (knot.alpha)/2,
+            (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/3
+         ), nrow=6, ncol=6, byrow=TRUE);
+
+#          stopifnot(max(abs(Phi - solve(PhiInv))) < 1e-14);
+#          stopifnot(Phi == t(Phi));
+
+         try <- which(d[-1] < 0)+1;
+         Phi_try <- Phi;
+         Phi_try[,try] <- 0;
+         for (i in try) Phi_try[i,i] <- -1;
+         d <- solve(Phi_try, b);
+         d[try] <- 0;
+
+         if (all(d[-1] >= 0))
+         {  # We are done!
+            res <- cumsum(d);
+            return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+         }
+
+## ================== BestEuclidean: PASS 3: calculate with all possible combinations of z!=0
          
-         cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
-         cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
+#          cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
+#          cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
+
+         stop("this case is not yet implemented");
 
          return(NULL);
                   
