@@ -251,6 +251,89 @@ setMethod(
          
          if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1");
 
+
+         PhiInv <- matrix(c(
+
+               (knot.alpha+3)/knot.alpha, -(3*knot.alpha+3)/knot.alpha,                                3,                               -1,                                0,                           0,
+            -(3*knot.alpha+3)/knot.alpha,  (9*knot.alpha+3)/knot.alpha,                               -9,                                3,                                0,                           0,
+                                       3,                           -9, (9*knot.alpha-12)/(knot.alpha-1), -(3*knot.alpha-6)/(knot.alpha-1),                                0,                           0,
+                                      -1,                            3, -(3*knot.alpha-6)/(knot.alpha-1),  (2*knot.alpha-8)/(knot.alpha-1), -(3*knot.alpha-6)/(knot.alpha-1),                           3,
+                                       0,                            0,                                0, -(3*knot.alpha-6)/(knot.alpha-1), (9*knot.alpha-12)/(knot.alpha-1),                          -9,
+                                       0,                            0,                                0,                                3,                               -9, (9*knot.alpha+3)/knot.alpha
+
+         ), nrow=6, ncol=6, byrow=TRUE);
+
+#          print(PhiInv);
+#          print(solve(PhiInv));
+#          stopifnot(PhiInv == t(PhiInv));
+
+         v1 <- integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))
+                  }, 0, knot.alpha, ...)$val;
+
+         v3 <- integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))
+                  }, knot.alpha, 1, ...)$val;
+
+         v5 <- integrate(function(alpha)
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))
+                  }, 0, knot.alpha, ...)$val;
+
+         v7 <- integrate(function(alpha)
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))
+                  }, knot.alpha, 1, ...)$val;
+
+
+         v2 <- integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*(alpha/knot.alpha)
+                  }, 0, knot.alpha, ...)$val;
+
+         v4 <- integrate(function(alpha)
+                  {
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*((alpha-knot.alpha)/(1-knot.alpha))
+                  }, knot.alpha, 1, ...)$val;
+
+         v6 <- integrate(function(alpha)
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*((knot.alpha-alpha)/knot.alpha)
+                  }, 0, knot.alpha, ...)$val;
+
+         v8 <- integrate(function(alpha)
+                  {
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*((alpha-1)/(knot.alpha-1))
+                  }, knot.alpha, 1, ...)$val;
+
+         b <- c(v1+v3+v5+v7,
+                v2+v3+v5+v7,
+                   v4+v5+v7,
+                      v5+v7,
+                      v5+v8,
+                         v6
+                   );
+
+## ================== BestEuclidean: PASS 1: try with z==0
+
+         d <- PhiInv %*% b;
+
+         if (all(d[-1] >= 0))
+         {  # We are done!
+            res <- cumsum(d);
+            return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+         }
+
+## ================== BestEuclidean: PASS 2: calculate with z!=0
+         
+         cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
+         cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
+
+         return(NULL);
+                  
 ## --------------------------------------------- /BestEuclidean ---------
 ## ----------------------------------------------------------------------
       }

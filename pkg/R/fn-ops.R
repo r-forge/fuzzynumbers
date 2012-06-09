@@ -269,7 +269,7 @@ setMethod(
    {
       if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
       type = match.arg(type);
-      
+
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
          dL <- integrate(function(alpha) {

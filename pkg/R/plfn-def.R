@@ -165,6 +165,8 @@ setMethod(
       if (i == "knot.alpha") return(x@knot.alpha);
       if (i == "knot.left")  return(x@knot.left);
       if (i == "knot.right") return(x@knot.right);
+      if (i == "knots")      return(matrix(c(x@knot.alpha, x@knot.left, rev(x@knot.right)), ncol=3));
+      if (i == "allknots")   return(matrix(c(c(0,x@knot.alpha,1), c(x@a1, x@knot.left, x@a2), c(x@a4, rev(x@knot.right), x@a3)), ncol=3));
 
       if (i == "a1") return(x@a1);
       if (i == "a2") return(x@a2);
