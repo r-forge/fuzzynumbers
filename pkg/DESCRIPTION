@@ -14,10 +14,11 @@ Description: FuzzyNumbers is an open source (LGPL 3) package for R.
     in fuzzy numbers theory.
 Version: 0.01
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
-Date: 2012-05-31
+Date: 2012-06-09
 Depends:
     R (>= 2.15.0),
-    methods
+    methods,
+    bitops
 Collate:
     'fn-def.R'
     'fn-ops.R'
