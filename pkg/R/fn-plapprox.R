@@ -107,56 +107,56 @@ setMethod(
             start.right0 <- c(object@a3, a[2], object@a4);
          }
 
-         alpha.left   <- c(0,knot.alpha,1);
-         alpha.right  <- c(1,rev(knot.alpha),0);
+         alpha.lower   <- c(0,knot.alpha,1);
+         alpha.upper  <- c(1,rev(knot.alpha),0);
 
          # First we try the "disjoint sides" version
 
          
-## ================== ApproximateBestEuclidean: PASS 1a: "disjoint" left optimizer
+## ================== ApproximateBestEuclidean: PASS 1a: "disjoint" lower optimizer
 
-         target.left <- function(res, ...)
+         target.lower <- function(res, ...)
             {
                if (any(diff(res) < 0)) return(NA);
-               left <- approxfun(alpha.left, res, method="linear");  # no ties to specify - knot.alpha is unique
+               lower <- approxfun(alpha.lower, res, method="linear");  # no ties to specify - knot.alpha is unique
                integrate(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower(alpha))^2
                   },
-                  0, 1, ...)$value;  # Squared L2 - left
+                  0, 1, ...)$value;  # Squared L2 - lower
             }
 
-         optres <- optim(start.left0, target.left, ..., method="Nelder-Mead", control=optim.control);
+         optres <- optim(start.left0, target.lower, ..., method="Nelder-Mead", control=optim.control);
          if (optres$convergence == 1)
-            warning("Nelder-Mead algorithm have not converged [left side] (iteration limit reached)");
+            warning("Nelder-Mead algorithm have not converged [lower] (iteration limit reached)");
          if (optres$convergence >  1)
-            warning(paste("Nelder-Mead algorithm have not converged [left side] (", optres$message, ")", sep=""));
+            warning(paste("Nelder-Mead algorithm have not converged [lower] (", optres$message, ")", sep=""));
          res.left <- optres$par;
 
          
-## ================== ApproximateBestEuclidean: PASS 1b: "disjoint" right optimizer
+## ================== ApproximateBestEuclidean: PASS 1b: "disjoint" upper optimizer
          
-         target.right <- function(res, ...)
+         target.upper <- function(res, ...)
             {
                if (any(diff(res) < 0)) return(NA);
-               right <- approxfun(alpha.right, res, method="linear");
+               upper <- approxfun(alpha.upper, res, method="linear");
                integrate(function(alpha) 
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-right(alpha))^2
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper(alpha))^2
                   },
-                  0, 1, ...)$value;   # Squared L2 - right
+                  0, 1, ...)$value;   # Squared L2 - upper
             }
 
 
-         optres <- optim(start.right0, target.right, ..., method="Nelder-Mead", control=optim.control);
+         optres <- optim(start.right0, target.upper, ..., method="Nelder-Mead", control=optim.control);
          if (optres$convergence == 1)
-            warning("Nelder-Mead algorithm have not converged [right side] (iteration limit reached)");
+            warning("Nelder-Mead algorithm have not converged [upper] (iteration limit reached)");
          if (optres$convergence >  1)
-            warning(paste("Nelder-Mead algorithm have not converged [right side] (", optres$message, ")", sep=""));
+            warning(paste("Nelder-Mead algorithm have not converged [upper] (", optres$message, ")", sep=""));
          res.right <- optres$par;
 
          
-## ================== ApproximateBestEuclidean: try left+right
+## ================== ApproximateBestEuclidean: try lower+upper
          
          if (res.left[knot.n+2] <= res.right[1])
          {
@@ -177,16 +177,16 @@ setMethod(
             {
                if (any(diff(res) < 0)) return(NA);
 
-               left <- approxfun(alpha.left, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
+               lower <- approxfun(alpha.lower, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
                d2l <- integrate(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-left(alpha))^2
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower(alpha))^2
                   }, 0, 1, ...)$value;
 
-               right <- approxfun(alpha.right, res[-(1:(knot.n+2))], method="linear");  # no ties to specify - knot.alpha is unique
+               upper <- approxfun(alpha.upper, res[-(1:(knot.n+2))], method="linear");  # no ties to specify - knot.alpha is unique
                d2r <- integrate(function(alpha)
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-right(alpha))^2
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper(alpha))^2
                   }, 0, 1, ...)$value;
 
                return(d2l+d2r); # Squared L2
