@@ -108,7 +108,7 @@ setMethod(
             start.right0 <- c(object@a3, a[2], object@a4);
          }
 
-         alpha.lower   <- c(0,knot.alpha,1);
+         alpha.lower  <- c(0,knot.alpha,1);
          alpha.upper  <- c(1,rev(knot.alpha),0);
 
          # First we try the "disjoint sides" version
@@ -131,9 +131,9 @@ setMethod(
 
          optres <- optim(start.left0, target.lower, ..., method="Nelder-Mead", control=optim.control);
          if (optres$convergence == 1)
-            warning("Nelder-Mead algorithm have not converged [lower] (iteration limit reached)");
+            warning("Constrained Nelder-Mead algorithm have not converged [lower] (iteration limit reached)");
          if (optres$convergence >  1)
-            warning(paste("Nelder-Mead algorithm have not converged [lower] (", optres$message, ")", sep=""));
+            warning(paste("Constrained Nelder-Mead algorithm have not converged [lower] (", optres$message, ")", sep=""));
          res.left <- optres$par;
 
          
@@ -155,9 +155,9 @@ setMethod(
 
          optres <- optim(start.right0, target.upper, ..., method="Nelder-Mead", control=optim.control);
          if (optres$convergence == 1)
-            warning("Nelder-Mead algorithm have not converged [upper] (iteration limit reached)");
+            warning("Constrained Nelder-Mead algorithm have not converged [upper] (iteration limit reached)");
          if (optres$convergence >  1)
-            warning(paste("Nelder-Mead algorithm have not converged [upper] (", optres$message, ")", sep=""));
+            warning(paste("Constrained Nelder-Mead algorithm have not converged [upper] (", optres$message, ")", sep=""));
          res.right <- optres$par;
 
          
@@ -184,7 +184,7 @@ setMethod(
          
          target <- function(res, ...)
             {
-               if (any(diff(res) < 0)) return(NA);
+#                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
 
                lower <- approxfun(alpha.lower, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
                d2l <- integrate(function(alpha)
@@ -201,11 +201,28 @@ setMethod(
                return(d2l+d2r); # Squared L2
             }
 
-         optres <- optim(c(start.left0, start.right0), target, ..., method="Nelder-Mead", control=optim.control);
+         # constraints
+         ui <- matrix(0, nrow=2*(knot.n+2)-1, ncol=2*(knot.n+2));
+         for (i in 1:(2*(knot.n+2)-1))
+         {
+            ui[i,i]  <- -1;
+            ui[i,i+1] <- 1;
+         }
+         ci <- rep(0, 2*(knot.n+2)-1);
+
+         # ensure that the starting point is not on the constraint region boundary
+         start <- c(start.left0, start.right0);
+         diff_start <- diff(start)
+         diff_start[diff_start <= 0] <- start[length(start)]*1e-12;
+         start <- cumsum(c(start[1], diff_start));
+         
+         optres <- constrOptim(start, target, ci=ci, ui=ui,
+            method="Nelder-Mead", control=optim.control, ...);
+         
          if (optres$convergence == 1)
-            warning("Nelder-Mead algorithm have not converged (iteration limit reached)");
+            warning("Constrained Nelder-Mead algorithm have not converged (iteration limit reached)");
          if (optres$convergence >  1)
-            warning(paste("Nelder-Mead algorithm have not converged (", optres$message, ")", sep=""));
+            warning(paste("Constrained Nelder-Mead algorithm have not converged (", optres$message, ")", sep=""));
          res <- optres$par;
 
          
