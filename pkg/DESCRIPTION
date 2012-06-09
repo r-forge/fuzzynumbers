@@ -6,15 +6,14 @@ LazyData: true
 Title: Tools to deal with fuzzy numbers in R
 Type: Package
 Author: Marek Gagolewski <gagolews@ibspan.waw.pl>
-Description: FuzzyNumbers is an open source (LGPL 3) package for R.
-    It provides S4 classes and methods to deal with Fuzzy Numbers.
-    It may be used both by the practitioners (computations of many
-    operations on fuzzy numbers, approximation by trapezoidal and piecewise
-    linear fuzzy numbers, etc.) but also by the researchers
-    in fuzzy numbers theory.
+Description: The FuzzyNumbers package provides S4 classes and methods
+    to deal with Fuzzy Numbers (computations of operations on FNs,
+    approximation by trapezoidal and piecewise linear FNs, etc.).
+    It may be used by the practitioners as well as by
+    the researchers in FN theory.
 Version: 0.01
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
-Date: 2012-06-09
+Date: 2012-06-10
 Depends:
     R (>= 2.15.0),
     methods,
