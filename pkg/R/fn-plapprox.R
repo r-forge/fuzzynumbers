@@ -113,6 +113,15 @@ setMethod(
 
          # First we try the "disjoint sides" version
 
+         # constraints
+         ui <- matrix(0, nrow=(knot.n+2)-1, ncol=(knot.n+2));
+         for (i in 1:((knot.n+2)-1))
+         {
+            ui[i,i]  <- -1;
+            ui[i,i+1] <- 1;
+         }
+         ci <- rep(0, (knot.n+2)-1);
+
          
 ## ================== ApproximateBestEuclidean: PASS 1a: "disjoint" lower optimizer
 
@@ -120,7 +129,8 @@ setMethod(
 
          target.lower <- function(res, ...)
             {
-               if (any(diff(res) < 0)) return(NA);
+#                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
+
                lower <- approxfun(alpha.lower, res, method="linear");  # no ties to specify - knot.alpha is unique
                integrate(function(alpha)
                   {
@@ -129,7 +139,14 @@ setMethod(
                   0, 1, ...)$value;  # Squared L2 - lower
             }
 
-         optres <- optim(start.left0, target.lower, ..., method="Nelder-Mead", control=optim.control);
+         # ensure that the starting point is not on the constraint region boundary
+         start <- start.right0;
+         diff_start <- diff(start)
+         diff_start[diff_start <= 0] <- start[length(start)]*1e-12;
+         start <- cumsum(c(start[1], diff_start));
+            
+         optres <- constrOptim(start, target.lower, ci=ci, ui=ui,
+            method="Nelder-Mead", control=optim.control, ...);
          if (optres$convergence == 1)
             warning("Constrained Nelder-Mead algorithm have not converged [lower] (iteration limit reached)");
          if (optres$convergence >  1)
@@ -143,7 +160,8 @@ setMethod(
          
          target.upper <- function(res, ...)
             {
-               if (any(diff(res) < 0)) return(NA);
+#                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
+
                upper <- approxfun(alpha.upper, res, method="linear");
                integrate(function(alpha) 
                   {
@@ -152,8 +170,14 @@ setMethod(
                   0, 1, ...)$value;   # Squared L2 - upper
             }
 
+         # ensure that the starting point is not on the constraint region boundary
+         start <- start.right0;
+         diff_start <- diff(start)
+         diff_start[diff_start <= 0] <- start[length(start)]*1e-12;
+         start <- cumsum(c(start[1], diff_start));
 
-         optres <- optim(start.right0, target.upper, ..., method="Nelder-Mead", control=optim.control);
+         optres <- constrOptim(start, target.upper, ci=ci, ui=ui,
+            method="Nelder-Mead", control=optim.control, ...);
          if (optres$convergence == 1)
             warning("Constrained Nelder-Mead algorithm have not converged [upper] (iteration limit reached)");
          if (optres$convergence >  1)
