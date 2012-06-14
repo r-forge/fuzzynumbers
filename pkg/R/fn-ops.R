@@ -155,11 +155,11 @@ setMethod(
    definition=function(object, ...)
    {
       if (is.na(object@lower(0))) return(c(NA, NA));
-      
-      el <- object@a1+(object@a2-object@a1)*integrate(object@lower, 0, 1, ...)$value;
-      eu <- object@a3+(object@a4-object@a3)*integrate(object@upper, 0, 1, ...)$value;
-      
-      return(c(el, eu));         
+
+      return(c(
+         object@a1+(object@a2-object@a1)*integrate_discont_val(object@lower, 0, 1, discontinuities=object@discontinuities.lower, ...),
+         object@a3+(object@a4-object@a3)*integrate_discont_val(object@upper, 0, 1, discontinuities=object@discontinuities.upper, ...)
+      ));
    }
 );
 
@@ -217,12 +217,14 @@ setMethod(
       if (is.na(object@lower(0))) return(c(NA, NA));
 
       return(c(
-         integrate(function(x) {
-            x*(object@a1+(object@a2-object@a1)*object@lower(x))
-         }, 0, 1, ...)$value,
-         integrate(function(x) {
-            x*(object@a3+(object@a4-object@a3)*object@upper(x))
-         }, 0, 1, ...)$value
+         integrate_discont_val(
+            function(x) {
+               x*(object@a1+(object@a2-object@a1)*object@lower(x))
+            }, 0, 1, discontinuities=object@discontinuities.lower, ...),
+         integrate_discont_val(
+            function(x) {
+               x*(object@a3+(object@a4-object@a3)*object@upper(x))
+            }, 0, 1, discontinuities=object@discontinuities.upper, ...)
       ));
    }
 );
@@ -265,20 +267,29 @@ setMethod(
 setMethod(
    f="distance",
    signature(object1="FuzzyNumber", object2="FuzzyNumber"),
-   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"), ...)
+   definition=function(object1, object2, type=c("Euclidean", "EuclideanSquared"),
+      discontinuities.lower=numeric(0), discontinuities.upper=numeric(0), ...)
    {
       if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
       type = match.arg(type);
 
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
-         dL <- integrate(function(alpha) {
-            (object1@a1+(object1@a2-object1@a1)*object1@lower(alpha) - object2@a1-(object2@a2-object2@a1)*object2@lower(alpha))^2
-         }, 0, 1, ...)$value
+         discont_l <- c(object1@discontinuities.lower, object2@discontinuities.lower);
+         discont_l <- unique(sort(discont_l));
          
-         dU <- integrate(function(alpha) {
+         dL <- integrate_discont_val(function(alpha) {
+            (object1@a1+(object1@a2-object1@a1)*object1@lower(alpha) - object2@a1-(object2@a2-object2@a1)*object2@lower(alpha))^2
+         }, 0, 1, discontinuities=discont_l, ...);
+
+
+         discont_u <- c(object1@discontinuities.upper, object2@discontinuities.upper);
+         discont_u <- unique(sort(discont_u));
+         
+         dU <- integrate_discont_val(function(alpha) {
             (object1@a3+(object1@a4-object1@a3)*object1@upper(alpha) - object2@a3-(object2@a4-object2@a3)*object2@upper(alpha))^2
-         }, 0, 1, ...)$value
+         }, 0, 1, discontinuities=discont_u, ...);
+
          
          if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
       } else

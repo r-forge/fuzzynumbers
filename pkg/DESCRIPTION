@@ -31,3 +31,4 @@ Collate:
     'plfn-ops.R'
     'plfn-plot.R'
     'fn-plapprox.R'
+    'integrate2.R'

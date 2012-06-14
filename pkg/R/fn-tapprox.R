@@ -57,8 +57,11 @@ setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("tr
 setMethod(
    f="trapezoidalApproximation",
    signature(object="FuzzyNumber"),
-   definition=function(object, method=c("ExpectedIntervalPreserving", "SupportCoreRestricted", "Naive"),
-      expected.interval=NULL, alpha.interval=NULL, ...)
+   definition=function(
+      object,
+      method=c("ExpectedIntervalPreserving", "SupportCoreRestricted", "Naive"),
+#       expected.interval=NULL, alpha.interval=NULL,
+      ...)
    {
       method <- match.arg(method);
 
@@ -74,23 +77,28 @@ setMethod(
       }
 
 
-      # calculate proper integrals
+      # calculate proper integrals:
+      if (is.na(object@lower(0)) || is.na(object@upper(0)))
+         stop("Integral of alphacut bounds cannot be computed");
 
-      if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
-      {
-         if (is.na(object@lower(0)) || is.na(object@upper(0)))
-            stop("Integral of alphacut bounds cannot be computed");
-            
-         expected.interval <- expectedInterval(object, ...);
-      }
+      expected.interval <- expectedInterval(object, ...);
+      alpha.interval <- alphaInterval(object, ...);
+      
+#       if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
+#       {
+#       if (is.na(object@lower(0)) || is.na(object@upper(0)))
+#          stop("Integral of alphacut bounds cannot be computed");
 
-      if (!is.numeric(alpha.interval) || length(alpha.interval) != 2 || any(!is.finite(alpha.interval)))
-      {
-         if (is.na(object@lower(0)) || is.na(object@upper(0)))
-            stop("Integral of alphacut bounds cannot be computed");
+#       expected.interval <- expectedInterval(object, ...);
+#       }
 
-         alpha.interval <- alphaInterval(object, ...);
-      }
+#       if (!is.numeric(alpha.interval) || length(alpha.interval) != 2 || any(!is.finite(alpha.interval)))
+#       {
+#       if (is.na(object@lower(0)) || is.na(object@upper(0)))
+#          stop("Integral of alphacut bounds cannot be computed");
+
+#       alpha.interval <- alphaInterval(object, ...);
+#       }
       
       intLower <- expected.interval[1];
       intUpper <- expected.interval[2];

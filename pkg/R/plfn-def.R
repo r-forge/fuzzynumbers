@@ -189,6 +189,10 @@ setMethod(
       if (i == "right") return(x@right);
       if (i == "lower") return(x@lower);
       if (i == "upper") return(x@upper);
+      if (i == "discontinuities.left")  return(x@discontinuities.left);
+      if (i == "discontinuities.right") return(x@discontinuities.right);
+      if (i == "discontinuities.lower") return(x@discontinuities.lower);
+      if (i == "discontinuities.upper") return(x@discontinuities.upper);
 
 #     return(callNextMethod()); # does not work...
    }

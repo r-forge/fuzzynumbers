@@ -1,6 +1,7 @@
 export(as.FuzzyNumber)
 export(as.PiecewiseLinearFuzzyNumber)
 export(FuzzyNumber)
+export(integrate_discont_val)
 export(PiecewiseLinearFuzzyNumber)
 export(TrapezoidalFuzzyNumber)
 exportClasses(FuzzyNumber)

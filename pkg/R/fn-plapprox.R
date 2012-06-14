@@ -42,12 +42,14 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 setMethod(
    f="piecewiseLinearApproximation",
    signature(object="FuzzyNumber"),
-   definition=function(object, method=c("BestEuclidean","ApproximateBestEuclidean","Naive"),
-      knot.n=1, knot.alpha=0.5,
-#       expected.interval=NULL, alpha.interval=NULL,
+   definition=function(
+      object,
+      method=c("BestEuclidean","ApproximateBestEuclidean","Naive"),
+      knot.n=1,
+      knot.alpha=0.5,
       optim.control=list(),
-      verbose=FALSE,
 #       optim.method=c("Nelder-Mead"),
+      verbose=FALSE,
       ...)
    {
       method <- match.arg(method);
@@ -131,12 +133,12 @@ setMethod(
             {
 #                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
 
-               lower <- approxfun(alpha.lower, res, method="linear");  # no ties to specify - knot.alpha is unique
-               integrate(function(alpha)
+               lower2 <- approxfun(alpha.lower, res, method="linear");  # no ties to specify - knot.alpha is unique
+               integrate_discont_val(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower(alpha))^2
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower2(alpha))^2
                   },
-                  0, 1, ...)$value;  # Squared L2 - lower
+                  0, 1, discontinuities=object@discontinuities.lower, ...);  # Squared L2 - lower
             }
 
          # ensure that the starting point is not on the constraint region boundary
@@ -162,12 +164,12 @@ setMethod(
             {
 #                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
 
-               upper <- approxfun(alpha.upper, res, method="linear");
-               integrate(function(alpha) 
+               upper2 <- approxfun(alpha.upper, res, method="linear");
+               integrate_discont_val(function(alpha)
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper(alpha))^2
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper2(alpha))^2
                   },
-                  0, 1, ...)$value;   # Squared L2 - upper
+                  0, 1, discontinuities=object@discontinuities.upper, ...);   # Squared L2 - upper
             }
 
          # ensure that the starting point is not on the constraint region boundary
@@ -210,17 +212,17 @@ setMethod(
             {
 #                stopifnot(all(diff(res) >= 0)); # not needed, as we apply linear constraints below
 
-               lower <- approxfun(alpha.lower, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
-               d2l <- integrate(function(alpha)
+               lower2 <- approxfun(alpha.lower, res[1:(knot.n+2)], method="linear");  # no ties to specify - knot.alpha is unique
+               d2l <- integrate_discont_val(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower(alpha))^2
-                  }, 0, 1, ...)$value;
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha)-lower2(alpha))^2
+                  }, 0, 1, discontinuities=object@discontinuities.lower, ...);
 
-               upper <- approxfun(alpha.upper, res[-(1:(knot.n+2))], method="linear");  # no ties to specify - knot.alpha is unique
-               d2r <- integrate(function(alpha)
+               upper2 <- approxfun(alpha.upper, res[-(1:(knot.n+2))], method="linear");  # no ties to specify - knot.alpha is unique
+               d2r <- integrate_discont_val(function(alpha)
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper(alpha))^2
-                  }, 0, 1, ...)$value;
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha)-upper2(alpha))^2
+                  }, 0, 1, discontinuities=object@discontinuities.upper, ...);
 
                return(d2l+d2r); # Squared L2
             }
@@ -303,54 +305,61 @@ setMethod(
          if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1");
 
 
-         v1 <- integrate(function(alpha)
+         w1 <- integrate_discont_val(function(alpha)
                   {
                      (object@a1+(object@a2-object@a1)*object@lower(alpha))
-                  }, 0, knot.alpha, ...)$val;
+                  }, 0, knot.alpha, discontinuities=object@discontinuities.lower, ...);
 
-         v3 <- integrate(function(alpha)
+         w3 <- integrate_discont_val(function(alpha)
                   {
                      (object@a1+(object@a2-object@a1)*object@lower(alpha))
-                  }, knot.alpha, 1, ...)$val;
+                  }, knot.alpha, 1, discontinuities=object@discontinuities.lower, ...);
 
-         v5 <- integrate(function(alpha)
+         w5 <- integrate_discont_val(function(alpha)
                   {
                      (object@a3+(object@a4-object@a3)*object@upper(alpha))
-                  }, 0, knot.alpha, ...)$val;
+                  }, 0, knot.alpha, discontinuities=object@discontinuities.upper, ...);
 
-         v7 <- integrate(function(alpha)
+         w7 <- integrate_discont_val(function(alpha)
                   {
                      (object@a3+(object@a4-object@a3)*object@upper(alpha))
-                  }, knot.alpha, 1, ...)$val;
+                  }, knot.alpha, 1, discontinuities=object@discontinuities.upper, ...);
 
 
-         v2 <- integrate(function(alpha)
+         int2 <- integrate_discont_val(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*(alpha/knot.alpha)
-                  }, 0, knot.alpha, ...)$val;
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*alpha
+                  }, 0, knot.alpha, discontinuities=object@discontinuities.lower, ...);
 
-         v4 <- integrate(function(alpha)
+         int4 <- integrate_discont_val(function(alpha)
                   {
-                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*((alpha-knot.alpha)/(1-knot.alpha))
-                  }, knot.alpha, 1, ...)$val;
+                     (object@a1+(object@a2-object@a1)*object@lower(alpha))*alpha
+                  }, knot.alpha, 1, discontinuities=object@discontinuities.lower, ...);
 
-         v6 <- integrate(function(alpha)
+         int6 <- integrate_discont_val(function(alpha)
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*((knot.alpha-alpha)/knot.alpha)
-                  }, 0, knot.alpha, ...)$val;
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*alpha
+                  }, 0, knot.alpha, discontinuities=object@discontinuities.upper, ...);
 
-         v8 <- integrate(function(alpha)
+         int8 <- integrate_discont_val(function(alpha)
                   {
-                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*((alpha-1)/(knot.alpha-1))
-                  }, knot.alpha, 1, ...)$val;
+                     (object@a3+(object@a4-object@a3)*object@upper(alpha))*alpha
+                  }, knot.alpha, 1, discontinuities=object@discontinuities.upper, ...);
 
-         b <- c(v1+v3+v5+v7,
-                v2+v3+v5+v7,
-                   v4+v5+v7,
-                      v5+v7,
-                      v5+v8,
-                         v6
+         w2 <- int2/knot.alpha;
+         w4 <- (int4-knot.alpha*w3)/(1-knot.alpha);
+         w6 <- w5-int6/knot.alpha;
+         w8 <- (w7-int8)/(1-knot.alpha);
+                  
+         b <- c(w1+w3+w5+w7,
+                w2+w3+w5+w7,
+                   w4+w5+w7,
+                      w5+w7,
+                      w5+w8,
+                         w6
                    );
+
+
 
 ## ================== BestEuclidean: PASS 1: try with z==0
 
@@ -368,10 +377,16 @@ setMethod(
 #          print(solve(PhiInv));
 #          stopifnot(PhiInv == t(PhiInv));
 
+#          print(c(v1,v2,v3,v4,v5,v6,v7,v8));
+#          print(b)
+
 
          # try to find solution assuming z == 0
          if (verbose) cat(sprintf("Pass 1,"));
          d <- PhiInv %*% b;
+         
+#          print(PhiInv)
+#          print(d)
          
          if (all(d[-1] >= 0)) # d[-1] must be nonnegative to be a solution
          {  # We are done!
@@ -421,20 +436,27 @@ setMethod(
 
          iterations <- 3;
          if (verbose) cat(sprintf("3,"));
-         for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
+#          for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
+         for (i in 1L:31L)
          {
             # generate all 31 nonzero binary sequences of length 5
             # prefer those with 4 set to TRUE
             try <- (bitAnd(i,c(1L,2L,4L,8L,16L))!=0); 
-            try <- try[c(5L,2L,1L,3L,4L)];
+#             try <- try[c(5L,2L,1L,3L,4L)];
             try <- which(try)+1;
-            if (all(try == try_old)) next;
+            if (length(try) == length(try_old) && all(try == try_old)) next;
             
             Phi_try <- Phi;
             Phi_try[,try] <- 0;
             for (i in try) Phi_try[i,i] <- -1;
             
             d <- solve(Phi_try, b);
+
+            print(try)
+            print(Phi_try)
+            print(solve(Phi_try))
+            print(solve(Phi_try)%*%b)
+            print(d)
 
             if (all(d[-1] >= 0))
             {  # We are done!
@@ -448,7 +470,8 @@ setMethod(
             iterations <- iterations + 1;
          }
 
-         error("Could not find solution! This may be a bug. Please contact the author.");
+         warning(sprintf("Could not find solution for knot.alpha=%g!
+         This may be due to innacuracy of numerical integration.", knot.alpha));
          return(NULL);
                   
 ## --------------------------------------------- /BestEuclidean ---------
