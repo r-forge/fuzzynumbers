@@ -383,7 +383,7 @@ setMethod(
 
          # try to find solution assuming z == 0
          d <- PhiInv %*% b;
-         if (verbose) cat(sprintf("Pass  1: K={     }, d=(%s)\n", paste(sprintf("%6g", d), collapse=", ")));
+         if (verbose) cat(sprintf("Pass  1: K={     }, d=(%s)\n", paste(sprintf("%8.2g", d), collapse=", ")));
          
 #          print(PhiInv)
 #          print(d)
@@ -422,7 +422,7 @@ setMethod(
          d <- solve(Phi_try, b);
          if (verbose) cat(sprintf("Pass  2: K={%5s}, d=(%s)\n",
             paste(try,collapse=""),
-            paste(sprintf("%6g", d), collapse=", ")));
+            paste(sprintf("%8.2g", d), collapse=", ")));
 
          if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
          {  # We are done!
@@ -440,13 +440,12 @@ setMethod(
 
          iterations <- 3;
 
-#          for (i in 1L:31L)
-         for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
+         for (i in 1L:31L)
+#          for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
          {
             # generate all 31 nonzero binary sequences of length 5
-            # prefer those with 4 set to TRUE
             try <- (bitAnd(i,c(1L,2L,4L,8L,16L))!=0); 
-#             try <- try[c(5L,2L,1L,3L,4L)];
+#             try <- try[c(5L,2L,1L,3L,4L)];  # prefer those with 4 set to TRUE
             try <- which(try)+1;
             if (length(try) == length(try_old) && all(try == try_old)) next;
             
@@ -458,7 +457,7 @@ setMethod(
             if (verbose) cat(sprintf("Pass %2g: K={%5s}, d=(%s)\n",
                iterations,
                paste(try,collapse=""),
-               paste(sprintf("%6g", d), collapse=", ")));
+               paste(sprintf("%8.2g", d), collapse=", ")));
 
 #             print(try)
 #             print(Phi_try)
