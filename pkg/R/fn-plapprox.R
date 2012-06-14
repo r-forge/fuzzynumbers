@@ -32,11 +32,15 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 #' \item \code{Naive}:
 #' We have core(A)==core(T(A)) and supp(A)==supp(T(A)) and the knots are
 #' taken directly from the specified alpha cuts (linear interpolation).
+#' \item \code{BestEuclidean}: ....
+#'
+#' \item \code{ApproximateBestEuclidean}: ....
+#' 
 #' }
 #'
 #' @examples
 #' (A <- FuzzyNumber(-1,0,1,3,lower=function(x) sqrt(x),upper=function(x) 1-sqrt(x)))
-#' (PA <- piecewiseLinearApproximation(A, "Naive"))
+#' (PA <- piecewiseLinearApproximation(A, "BestEuclidean", knot.n=1, knot.alpha=0.2))
 #' 
 #' @exportMethod piecewiseLinearApproximation
 setMethod(
