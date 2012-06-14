@@ -130,24 +130,24 @@ setClass(
          return("Either all or none of `lower' and `upper' should return NA");
 
       if (length(object@discontinuities.left) > 1 &&
-            (!is.sorted(object@discontinuities.left) ||
-               any(object@discontinuities.left <= 0 | object@discontinuities.left >= 1)))
-         return("`discontinuities.left' should be an nondecreasingly sorted numeric vector with elements in (0,1)");
+            (is.unsorted(object@discontinuities.left) ||
+               any(object@discontinuities.left < 0 | object@discontinuities.left > 1)))
+         return("`discontinuities.left' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
 
       if (length(object@discontinuities.right) > 1 &&
-            (!is.sorted(object@discontinuities.right) ||
-               any(object@discontinuities.right <= 0 | object@discontinuities.right >= 1)))
-         return("`discontinuities.right' should be an nondecreasingly sorted numeric vector with elements in (0,1)");
+            (is.unsorted(object@discontinuities.right) ||
+               any(object@discontinuities.right < 0 | object@discontinuities.right >= 1)))
+         return("`discontinuities.right' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
 
       if (length(object@discontinuities.lower) > 1 &&
-            (!is.sorted(object@discontinuities.lower) ||
-               any(object@discontinuities.lower <= 0 | object@discontinuities.lower >= 1)))
-         return("`discontinuities.lower' should be an nondecreasingly sorted numeric vector with elements in (0,1)");
+            (is.unsorted(object@discontinuities.lower) ||
+               any(object@discontinuities.lower < 0 | object@discontinuities.lower > 1)))
+         return("`discontinuities.lower' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
 
       if (length(object@discontinuities.upper) > 1 &&
-            (!is.sorted(object@discontinuities.upper) ||
-               any(object@discontinuities.upper <= 0 | object@discontinuities.upper >= 1)))
-         return("`discontinuities.upper' should be an nondecreasingly sorted numeric vector with elements in (0,1)");
+            (is.unsorted(object@discontinuities.upper) ||
+               any(object@discontinuities.upper < 0 | object@discontinuities.upper > 1)))
+         return("`discontinuities.upper' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
 
       # Everything is O.K.
       return(TRUE);

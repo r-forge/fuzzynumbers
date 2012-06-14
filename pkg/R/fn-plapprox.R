@@ -382,14 +382,15 @@ setMethod(
 
 
          # try to find solution assuming z == 0
-         if (verbose) cat(sprintf("Pass 1,"));
          d <- PhiInv %*% b;
+         if (verbose) cat(sprintf("Pass  1: K={     }, d=(%s)\n", paste(sprintf("%6g", d), collapse=", ")));
          
 #          print(PhiInv)
 #          print(d)
          
-         if (all(d[-1] >= 0)) # d[-1] must be nonnegative to be a solution
+         if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
          {  # We are done!
+            d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
             res <- cumsum(d);
             if (verbose) cat(sprintf("DONE.\n"));
             return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
@@ -418,11 +419,14 @@ setMethod(
          Phi_try[,try] <- 0;
          for (i in try) Phi_try[i,i] <- -1;
 
-         if (verbose) cat(sprintf("2,"));
          d <- solve(Phi_try, b);
+         if (verbose) cat(sprintf("Pass  2: K={%5s}, d=(%s)\n",
+            paste(try,collapse=""),
+            paste(sprintf("%6g", d), collapse=", ")));
 
-         if (all(d[-1] >= 0))
+         if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
          {  # We are done!
+            d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
             d[try] <- 0; # substitute z >= 0 for d == 0
             res <- cumsum(d);
             if (verbose) cat(sprintf("DONE.\n"));
@@ -435,9 +439,9 @@ setMethod(
 ## ================== BestEuclidean: PASS 3: calculate with all possible combinations of z!=0
 
          iterations <- 3;
-         if (verbose) cat(sprintf("3,"));
-#          for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
-         for (i in 1L:31L)
+
+#          for (i in 1L:31L)
+         for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
          {
             # generate all 31 nonzero binary sequences of length 5
             # prefer those with 4 set to TRUE
@@ -451,6 +455,10 @@ setMethod(
             for (i in try) Phi_try[i,i] <- -1;
             
             d <- solve(Phi_try, b);
+            if (verbose) cat(sprintf("Pass %2g: K={%5s}, d=(%s)\n",
+               iterations,
+               paste(try,collapse=""),
+               paste(sprintf("%6g", d), collapse=", ")));
 
 #             print(try)
 #             print(Phi_try)
@@ -458,8 +466,9 @@ setMethod(
 #             print(solve(Phi_try)%*%b)
 #             print(d)
 
-            if (all(d[-1] >= 0))
+            if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
             {  # We are done!
+               d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
                d[try] <- 0; # substitute z >= 0 for d == 0
                res <- cumsum(d);
                if (verbose) cat(sprintf("DONE in %g iterations.\n", iterations));
