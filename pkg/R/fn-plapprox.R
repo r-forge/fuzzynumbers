@@ -452,11 +452,11 @@ setMethod(
             
             d <- solve(Phi_try, b);
 
-            print(try)
-            print(Phi_try)
-            print(solve(Phi_try))
-            print(solve(Phi_try)%*%b)
-            print(d)
+#             print(try)
+#             print(Phi_try)
+#             print(solve(Phi_try))
+#             print(solve(Phi_try)%*%b)
+#             print(d)
 
             if (all(d[-1] >= 0))
             {  # We are done!
