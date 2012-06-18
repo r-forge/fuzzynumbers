@@ -365,7 +365,6 @@ setMethod(
 
 
 
-## ================== BestEuclidean: PASS 1: try with z==0
 
          PhiInv <- matrix(c(
 
@@ -377,114 +376,165 @@ setMethod(
                                        0,                            0,                                0,                                3,                               -9, (9*knot.alpha+3)/knot.alpha
 
          ), nrow=6, ncol=6, byrow=TRUE);
-#          print(PhiInv);
-#          print(solve(PhiInv));
-#          stopifnot(PhiInv == t(PhiInv));
-
-#          print(c(v1,v2,v3,v4,v5,v6,v7,v8));
-#          print(b)
 
 
-         # try to find solution assuming z == 0
-         d <- PhiInv %*% b;
-         if (verbose) cat(sprintf("Pass  1: K={     }, d=(%s)\n", paste(sprintf("%8.2g", d), collapse=", ")));
-         
-#          print(PhiInv)
-#          print(d)
-         
-         if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
-         {  # We are done!
-            d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
-            res <- cumsum(d);
-            if (verbose) cat(sprintf("DONE.\n"));
-            return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
-               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
-         }
+         iter <- 1;
+         z <- rep(0, 6);
+         K <- rep(FALSE, 6);
+         d <- as.numeric(PhiInv %*% b);
+         m <- which.min(d[-1])+1;
+         EPS <- 1e-6;
 
-## ================== BestEuclidean: PASS 2: calculate with z!=0 (d[-1]<0-based)
-
-#          cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
-#          cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
-
-
-         Phi <- matrix(c(
-            2, -(knot.alpha-4)/2, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
-            -(knot.alpha-4)/2, -(2*knot.alpha-6)/3, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
-            -(knot.alpha-3)/2, -(knot.alpha-3)/2, -(knot.alpha-4)/3, 1, (knot.alpha+1)/2, (knot.alpha)/2,
-            1, 1, 1, 1, (knot.alpha+1)/2, (knot.alpha)/2,
-            (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (2*knot.alpha+1)/3, (knot.alpha)/2,
-            (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/3
-         ), nrow=6, ncol=6, byrow=TRUE);
-#          stopifnot(max(abs(Phi - solve(PhiInv))) < 1e-14);
-#          stopifnot(Phi == t(Phi));
-
-         try <- which(d[-1] < 0)+1;
-         Phi_try <- Phi;
-         Phi_try[,try] <- 0;
-         for (i in try) Phi_try[i,i] <- -1;
-
-         d <- solve(Phi_try, b);
-         if (verbose) cat(sprintf("Pass  2: K={%5s}, d=(%s)\n",
-            paste(try,collapse=""),
-            paste(sprintf("%8.2g", d), collapse=", ")));
-
-         if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
-         {  # We are done!
-            d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
-            d[try] <- 0; # substitute z >= 0 for d == 0
-            res <- cumsum(d);
-            if (verbose) cat(sprintf("DONE.\n"));
-            return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
-               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
-         }
-
-         try_old <- try;
-         
-## ================== BestEuclidean: PASS 3: calculate with all possible combinations of z!=0
-
-         iterations <- 3;
-
-         for (i in 1L:31L)
-#          for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
+         if (verbose)
          {
-            # generate all 31 nonzero binary sequences of length 5
-            try <- (bitAnd(i,c(1L,2L,4L,8L,16L))!=0); 
-#             try <- try[c(5L,2L,1L,3L,4L)];  # prefer those with 4 set to TRUE
-            try <- which(try)+1;
-            if (length(try) == length(try_old) && all(try == try_old)) next;
-            
-            Phi_try <- Phi;
-            Phi_try[,try] <- 0;
-            for (i in try) Phi_try[i,i] <- -1;
-            
-            d <- solve(Phi_try, b);
-            if (verbose) cat(sprintf("Pass %2g: K={%5s}, d=(%s)\n",
-               iterations,
-               paste(try,collapse=""),
-               paste(sprintf("%8.2g", d), collapse=", ")));
+            cat(sprintf("Pass  %g: K={%5s}, d=(%s)\n                    z=(%s)\n",
+               iter,  paste(as.numeric(which(K)),collapse=""),
+               paste(sprintf("%8.2g", d), collapse=", "),
+               paste(sprintf("%8.2g", z), collapse=", ")));
+         }         
+                  
+         while(d[m] < -EPS)
+         {
+            K[m] <- TRUE;
 
-#             print(try)
-#             print(Phi_try)
-#             print(solve(Phi_try))
-#             print(solve(Phi_try)%*%b)
-#             print(d)
+#             z <- rep(0, 6); # for better accuracy?
+#             d <- as.numeric(PhiInv %*% b);  # for better accuracy?
+            
+            deltaz <- rep(0.0, 6);
+            deltaz[K] <- as.numeric(solve(PhiInv[K,K], -d[K], tol=.Machine$double.eps));
+            stopifnot(deltaz[K] > -EPS);
 
-            if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
-            {  # We are done!
-               d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
-               d[try] <- 0; # substitute z >= 0 for d == 0
-               res <- cumsum(d);
-               if (verbose) cat(sprintf("DONE in %g iterations.\n", iterations));
-               return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
-                  knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+            z <- z+deltaz;
+
+#             for (k in which(K))
+#                d <- d+PhiInv[k,]*deltaz[k];
+            d <- as.numeric(PhiInv%*%(b+z))
+
+            m <- which.min(d[-1])+1;
+            iter <- iter+1;
+
+            stopifnot(all(z>=0));
+            stopifnot(all(abs(d[K]) < EPS));
+            d[K] <- 0.0; # for better accuracy
+            
+            if (verbose)
+            {
+               cat(sprintf("Pass  %g: K={%5s}, d=(%s)\n                    z=(%s)\n",
+                  iter,  paste(as.numeric(which(K)),collapse=""),
+                  paste(sprintf("%8.2g", d), collapse=", "),
+                  paste(sprintf("%8.2g", z), collapse=", ")));
             }
-
-            iterations <- iterations + 1;
          }
 
-         warning(sprintf("Could not find solution for knot.alpha=%g!
-         This may be due to innacuracy of numerical integration.", knot.alpha));
-         return(NULL);
+         d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
+         res <- cumsum(d);
+         return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+
+
+# ## ================== OLD BestEuclidean: PASS 1: try with z==0
+# 
+# 
+#          # try to find solution assuming z == 0
+#          d <- PhiInv %*% b;
+#          if (verbose) cat(sprintf("Pass  1: K={     }, d=(%s)\n", paste(sprintf("%8.2g", d), collapse=", ")));
+#          
+# #          print(PhiInv)
+# #          print(d)
+#          
+#          if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
+#          {  # We are done!
+#             d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
+#             res <- cumsum(d);
+#             if (verbose) cat(sprintf("DONE.\n"));
+#             return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+#                knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+#          }
+# 
+# ## ================== OLD BestEuclidean: PASS 2: calculate with z!=0 (d[-1]<0-based)
+# 
+# #          cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
+# #          cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
+# 
+# 
+#          Phi <- matrix(c(
+#             2, -(knot.alpha-4)/2, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+#             -(knot.alpha-4)/2, -(2*knot.alpha-6)/3, -(knot.alpha-3)/2, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+#             -(knot.alpha-3)/2, -(knot.alpha-3)/2, -(knot.alpha-4)/3, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+#             1, 1, 1, 1, (knot.alpha+1)/2, (knot.alpha)/2,
+#             (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (knot.alpha+1)/2, (2*knot.alpha+1)/3, (knot.alpha)/2,
+#             (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/2, (knot.alpha)/3
+#          ), nrow=6, ncol=6, byrow=TRUE);
+# #          stopifnot(max(abs(Phi - solve(PhiInv))) < 1e-14);
+# #          stopifnot(Phi == t(Phi));
+# 
+#          try <- which(d[-1] < 0)+1;
+#          Phi_try <- Phi;
+#          Phi_try[,try] <- 0;
+#          for (i in try) Phi_try[i,i] <- -1;
+# 
+#          d <- solve(Phi_try, b);
+#          if (verbose) cat(sprintf("Pass  2: K={%5s}, d=(%s)\n",
+#             paste(try,collapse=""),
+#             paste(sprintf("%8.2g", d), collapse=", ")));
+# 
+#          if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
+#          {  # We are done!
+#             d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
+#             d[try] <- 0; # substitute z >= 0 for d == 0
+#             res <- cumsum(d);
+#             if (verbose) cat(sprintf("DONE.\n"));
+#             return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+#                knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+#          }
+# 
+#          try_old <- try;
+#          
+# ## ================== OLD BestEuclidean: PASS 3: calculate with all possible combinations of z!=0
+# 
+#          iterations <- 3;
+# 
+#          for (i in 1L:31L)
+# #          for (i in c(seq.int(1L,31L,by=2),seq.int(2L,31L,by=2)))
+#          {
+#             # generate all 31 nonzero binary sequences of length 5
+#             try <- (bitAnd(i,c(1L,2L,4L,8L,16L))!=0); 
+# #             try <- try[c(5L,2L,1L,3L,4L)];  # prefer those with 4 set to TRUE
+#             try <- which(try)+1;
+#             if (length(try) == length(try_old) && all(try == try_old)) next;
+#             
+#             Phi_try <- Phi;
+#             Phi_try[,try] <- 0;
+#             for (i in try) Phi_try[i,i] <- -1;
+#             
+#             d <- solve(Phi_try, b);
+#             if (verbose) cat(sprintf("Pass %2g: K={%5s}, d=(%s)\n",
+#                iterations,
+#                paste(try,collapse=""),
+#                paste(sprintf("%8.2g", d), collapse=", ")));
+# 
+# #             print(try)
+# #             print(Phi_try)
+# #             print(solve(Phi_try))
+# #             print(solve(Phi_try)%*%b)
+# #             print(d)
+# 
+#             if (all(d[-1] >= -.Machine$double.eps)) # allow a small numeric EPS-error
+#             {  # We are done!
+#                d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
+#                d[try] <- 0; # substitute z >= 0 for d == 0
+#                res <- cumsum(d);
+#                if (verbose) cat(sprintf("DONE in %g iterations.\n", iterations));
+#                return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
+#                   knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+#             }
+# 
+#             iterations <- iterations + 1;
+#          }
+# 
+#          warning(sprintf("Could not find solution for knot.alpha=%g!
+#          This may be due to innacuracy of numerical integration.", knot.alpha));
+#          return(NULL);
                   
 ## --------------------------------------------- /BestEuclidean ---------
 ## ----------------------------------------------------------------------
