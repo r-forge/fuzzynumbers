@@ -61,21 +61,13 @@ setClass(
       lower="function",
       upper="function",
       left="function",
-      right="function",
-      discontinuities.left ="numeric",
-      discontinuities.right="numeric",
-      discontinuities.lower="numeric",
-      discontinuities.upper="numeric"
+      right="function"
    ),
    prototype=prototype(
       left=function(x) NA,
       right=function(x) NA,
       lower=function(alpha) NA,
-      upper=function(alpha) NA,
-      discontinuities.left =numeric(0),
-      discontinuities.right=numeric(0),
-      discontinuities.lower=numeric(0),
-      discontinuities.upper=numeric(0)
+      upper=function(alpha) NA
    ),   
    validity=function(object)
    {
@@ -129,26 +121,6 @@ setClass(
       if (is.na(object@upper(0)) != is.na(object@lower(0)))
          return("Either all or none of `lower' and `upper' should return NA");
 
-      if (length(object@discontinuities.left) > 1 &&
-            (is.unsorted(object@discontinuities.left) ||
-               any(object@discontinuities.left < 0 | object@discontinuities.left > 1)))
-         return("`discontinuities.left' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
-
-      if (length(object@discontinuities.right) > 1 &&
-            (is.unsorted(object@discontinuities.right) ||
-               any(object@discontinuities.right < 0 | object@discontinuities.right >= 1)))
-         return("`discontinuities.right' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
-
-      if (length(object@discontinuities.lower) > 1 &&
-            (is.unsorted(object@discontinuities.lower) ||
-               any(object@discontinuities.lower < 0 | object@discontinuities.lower > 1)))
-         return("`discontinuities.lower' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
-
-      if (length(object@discontinuities.upper) > 1 &&
-            (is.unsorted(object@discontinuities.upper) ||
-               any(object@discontinuities.upper < 0 | object@discontinuities.upper > 1)))
-         return("`discontinuities.upper' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
-
       # Everything is O.K.
       return(TRUE);
    }
@@ -168,25 +140,13 @@ setClass(
 #' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA
 #' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA
 #' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
-#' @param discontinuities.left  nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
-#' @param discontinuities.right nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
-#' @param discontinuities.lower nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
-#' @param discontinuities.upper nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(x) NA, upper=function(x) NA,
-   left=function(x)  NA, right=function(x) NA,
-   discontinuities.left =numeric(0),
-   discontinuities.right=numeric(0),
-   discontinuities.lower=numeric(0),
-   discontinuities.upper=numeric(0))
+   left=function(x)  NA, right=function(x) NA)
 {
    .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
-       lower=lower, upper=upper, left=left, right=right,
-       discontinuities.left =discontinuities.left,
-       discontinuities.right=discontinuities.right,
-       discontinuities.lower=discontinuities.lower,
-       discontinuities.upper=discontinuities.upper);
+       lower=lower, upper=upper, left=left, right=right);
    .Object;
 }
 
@@ -216,7 +176,7 @@ setMethod(
    signature(object="FuzzyNumber"),
    definition=function(object)
    {
-      cat(sprintf("Fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
+      cat(sprintf("Fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
                   object@a1, object@a4, object@a2, object@a3))
    }
 );
@@ -238,9 +198,5 @@ setMethod(
       if (i == "right") return(x@right);
       if (i == "lower") return(x@lower);
       if (i == "upper") return(x@upper);
-      if (i == "discontinuities.left")  return(x@discontinuities.left);
-      if (i == "discontinuities.right") return(x@discontinuities.right);
-      if (i == "discontinuities.lower") return(x@discontinuities.lower);
-      if (i == "discontinuities.upper") return(x@discontinuities.upper);
    }
 );

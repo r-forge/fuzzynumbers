@@ -35,7 +35,7 @@ setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("tr
 #' (Grzegorzewski, 2010; Ban, 2008; Yeh, 2008)
 #' Unfortunately, for highly skewed membership functions this approximation operator may have
 #' quite unfavourable behavior. E.g. if Val(A) < EV_{1/3}(A) or Val(A) > EV_{2/3}(A),
-#' then it may happen that the core of the output 
+#' then it may happen that the core of the output
 #' and the core of the original fuzzy number A are disjoint
 #' (cf. Grzegorzewski, Pasternak-Winiarska, 2011)
 #'
@@ -52,7 +52,7 @@ setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("tr
 #' (TA <- trapezoidalApproximation(A, "ExpectedIntervalPreserving")) # Note that cores are disjoint!
 #' expectedInterval(A)
 #' expectedInterval(TA)
-#' 
+#'
 #' @exportMethod trapezoidalApproximation
 setMethod(
    f="trapezoidalApproximation",
@@ -71,7 +71,7 @@ setMethod(
 ## ------------------------------------------------------ Naive ---------
 
          return(TrapezoidalFuzzyNumber(object@a1, object@a2, object@a3, object@a4));
-         
+
 ## ----------------------------------------------------- /Naive ---------
 ## ----------------------------------------------------------------------
       }
@@ -83,7 +83,7 @@ setMethod(
 
       expected.interval <- expectedInterval(object, ...);
       alpha.interval <- alphaInterval(object, ...);
-      
+
 #       if (!is.numeric(expected.interval) || length(expected.interval) != 2 || any(!is.finite(expected.interval)))
 #       {
 #       if (is.na(object@lower(0)) || is.na(object@upper(0)))
@@ -99,21 +99,21 @@ setMethod(
 
 #       alpha.interval <- alphaInterval(object, ...);
 #       }
-      
+
       intLower <- expected.interval[1];
       intUpper <- expected.interval[2];
       intAlphaTimesLower <- alpha.interval[1];
       intAlphaTimesUpper <- alpha.interval[2];
 
-      
-      
+
+
       if (method == "ExpectedIntervalPreserving")
       {
 ## ----------------------------------------------------------------------
 ## --------------------------------- ExpectedIntervalPreserving ---------
 
          # Here we use the method given in (Grzegorzewski, 2010)
-         
+
          if (intAlphaTimesUpper-intAlphaTimesLower >= (intUpper-intLower)/3 )
             # i.e. if ambiguity(A) >= width(A)/3
          {
@@ -126,7 +126,7 @@ setMethod(
             Eval13 <- 2*intLower/3 +   intUpper/3; # Weighted Expected Value w=1/3
             Eval23 <-   intLower/3 + 2*intUpper/3; # Weighted Expected Value w=2/3
             Val <- intAlphaTimesLower + intAlphaTimesUpper; # Value
-            
+
             if (Eval13 <= Val && Val <= Eval23)
             {
                a1 <-       3*intLower +   intUpper - 3*intAlphaTimesLower - 3*intAlphaTimesUpper;
@@ -142,11 +142,11 @@ setMethod(
                a2 <- a3 <- a4 <- intUpper;
             }
          }
-         
+
          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
-         
+
 ## --------------------------------- /ExpectedIntervalPreserving --------
-## ---------------------------------------------------------------------- 
+## ----------------------------------------------------------------------
       }
 
 
@@ -156,7 +156,7 @@ setMethod(
 ## -------------------------------------- SupportCoreRestricted ---------
 
          # Here we use the method given in (Grzegorzewski, Pasternak-Winiarska, 2011)
-      
+
          u1 <- 4*intLower - 6*intAlphaTimesLower;
          u2 <- 6*intAlphaTimesLower - 2*intLower;
          if (object@a2 > u2)
@@ -182,8 +182,8 @@ setMethod(
                a2 <- object@a2;
             }
          }
-         
-         
+
+
          u3 <- 6*intAlphaTimesUpper - 2*intUpper;
          u4 <- 4*intUpper - 6*intAlphaTimesUpper;
          if (object@a4 > u4)
@@ -209,7 +209,7 @@ setMethod(
                a4 <- object@a4;
             }
          }
-         
+
          return(TrapezoidalFuzzyNumber(a1, a2, a3, a4));
 
 ## ------------------------------------- /SupportCoreRestricted ---------

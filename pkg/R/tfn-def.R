@@ -60,7 +60,7 @@ setMethod(
    signature(object="TrapezoidalFuzzyNumber"),
    definition=function(object)
    {
-      cat(sprintf("Trapezoidal fuzzy number with support=[%g,%g] and core=[%g,%g].\n",
+      cat(sprintf("Trapezoidal fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
                   object@a1, object@a4, object@a2, object@a3))
    }
 );

@@ -148,7 +148,7 @@ setMethod(
    f="show",
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object) {
-      cat(sprintf("Piecewise linear fuzzy number with %g knot(s), support=[%g,%g] and core=[%g,%g].\n",
+      cat(sprintf("Piecewise linear fuzzy number with %g knot(s),\n   support=[%g,%g],\n      core=[%g,%g].\n",
                   object@knot.n, object@a1, object@a4, object@a2, object@a3));
    }
 );
@@ -189,10 +189,6 @@ setMethod(
       if (i == "right") return(x@right);
       if (i == "lower") return(x@lower);
       if (i == "upper") return(x@upper);
-      if (i == "discontinuities.left")  return(x@discontinuities.left);
-      if (i == "discontinuities.right") return(x@discontinuities.right);
-      if (i == "discontinuities.lower") return(x@discontinuities.lower);
-      if (i == "discontinuities.upper") return(x@discontinuities.upper);
 
 #     return(callNextMethod()); # does not work...
    }
