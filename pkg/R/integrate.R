@@ -27,7 +27,7 @@ setGeneric("integrateAlpha",
 
 #' @export
 integrate_discont_val <- function(f, from, to, discontinuities=numeric(0),
-   rel.tol = .Machine$double.eps^0.5, ...)
+   rel.tol = .Machine$double.eps^0.35, ...)
 
 {
    if (!is.numeric(discontinuities))
@@ -70,7 +70,7 @@ setMethod(
              from="numeric",       to="numeric"),
    definition=function(object, which=c("lower","upper"),
       from=0, to=1, weight=NULL, transform=NULL,
-      rel.tol = .Machine$double.eps^0.5, ...)
+      rel.tol = .Machine$double.eps^0.35, ...)
    {
       which <- match.arg(which);
 
@@ -142,7 +142,7 @@ setMethod(
              from="numeric",       to="numeric"),
    definition=function(object, which=c("lower","upper"),
       from=0, to=1, weight=NULL, transform=NULL,
-      rel.tol = .Machine$double.eps^0.5, ...)
+      rel.tol = .Machine$double.eps^0.35, ...)
    {
       which <- match.arg(which);
 

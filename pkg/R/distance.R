@@ -123,24 +123,26 @@ setMethod(
    signature(object1="FuzzyNumber", object2="FuzzyNumber"),
    definition=function(object1, object2,
       type=c("Euclidean", "EuclideanSquared"), ...,
-      rel.tol = .Machine$double.eps^0.4)
+      rel.tol = .Machine$double.eps^0.35)
    {
       if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
       type = match.arg(type);
 
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
-         d <- integrate(function(alpha) {
+         dL <- integrate(function(alpha) {
             (  object1@a1+(object1@a2-object1@a1)*object1@lower(alpha)
               -object2@a1-(object2@a2-object2@a1)*object2@lower(alpha)
             )^2
-          +
+         }, 0, 1, rel.tol=rel.tol, ...)$value;
+
+         dU <- integrate(function(alpha) {
             (  object1@a3+(object1@a4-object1@a3)*object1@upper(alpha)
               -object2@a3-(object2@a4-object2@a3)*object2@upper(alpha)
             )^2
          }, 0, 1, rel.tol=rel.tol, ...)$value;
 
-         if (type == "Euclidean") return (sqrt(d)) else return (d);
+         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
       } else
       {
          return(NA);
