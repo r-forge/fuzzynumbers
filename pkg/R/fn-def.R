@@ -68,11 +68,9 @@ setClass(
       right=function(x) NA,
       lower=function(alpha) NA,
       upper=function(alpha) NA
-   ),   
+   ),
    validity=function(object)
    {
-#       print("DEBUG: Validity call for FuzzyNumber");
-
       if (length(object@a1) != 1 || length(object@a2) != 1 ||
           length(object@a3) != 1 || length(object@a4) != 1 ||
           any(!is.finite(c(object@a1, object@a2, object@a3, object@a4))))
@@ -156,12 +154,13 @@ FuzzyNumber <- function(a1, a2, a3, a4,
 #' @export
 as.FuzzyNumber <- function(object)
 {
-   if (class(object) != "TrapezoidalFuzzyNumber"
-    && class(object) != "PiecewiseLinearFuzzyNumber")
-      stop("`object' is not an instance of the TrapezoidalFuzzyNumber or PiecewiseLinearFuzzyNumber class");
+   if (!inherits(object, "FuzzyNumber"))
+      stop("`object' does not inherit from the FuzzyNumber class");
 
-   .Object <- new("FuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
-         left=object@left, right=object@right, lower=object@lower, upper=object@upper);
+   .Object <- new("FuzzyNumber",
+         a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
+         left=object@left, right=object@right,
+         lower=object@lower, upper=object@upper);
    .Object;
 }
 
@@ -184,7 +183,7 @@ setMethod(
 
 #' TO DO
 #'
-#' @exportMethod [          
+#' @exportMethod [
 setMethod(
    f="[",
    signature=(x="FuzzyNumber"),

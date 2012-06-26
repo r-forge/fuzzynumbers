@@ -17,19 +17,20 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
-
 #' TO DO
 #'
 #' @exportMethod expectedInterval
 setMethod(
    f="expectedInterval",
-   signature(object="TrapezoidalFuzzyNumber"),
+   signature(object="PowerFuzzyNumber"),
    definition=function(object, ...)
    {
-      return(0.5*c((object@a2+object@a1), (object@a4+object@a3)));
+      return(c(
+         (object@a1+object@p.left*(object@a2-object@a1)/(object@p.left+1) ),
+         (object@a3+(object@a4-object@a3)/(object@p.right+1) )
+      ));
    }
 );
-
 
 
 #' TO DO
@@ -37,12 +38,12 @@ setMethod(
 #' @exportMethod value
 setMethod(
    f="alphaInterval",
-   signature(object="TrapezoidalFuzzyNumber"),
+   signature(object="PowerFuzzyNumber"),
    definition=function(object, ...)
    {
       return(c(
-         object@a1*0.5+(object@a2-object@a1)/3,
-         object@a3*0.5+(object@a4-object@a3)/6
+         (2*object@a2*object@p.left+object@a1)/(4*object@p.left+2),
+         (2*object@a3*object@p.right+object@a4)/(4*object@p.right+2)
       ));
    }
 );
