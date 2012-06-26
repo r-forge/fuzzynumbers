@@ -39,8 +39,6 @@ setClass(
    ),
    validity=function(object)
    {
-#       print("DEBUG: Validity call for PiecewiseLinearFuzzyNumber");
-      
       if (object@knot.n < 0) return("`knot.n' should be >= 0");
       if (object@knot.n != length(object@knot.alpha)) return("length of `knot.alpha' should be equal to `knot.n'");
       if (object@knot.n != length(object@knot.left))  return("length of `knot.left' should be equal to `knot.n'");
@@ -60,7 +58,7 @@ setClass(
          if (!is.finite(object@knot.alpha) || any(object@knot.alpha < 0 | object@knot.alpha > 1))
             return("`knot.alpha' should be a vector with elements in [0,1]");
       }
-      
+
       return(TRUE);
    },
    contains="FuzzyNumber"
@@ -72,7 +70,6 @@ setMethod(
    signature("PiecewiseLinearFuzzyNumber"),
    definition=function(.Object, ...)
    {
-#  print("DEBUG: Initialization call for PiecewiseLinearFuzzyNumber");
       .Object <- callNextMethod();
 
       kl <- c(0,(.Object@knot.left -.Object@a1)/(.Object@a2-.Object@a1),1);
@@ -81,10 +78,17 @@ setMethod(
       al <- c(0,.Object@knot.alpha,1);
       ar <- c(1,rev(.Object@knot.alpha),0);
 
-      .Object@left  <- approxfun(kl, al, method="linear", yleft=NA, yright=NA, ties="ordered"); # be careful for equal knot positions! (ties="ordered" solves that)
-      .Object@right <- approxfun(kr, ar, method="linear", yleft=NA, yright=NA, ties="ordered");
-      .Object@lower <- approxfun(al, kl, method="linear", yleft=NA, yright=NA); # no ties to specify - knot.alpha is unique
-      .Object@upper <- approxfun(ar, kr, method="linear", yleft=NA, yright=NA); # no ties to specify - knot.alpha is unique
+      # be careful for equal knot positions! (ties="ordered" solves that)
+      .Object@left  <- approxfun(kl, al, method="linear",
+         yleft=NA, yright=NA, ties="ordered");
+      .Object@right <- approxfun(kr, ar, method="linear",
+         yleft=NA, yright=NA, ties="ordered");
+
+      # no ties to specify - knot.alpha is unique
+      .Object@lower <- approxfun(al, kl, method="linear",
+         yleft=NA, yright=NA);
+      .Object@upper <- approxfun(ar, kr, method="linear",
+         yleft=NA, yright=NA);
 
       return(.Object);
    }
@@ -92,7 +96,7 @@ setMethod(
 
 
 #' Creates a piecewise linear fuzzy number
-#'   
+#'
 #' For convenience, objects of class \code{PiecewiseLinearFuzzyNumber}
 #' may be created with this function.
 #'
@@ -134,7 +138,7 @@ as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0
    if (knot.n == 0) return(new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4));
 
    if (knot.n != length(knot.alpha)) stop("length of `knot.alpha' should be equal to `knot.n'");
-   
+
    .Object <- new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
          knot.n=knot.n, knot.alpha=knot.alpha, knot.left=left(knot.alpha), knot.right=right(rev(knot.alpha)));
    .Object;
