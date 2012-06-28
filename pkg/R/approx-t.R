@@ -59,7 +59,7 @@ setMethod(
    signature(object="FuzzyNumber"),
    definition=function(
       object,
-      method=c("ExpectedIntervalPreserving", "SupportCoreRestricted", "Naive"),
+      method=c("NearestEuclidean", "ExpectedIntervalPreserving", "SupportCoreRestricted", "Naive"),
 #       expected.interval=NULL, alpha.interval=NULL,
       ...)
    {
@@ -105,7 +105,51 @@ setMethod(
       intAlphaTimesLower <- alpha.interval[1];
       intAlphaTimesUpper <- alpha.interval[2];
 
+      if (method == "NearestEuclidean")
+      {
+## ----------------------------------------------------------------------
+## -------------------------------------------- NearestEuclidean ---------
 
+         # Here we use the method given in (Ban, 2009)
+
+         if (intAlphaTimesUpper-intAlphaTimesLower >= (intUpper-intLower)/3 )
+            # i.e. if ambiguity(A) >= width(A)/3
+         { # (i)
+# print("DEBUG: Ban, 2009, case (i)");
+            d1    <-  2*intLower- 6*intAlphaTimesLower;
+            d2    <- -2*intUpper+ 6*intAlphaTimesUpper;
+            sigma <- -6*intLower+12*intAlphaTimesLower;
+            beta  <-  6*intUpper-12*intAlphaTimesUpper;
+         } else
+         if (-intLower+3*intAlphaTimesLower-3*intUpper+5*intAlphaTimesUpper > 0)
+         { # (iii)
+# print("DEBUG: Ban, 2009, case (iii)");
+            d1    <-   2*intLower/5- 6*intAlphaTimesLower/5-4*intUpper/5;
+            d2    <- -d1;
+            sigma <- -18*intLower/5+24*intAlphaTimesLower/5+6*intUpper/5;
+            beta  <-  0;
+         } else
+         if (3*intLower-5*intAlphaTimesLower+intUpper-3*intAlphaTimesUpper > 0)
+         { # (iv)
+# print("DEBUG: Ban, 2009, case (iv)");
+            d1    <- -4*intLower/5+ 2*intUpper/5- 6*intAlphaTimesUpper/5;
+            d2    <- -d1;
+            sigma <-  0;
+            beta  <- -6*intLower/5+18*intUpper/5-24*intAlphaTimesUpper/5;
+         } else
+         { # (ii)
+# print("DEBUG: Ban, 2009, case (ii)");
+            d1    <-    intLower-   3*intAlphaTimesLower+    intUpper-   3*intAlphaTimesUpper;
+            d2    <- -d1;
+            sigma <- -9*intLower/2+15*intAlphaTimesLower/2-3*intUpper/2+ 9*intAlphaTimesUpper/2;
+            beta  <-  3*intLower/2- 9*intAlphaTimesLower/2+9*intUpper/2-15*intAlphaTimesUpper/2;
+         }
+
+         return(TrapezoidalFuzzyNumber(-d1-sigma, -d1, d2, d2+beta));
+
+## ------------------------------------------- /NearestEuclidean --------
+## ----------------------------------------------------------------------
+      }
 
       if (method == "ExpectedIntervalPreserving")
       {

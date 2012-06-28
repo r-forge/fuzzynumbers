@@ -32,15 +32,15 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 #' \item \code{Naive}:
 #' We have core(A)==core(T(A)) and supp(A)==supp(T(A)) and the knots are
 #' taken directly from the specified alpha cuts (linear interpolation).
-#' \item \code{BestEuclidean}: ....
+#' \item \code{NearestEuclidean}: ....
 #'
-#' \item \code{ApproximateBestEuclidean}: ....
+#' \item \code{ApproximateNearestEuclidean}: ....
 #'
 #' }
 #'
 #' @examples
 #' (A <- FuzzyNumber(-1,0,1,3,lower=function(x) sqrt(x),upper=function(x) 1-sqrt(x)))
-#' (PA <- piecewiseLinearApproximation(A, "BestEuclidean", knot.n=1, knot.alpha=0.2))
+#' (PA <- piecewiseLinearApproximation(A, "NearestEuclidean", knot.n=1, knot.alpha=0.2))
 #'
 #' @exportMethod piecewiseLinearApproximation
 setMethod(
@@ -48,7 +48,7 @@ setMethod(
    signature(object="FuzzyNumber"),
    definition=function(
       object,
-      method=c("BestEuclidean","ApproximateBestEuclidean","Naive"),
+      method=c("NearestEuclidean","ApproximateNearestEuclidean","Naive"),
       knot.n=1,
       knot.alpha=0.5,
       optim.control=list(),
@@ -95,10 +95,10 @@ setMethod(
       }
 
 
-      if (method == "ApproximateBestEuclidean")
+      if (method == "ApproximateNearestEuclidean")
       {
 ## ----------------------------------------------------------------------
-## ----------------------------------- ApproximateBestEuclidean ---------
+## ----------------------------------- ApproximateNearestEuclidean ---------
 
 
          # Get the starting point ==> Naive approximator
@@ -129,7 +129,7 @@ setMethod(
          ci <- rep(0, (knot.n+2)-1);
 
 
-## ================== ApproximateBestEuclidean: PASS 1a: "disjoint" lower optimizer
+## ================== ApproximateNearestEuclidean: PASS 1a: "disjoint" lower optimizer
 
          if (verbose) cat(sprintf("Pass 1a,"));
 
@@ -158,7 +158,7 @@ setMethod(
          res.left <- optres$par;
 
 
-## ================== ApproximateBestEuclidean: PASS 1b: "disjoint" upper optimizer
+## ================== ApproximateNearestEuclidean: PASS 1b: "disjoint" upper optimizer
 
          if (verbose) cat(sprintf("1b,"));
 
@@ -187,7 +187,7 @@ setMethod(
          res.right <- optres$par;
 
 
-## ================== ApproximateBestEuclidean: try lower+upper
+## ================== ApproximateNearestEuclidean: try lower+upper
 
          if (res.left[knot.n+2] <= res.right[1])
          {
@@ -204,7 +204,7 @@ setMethod(
          # print("DEBUG: not disjoint");
          # Open quesion: can we assume that a2==a3 ??? (currently we do not)
 
-## ================== ApproximateBestEuclidean: PASS 2: use both sides together
+## ================== ApproximateNearestEuclidean: PASS 2: use both sides together
 
          if (verbose) cat(sprintf("2,"));
 
@@ -286,15 +286,15 @@ setMethod(
 
 
 
-## ---------------------------------- /ApproximateBestEuclidean ---------
+## ---------------------------------- /ApproximateNearestEuclidean ---------
 ## ----------------------------------------------------------------------
       }
 
 
-      if (method == "BestEuclidean")
+      if (method == "NearestEuclidean")
       {
 ## ----------------------------------------------------------------------
-## ---------------------------------------------- BestEuclidean ---------
+## ---------------------------------------------- NearestEuclidean ---------
 
          # This exact method was proposed by Coroianu, Gagolewski, Grzegorzewski (submitted)
 
@@ -390,7 +390,7 @@ setMethod(
                knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
 
 
-# ## ================== OLD BestEuclidean: PASS 1: try with z==0
+# ## ================== OLD NearestEuclidean: PASS 1: try with z==0
 #
 #
 #          # try to find solution assuming z == 0
@@ -409,7 +409,7 @@ setMethod(
 #                knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
 #          }
 #
-# ## ================== OLD BestEuclidean: PASS 2: calculate with z!=0 (d[-1]<0-based)
+# ## ================== OLD NearestEuclidean: PASS 2: calculate with z!=0 (d[-1]<0-based)
 #
 # #          cat(sprintf("DEBUG:        d =%s\n", paste(d, collapse=", ")))
 # #          cat(sprintf("DEBUG: cumsum(d)=%s\n", paste(cumsum(d), collapse=", ")))
@@ -448,7 +448,7 @@ setMethod(
 #
 #          try_old <- try;
 #
-# ## ================== OLD BestEuclidean: PASS 3: calculate with all possible combinations of z!=0
+# ## ================== OLD NearestEuclidean: PASS 3: calculate with all possible combinations of z!=0
 #
 #          iterations <- 3;
 #
@@ -494,7 +494,7 @@ setMethod(
 #          This may be due to innacuracy of numerical integration.", knot.alpha));
 #          return(NULL);
 
-## --------------------------------------------- /BestEuclidean ---------
+## --------------------------------------------- /NearestEuclidean ---------
 ## ----------------------------------------------------------------------
       }
 
