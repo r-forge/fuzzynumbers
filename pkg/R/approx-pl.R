@@ -341,7 +341,7 @@ setMethod(
          K <- rep(FALSE, 6);
          d <- as.numeric(PhiInv %*% b);
          m <- which.min(d[-1])+1;
-         EPS <- 1e-5;
+         EPS <- 1e-9;
 
          if (verbose)
          {
@@ -360,19 +360,18 @@ setMethod(
 
             deltaz <- rep(0.0, 6);
             deltaz[K] <- as.numeric(solve(PhiInv[K,K], -d[K], tol=.Machine$double.eps));
-            stopifnot(deltaz[K] > -EPS);
+            if (min(deltaz[K]) < -EPS) warning(sprintf("min(deltaz[K])==%g", min(deltaz[K])));
 
             z <- z+deltaz;
 
-#             for (k in which(K))
-#                d <- d+PhiInv[k,]*deltaz[k];
             d <- as.numeric(PhiInv%*%(b+z))
+#             for (k in which(K)) d <- d+PhiInv[k,]*deltaz[k]; # ALTERNATIVE, BUT MORE INACCURATE
 
             m <- which.min(d[-1])+1;
             iter <- iter+1;
 
             stopifnot(all(z>=0));
-            stopifnot(all(abs(d[K]) < EPS));
+            if (max(abs(d[K])) > EPS) warning(sprintf("max(abs(d[K]))==%g", max(abs(d[K]))));
             d[K] <- 0.0; # for better accuracy
 
             if (verbose)

@@ -37,11 +37,16 @@
 #' please refer to the \code{\link{FuzzyNumber}} class man page.
 #' Note that this package also deals with particular types
 #' of fuzzy numbers like trapezoidal and piecewise linear FNs
-#' (see \code{\link{TrapezoidalFuzzyNumber}}
-#' and \code{\link{PiecewiseLinearFuzzyNumber}}).
+#' (see \code{\link{TrapezoidalFuzzyNumber},}
+#' \code{\link{PiecewiseLinearFuzzyNumber}},
+#' \code{\link{PowerFuzzyNumber}},
+#' \code{\link{DiscontinuousFuzzyNumber}}).
 #'
 #' The package aims to provide the following functionality:
 #' \enumerate{
+#'    \item Representation of arbitrary fuzzy numbers
+#' (including FNs with discontinuous side functions and/or alpha-cuts),
+#' as well as their particular types, e.g. trapezoidal and piecewise linear fuzzy numbers,
 #'    \item Defuzzification and Approximation by Triangular
 #'      and Piecewise Linear FNs (see e.g. \code{\link{expectedValue}},
 #'      \code{\link{value}}, \code{\link{trapezoidalApproximation}},
@@ -50,6 +55,7 @@
 #'    \item Operations on FNs [TO DO],
 #'    \item Aggregation of FNs [TO DO],
 #'    \item Ranking of FNs [TO DO],
+#'    \item Random FN generation [TO DO],
 #'    \item \dots
 #' }
 #'
@@ -75,6 +81,8 @@
 #' FuzzyNumbers \code{FuzzyNumbers} Homepage, \url{http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/}.\cr
 #' Ban A.I. (2008), Approximation of fuzzy numbers by trapezoidal fuzzy numbers
 #' preserving the expected interval, Fuzzy Sets and Systems 159, pp. 1327-1344.\cr
+#' Ban A.I. (2009), On the nearest parametric approximation of a fuzzy number - Revisited,
+#' Fuzzy Sets and Systems 160, pp. 3027--3047.\cr
 #' Chanas S. (2001), On the interval approximation of a fuzzy number,
 #' Fuzzy Sets and Systems 122, pp. 353-356.\cr
 #' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
@@ -88,6 +96,7 @@
 #' Foundations of Reasoning Under Uncertainty, Springer, pp. 85-98.\cr
 #' Grzegorzewski P, Pasternak-Winiarska K. (2011), Trapezoidal approximations of fuzzy numbers
 #' with restrictions on the support and core, Proc. EUSFLAT/LFA 2011, Atlantic Press, pp. 749-756.\cr
+#' Klir G.J., Yuan B. (1995), Fuzzy sets and fuzzy logic. Theory and applications, Prentice Hall, New Jersey.\cr
 #' Yeh C.-T. (2008), Trapezoidal and triangular approximations preserving the expected interval,
 #' Fuzzy Sets and Systems 159, pp. 1345-1353.\cr
 NA
