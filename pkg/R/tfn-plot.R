@@ -38,4 +38,3 @@ setMethod(
          draw.alphacuts=draw.alphacuts, add=add, ...);
    }
 );
-   

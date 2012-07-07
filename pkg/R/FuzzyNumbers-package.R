@@ -20,15 +20,16 @@
 #' \code{FuzzyNumbers} is an open source (LGPL 3) package for R.
 #' It provides S4 classes and methods to deal with Fuzzy Numbers
 #' and allows for computations of arithmetic operations on FNs,
-#' approximation by trapezoidal and piecewise linear, etc.
+#' approximation by trapezoidal and piecewise linear FNs,
+#' random fuzzy numbers generation, etc.
 #' The package may be used by the practitioners as well as by the researchers
-#' in fuzzy numbers theory (e.g. for preparing figures,
-#' generating numerical examples, or testing new algorithms).
+#' in fuzzy numbers theory (e.g. for testing new algorithms,
+#' generating numerical examples, preparing figures).
 #'
 #' Fuzzy set theory lets us effectively and quite intuitively represent
 #' imprecise or vague information. Fuzzy numbers, which form a particular
 #' subclass of fuzzy sets of the real line, play a significant role
-#' in many important both theoretical and practical considerations.
+#' in many important theoretical and/or practical considerations.
 #' This is because we often describe our knowledge about objects
 #' through numbers, e.g. "I'm about 180 cm tall"
 #' or "The rocket was launched between 2 and 3 p.m.".
@@ -36,7 +37,7 @@
 #' For the formal definition of a fuzzy number
 #' please refer to the \code{\link{FuzzyNumber}} class man page.
 #' Note that this package also deals with particular types
-#' of fuzzy numbers like trapezoidal and piecewise linear FNs
+#' of fuzzy numbers like trapezoidal, piecewise linear, or ``parametric'' FNs
 #' (see \code{\link{TrapezoidalFuzzyNumber},}
 #' \code{\link{PiecewiseLinearFuzzyNumber}},
 #' \code{\link{PowerFuzzyNumber}},
@@ -64,14 +65,14 @@
 #'
 #' For a complete list of classes and methods
 #' call \code{library(help="FuzzyNumbers")}.
-#' Moreover, you will surely be interested in a step-by-step guide to the package
-#' features which is available at
+#' Moreover, you will surely be interested in a step-by-step guide to the
+#' package usage and features which is available at
 #' \url{http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/doc/FuzzyNumbers-Tutorial.pdf}.
 #' \cr\cr
 #'
 #' \bold{Keywords}: Fuzzy Numbers, Fuzzy Sets, Shadowed Sets,
 #' Trapezoidal Approximation, Piecewise Linear Approximation,
-#' Approximate Reasoning, Imprecision, Vagueness.
+#' Approximate Reasoning, Imprecision, Vagueness, Randomness.
 #'
 #' @name FuzzyNumbers-package
 #' @docType package

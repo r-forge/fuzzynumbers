@@ -7,17 +7,15 @@ Title: Tools to deal with fuzzy numbers in R
 Type: Package
 Author: Marek Gagolewski <gagolews@ibspan.waw.pl>
 Description: The FuzzyNumbers package provides S4 classes and methods
-    to deal with Fuzzy Numbers (computations of operations on FNs,
-    approximation by trapezoidal and piecewise linear FNs, etc.).
-    It may be used by the practitioners as well as by
-    the researchers in FN theory.
+    to deal with Fuzzy Numbers. It allows for computations of arithmetic
+    operations on FNs, approximation by trapezoidal and piecewise linear FNs,
+    random FN generation, etc.
 Version: 0.01
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
-Date: 2012-06-10
+Date: 2012-07-07
 Depends:
     R (>= 2.15.0),
-    methods,
-    bitops
+    methods
 Collate:
     'fn-def.R'
     'fn-plot.R'

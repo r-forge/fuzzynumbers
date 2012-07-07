@@ -40,7 +40,7 @@ setMethod(
 
 #' TO DO
 #'
-#' @exportMethod value   
+#' @exportMethod value
 setMethod(
    f="alphaInterval",
    signature(object="PiecewiseLinearFuzzyNumber"),

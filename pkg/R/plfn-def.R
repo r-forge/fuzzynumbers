@@ -19,10 +19,17 @@
 
 #' S4 class representing a piecewise linear fuzzy number
 #'
+#'
+#'
 #' TO DO
+#'
+#' \section{Extends}{
+#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
+#' }
 #' @exportClass PiecewiseLinearFuzzyNumber
 #' @name PiecewiseLinearFuzzyNumber-class
 #' @docType class
+#' @seealso \code{\link{PiecewiseLinearFuzzyNumber}}
 setClass(
    Class="PiecewiseLinearFuzzyNumber",
    representation(
@@ -97,7 +104,7 @@ setMethod(
 
 #' Creates a piecewise linear fuzzy number
 #'
-#' For convenience, objects of class \code{PiecewiseLinearFuzzyNumber}
+#' For convenience, objects of class \code{PiecewiseLinearFuzzyNumber} (see \code{\link{PiecewiseLinearFuzzyNumber-class}})
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support

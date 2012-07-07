@@ -16,7 +16,12 @@
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
-
+#' Integrate a transformed or weighted lower or upper alpha-cut bound of a fuzzy number
+#'
+#' @export
+#' @docType methods
+#' @rdname integrateAlpha-methods
+#' @aliases integrateAlpha,DiscontinuousFuzzyNumber,DiscontinuousFuzzyNumber-method
 setGeneric("integrateAlpha",
    function(object, which, from, to, ...) standardGeneric("integrateAlpha"));
 
@@ -24,7 +29,19 @@ setGeneric("integrateAlpha",
 
 
 
-
+#' Integrate a function with at most finite number of discontinuities
+#'
+#' The function uses multiple calls to \code{\link{integrate}}.
+#'
+#' @param f an R function taking a numeric vector of length 1 as its first
+#'         argument and returning a numeric vector of length 1
+#' @param from the lower limit of integration
+#' @param to the upper limit of integration
+#' @param discontinuities nondecreasingly sorted numeric vector which indicates
+#'          the points at which \code{f} is discontinuous
+#' @param rel.tol relative accuracy requested
+#' @param ... further arguments to be passed to the \code{\link{integrate}} function.
+#' @return the final estimate of the integral
 #' @export
 integrate_discont_val <- function(f, from, to, discontinuities=numeric(0),
    rel.tol = .Machine$double.eps^0.35, ...)
@@ -58,12 +75,10 @@ integrate_discont_val <- function(f, from, to, discontinuities=numeric(0),
 
 
 
-#' Integrate weighted lower or upper alpha-cut bound
-#'
 #' @export
 #' @docType methods
 #' @rdname integrateAlpha-methods
-#' @aliases integrateAlpha,DiscontinuousFuzzyNumber,DiscontinuousFuzzyNumber-method
+#' @aliases integrateAlpha,DiscontinuousFuzzyNumber-method
 setMethod(
    f="integrateAlpha",
    signature(object="DiscontinuousFuzzyNumber", which="character",
@@ -130,12 +145,10 @@ setMethod(
 
 
 
-#' Integrate weighted lower or upper alpha-cut bound
-#'
 #' @export
 #' @docType methods
 #' @rdname integrateAlpha-methods
-#' @aliases integrateAlpha,FuzzyNumber,FuzzyNumber-method
+#' @aliases integrateAlpha,FuzzyNumber-method
 setMethod(
    f="integrateAlpha",
    signature(object="FuzzyNumber", which="character",

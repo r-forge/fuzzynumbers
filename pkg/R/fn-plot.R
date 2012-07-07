@@ -40,7 +40,7 @@ setMethod(
    {
       draw.membership.function <- identical(draw.membership.function, TRUE);
       draw.alphacuts <- identical(draw.alphacuts, TRUE);
-      
+
       if (!draw.membership.function && !draw.alphacuts)
          stop("Provide `draw.alphacuts' or `draw.membership.function'");
 
@@ -61,12 +61,12 @@ setMethod(
 
       if ( draw.alphacuts && is.null(ylab))
          ylab <- "x";
-   
+
       drawX     <- !(is.na(x@left(0)));
       drawAlpha <- !(is.na(x@lower(0)));
-      
+
       add <- identical(add, TRUE);
-      
+
       if (dev.cur() == 1L && add)
       {
          warning("`add' will be ignored as there is no existing plot")
@@ -74,7 +74,7 @@ setMethod(
       }
 
       if (n <= 0) n <- 0;
-      
+
       if (draw.alphacuts)
       {
 ## -----------------------------------------------------------------------
@@ -106,8 +106,8 @@ setMethod(
 
          if (from > x@a1) from <- x@a1;
          if (to   < x@a4) to   <- x@a4;
-         
-            
+
+
          if (!drawX && !drawAlpha)
          {
 ## ========================================= draw.alpha: shadowed FN
@@ -162,7 +162,7 @@ setMethod(
                }
                alpha1 <- evaluate(x, xvals1);
                alpha2 <- evaluate(x, xvals2);
-## =========================================================               
+## =========================================================
             }
 
             draw.y1 <- c(x@a1, xvals1, x@a2);
@@ -177,7 +177,7 @@ setMethod(
 
 ## ---------------------------------------------  /draw.alphacuts --------
 ## -----------------------------------------------------------------------
-         }         
+         }
       } else if (draw.membership.function)
       {
 ## -----------------------------------------------------------------------
@@ -210,8 +210,8 @@ setMethod(
          if (from > x@a1) from <- x@a1;
          if (to   < x@a4) to   <- x@a4;
 
-            
-      
+
+
          if (!drawX && !drawAlpha)
          {
 ## ================================= draw.membership.funtion: shadowed FN
@@ -226,9 +226,9 @@ setMethod(
                col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
             matplot(c(x@a2, x@a3), c(1,1), type=type,
                col=col, lty=lty, pch=pch, lwd=lwd, add=TRUE, ...);
-## =======================================================================               
+## =======================================================================
          } else
-         {         
+         {
             if (drawAlpha && (!drawX || !is.null(at.alpha)))
             {
 ## ================================= draw.membership.funtion: from alpha cuts
@@ -294,4 +294,3 @@ setMethod(
       }
    }
 );
-   

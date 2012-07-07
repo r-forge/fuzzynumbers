@@ -48,8 +48,21 @@
 #' Please note that many algorithms that deal with fuzzy numbers often use
 #' \eqn{\alpha}-cuts rather than side functions.
 #'
+#'\section{Slots}{
+#'  \describe{
+#'    \item{\code{a1}:}{Single numeric value specifying the left bound for the support.}
+#'    \item{\code{a2}:}{Single numeric value specifying the left bound for the core.}
+#'    \item{\code{a3}:}{Single numeric value specifying the right bound for the core.}
+#'    \item{\code{a4}:}{Single numeric value specifying the right bound for the support.}
+#'    \item{\code{lower}:}{A nondecreasing function [0,1]->[0,1] that gives the lower alpha-cut bound.}
+#'    \item{\code{upper}:}{A nonincreasing function [0,1]->[1,0] that gives the upper alpha-cut bound.}
+#'    \item{\code{left}:}{A nondecreasing function [0,1]->[0,1] that gives the left side function.}
+#'    \item{\code{right}:}{A nonincreasing function [0,1]->[1,0] that gives the right side function.}
+#'  }
+#' }
 #' @exportClass FuzzyNumber
 #' @name FuzzyNumber-class
+#' @seealso \code{\link{FuzzyNumber}}
 #' @docType class
 setClass(
    Class="FuzzyNumber",
@@ -127,7 +140,7 @@ setClass(
 
 #' Creates a Fuzzy Number
 #'
-#' For convenience, objects of class \code{FuzzyNumber}
+#' For convenience, objects of class \code{FuzzyNumber} (see \code{\link{FuzzyNumber-class}})
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support

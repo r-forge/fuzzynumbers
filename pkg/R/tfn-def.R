@@ -20,8 +20,13 @@
 #' S4 class representing a trapezoidal fuzzy number
 #'
 #' TO DO
+#'
+#' \section{Extends}{
+#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
+#' }
 #' @exportClass TrapezoidalFuzzyNumber
 #' @name TrapezoidalFuzzyNumber-class
+#' @seealso \code{\link{TrapezoidalFuzzyNumber}}
 #' @docType class
 setClass(
    Class="TrapezoidalFuzzyNumber",
@@ -36,15 +41,15 @@ setClass(
 
 
 #' Creates a trapezoidal fuzzy number
-#'   
-#' For convenience, objects of class \code{TrapezoidalFuzzyNumber}
+#'
+#' For convenience, objects of class \code{TrapezoidalFuzzyNumber} (see \code{\link{TrapezoidalFuzzyNumber-class}})
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support
 #' @param a2 a number specyfing left bound of the core
 #' @param a3 a number specyfing right bound of the core
 #' @param a4 a number specyfing right bound of the support
-#' @export   
+#' @export
 TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
 {
    .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);

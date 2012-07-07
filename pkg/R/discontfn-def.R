@@ -19,10 +19,14 @@
 
 #' S4 class representing a fuzzy number with possibly discontinuous side functions or alpha-cut bounds
 #'
+#' TO DO
 #'
-#'
-#' @exportClass FuzzyNumber
-#' @name FuzzyNumber-class
+#' \section{Extends}{
+#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
+#' }
+#' @exportClass DiscontinuousFuzzyNumber
+#' @name DiscontinuousFuzzyNumber-class
+#' @seealso \code{\link{DiscontinuousFuzzyNumber}}
 #' @docType class
 setClass(
    Class="DiscontinuousFuzzyNumber",
@@ -69,7 +73,7 @@ setClass(
 
 #' Creates a fuzzy number with possibly discontinuous side functions or alpha-cut bounds
 #'
-#' For convenience, objects of class \code{DiscontinuousFuzzyNumber}
+#' For convenience, objects of class \code{DiscontinuousFuzzyNumber} (see \code{\link{DiscontinuousFuzzyNumber-class}})
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support

@@ -21,8 +21,13 @@
 #' S4 class representing a fuzzy number with sides given by power functions
 #'
 #' TO DO
-#' @exportClass TrapezoidalFuzzyNumber
-#' @name TrapezoidalFuzzyNumber-class
+#'
+#' \section{Extends}{
+#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
+#' }
+#' @exportClass PowerFuzzyNumber
+#' @name PowerFuzzyNumber-class
+#' @seealso \code{\link{PowerFuzzyNumber}}
 #' @docType class
 setClass(
    Class="PowerFuzzyNumber",
@@ -73,9 +78,9 @@ setMethod(
 );
 
 
-#' Creates a fuzzy number with sides given by power functions
+#' Creates a ``parametric'' fuzzy number with sides given by power functions
 #'
-#' For convenience, objects of class \code{PowerFuzzyNumber}
+#' For convenience, objects of class \code{PowerFuzzyNumber} (see \code{\link{PowerFuzzyNumber-class}})
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support
@@ -95,7 +100,7 @@ PowerFuzzyNumber <- function(a1, a2, a3, a4, p.left=1.0, p.right=1.0)
 
 
 #' @rdname show-methods
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
+#' @aliases show,PowerFuzzyNumber,PowerFuzzyNumber-method
 setMethod(
    f="show",
    signature(object="PowerFuzzyNumber"),
