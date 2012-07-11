@@ -18,32 +18,18 @@
 
 
 
-
-setMethod("+",
-   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
+setMethod("*",
+   signature(e1 = "numeric", e2 = "FuzzyNumber"),
    function (e1, e2)
    {
-      TrapezoidalFuzzyNumber(e1@a1+e2@a1, e1@a2+e2@a2, e1@a3+e2@a3, e1@a4+e2@a4);
+      e2*e1;
    }
 );
 
 setMethod("-",
-   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
+   signature(e1 = "FuzzyNumber"),
    function (e1, e2)
    {
-      TrapezoidalFuzzyNumber(e1@a1-e2@a4, e1@a2-e2@a3, e1@a3-e2@a2, e1@a4-e2@a1);
-   }
-);
-
-setMethod("*",
-   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "numeric"),
-   function (e1, e2)
-   {
-      stopifnot(length(e2) == 1);
-      TrapezoidalFuzzyNumber(min(e2*e1@a1, e2*e1@a4),
-                             min(e2*e1@a2, e2*e1@a3),
-                             max(e2*e1@a2, e2*e1@a3),
-                             max(e2*e1@a1, e2*e1@a4)
-                            );
+      e1*(-1);
    }
 );
