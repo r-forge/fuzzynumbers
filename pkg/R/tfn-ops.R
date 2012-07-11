@@ -35,3 +35,32 @@ setMethod("-",
    }
 );
 
+setMethod("*",
+   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "numeric"),
+   function (e1, e2)
+   {
+      stopifnot(length(e2) == 1);
+      TrapezoidalFuzzyNumber(min(e2*e1@a1, e2*e1@a4),
+                             min(e2*e1@a2, e2*e1@a3),
+                             max(e2*e1@a2, e2*e1@a3),
+                             max(e2*e1@a1, e2*e1@a4)
+                            );
+   }
+);
+
+
+setMethod("*",
+   signature(e1 = "numeric", e2 = "TrapezoidalFuzzyNumber"),
+   function (e1, e2)
+   {
+      e2*e1;
+   }
+);
+
+setMethod("-",
+   signature(e1 = "TrapezoidalFuzzyNumber"),
+   function (e1, e2)
+   {
+      e1*(-1);
+   }
+);
