@@ -34,3 +34,6 @@ Collate:
     'tfn-aux.R'
     'powfn-def.R'
     'powfn-aux.R'
+    'fn-ops.R'
+    'plfn-ops.R'
+    'tfn-ops.R'
