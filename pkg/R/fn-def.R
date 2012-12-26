@@ -21,8 +21,7 @@
 #'
 #'
 #' Formally, a fuzzy number \eqn{A} (Dubois, Prade, 1978) is a fuzzy subset of the
-#' real line \eqn{R}
-#' with membership function \eqn{\mu} given by:
+#' real line \eqn{R}  with membership function \eqn{\mu} given by:
 #' \tabular{lll}{
 #'                    \tab | \eqn{0}                      \tab if \eqn{x    < a1}, \cr
 #'                    \tab | \eqn{left((x-a1)/(a2-a1))}   \tab if \eqn{a1 \le x  < a2}, \cr
@@ -32,9 +31,9 @@
 #' }
 #' where \eqn{a1,a2,a3,a4\in R}, \eqn{a1 \le a2 \le a3 \le a4},
 #' \eqn{left: [0,1]\to[0,1]}{left: [0,1]->[0,1]} is a nondecreasing function
-#' called the \emph{left side of \eqn{A}},
+#' called the \emph{left side generator of \eqn{A}},
 #' and \eqn{right: [0,1]\to[0,1]}{right: [0,1]->[1,0]} is a nonincreasing function
-#' called the \emph{right side of \eqn{A}}.
+#' called the \emph{right side generator of \eqn{A}}.
 #' \cr
 #' Alternatively, it may be shown that each fuzzy number \eqn{A} may be uniquely determined
 #' by specifying its \eqn{\alpha}-cuts, \eqn{A(\alpha)}. We have \eqn{A(0)=[a1,a4]} and
@@ -60,9 +59,10 @@
 #'    \item{\code{right}:}{A nonincreasing function [0,1]->[1,0] that gives the right side function.}
 #'  }
 #' }
+#' 
 #' @exportClass FuzzyNumber
 #' @name FuzzyNumber-class
-#' @seealso \code{\link{FuzzyNumber}}
+#' @seealso \code{\link{FuzzyNumber}} for a convenient constructor
 #' @docType class
 setClass(
    Class="FuzzyNumber",
@@ -151,6 +151,7 @@ setClass(
 #' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA
 #' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA
 #' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
+#' @return An object of class \code{FuzzyNumber}
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(a) rep(NA_real_, length(a)),
@@ -163,28 +164,39 @@ FuzzyNumber <- function(a1, a2, a3, a4,
    .Object;
 }
 
-#' Coverts a trapezoidal or a piecewise linear fuzzy number object to a fuzzy number
+#' Coverts a trapezoidal or a piecewise linear fuzzy number object to a (general) FuzzyNumber
 #'
+#' FuzzyNumber is the base class for all FNs.
+#' Note that some functions for TFNs or PLFNs (more specific FNs)
+#' work much faster and are more precise. This function shouldn't be
+#' used in normal computations.
+#' 
 #' @param object a trapezoidal or piecewiselinear fuzzy number
+#' @return An object of class \code{FuzzyNumber}
 #' @export
+#' @seealso \code{\link{FuzzyNumber-class}},
+#' \code{\link{TrapezoidalFuzzyNumber-class}},
+#' \code{\link{PiecewiseLinearFuzzyNumber-class}}
 as.FuzzyNumber <- function(object)
 {
    if (!inherits(object, "FuzzyNumber"))
-      stop("`object' does not inherit from the FuzzyNumber class");
+      stop("`object' does not inherit from the FuzzyNumber class")
 
    .Object <- new("FuzzyNumber",
          a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
          left=object@left, right=object@right,
-         lower=object@lower, upper=object@upper);
-   .Object;
+         lower=object@lower, upper=object@upper)
+   .Object
 }
 
 
-#' Print basic information
-#' @export
+#' Print basic information on a FuzzyNumber
+#' 
+#' @exportMethod show
 #' @docType methods
 #' @rdname show-methods
-#' @aliases show,FuzzyNumber,FuzzyNumber-method
+#' @aliases show,FuzzyNumber,FuzzyNumber-methods
+#' @family FuzzyNumber-methods
 setMethod(
    f="show",
    signature(object="FuzzyNumber"),
@@ -196,9 +208,21 @@ setMethod(
 )
 
 
-#' TO DO
+#' FuzzyNumber slot accessor (read-only)
 #'
+#' Possible slot names are: "a1", "a2", "a3", "a4", "left", "right", "lower", "upper"
+#' 
+#' @param i slot name
+#' @return slot value
 #' @exportMethod [
+#' @rdname Extract-methods
+#' @docType methods
+#' @family FuzzyNumber-methods
+#' @aliases Extract,FuzzyNumber,FuzzyNumber-methods
+#' @examples
+#' A <- FuzzyNumber(1,2,3,4)
+#' A["a1"]
+#' A["right"]
 setMethod(
    f="[",
    signature=(x="FuzzyNumber"),
