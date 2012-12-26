@@ -1,5 +1,7 @@
 export(as.FuzzyNumber)
 export(as.PiecewiseLinearFuzzyNumber)
+export(convert.alpha)
+export(convert.side)
 export(DiscontinuousFuzzyNumber)
 export(FuzzyNumber)
 export(integrate_discont_val)

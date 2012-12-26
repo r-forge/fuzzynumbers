@@ -132,7 +132,7 @@ setClass(
       if (is.na(lower01[1]) != is.na(upper01[1]))
          return("Either all or none of `lower' and `upper' should return NA");
 
-      # Everything is O.K.
+      # OK
       return(TRUE)
    }
 )

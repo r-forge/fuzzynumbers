@@ -40,3 +40,4 @@ Collate:
     'fn-ops.R'
     'plfn-ops.R'
     'tfn-ops.R'
+    'convert-generators.R'

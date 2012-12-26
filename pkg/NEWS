@@ -1,15 +1,23 @@
 FuzzyNumbers Package NEWS
 
-
-
-
-*******************************************************************************
+***************************************************************************
 
 0.02 /under development/
 
+* convert.side(), convert.alpha():
+  new functions to convert sides and alpha cuts
+  to side generating funs and alpha cut generators
+
 * FuzzyNumber class validity check for lower, upper, left, right:
-    * checks whether each function is properly vectorized
+   * checks whether each function is properly vectorized
       and gives numeric results
-    * does not check for the number of formal arguments,
+   * does not check for the number of formal arguments,
       but just uses the first from the list
+
 * suggests `testthat`
+
+***************************************************************************
+
+0.01 /July 2012/
+
+* initial release
