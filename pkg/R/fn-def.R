@@ -77,65 +77,65 @@ setClass(
       right="function"
    ),
    prototype=prototype(
-      left=function(x) NA,
-      right=function(x) NA,
-      lower=function(alpha) NA,
-      upper=function(alpha) NA
+      left=function(x)      rep(NA_real_, length(x)),
+      right=function(x)     rep(NA_real_, length(x)),
+      lower=function(alpha) rep(NA_real_, length(alpha)),
+      upper=function(alpha) rep(NA_real_, length(alpha))
    ),
    validity=function(object)
    {
       if (length(object@a1) != 1 || length(object@a2) != 1 ||
           length(object@a3) != 1 || length(object@a4) != 1 ||
           any(!is.finite(c(object@a1, object@a2, object@a3, object@a4))))
-         return("Each of `a1', `a2', `a3', and `a4' should be a single real number");
+         return("Each of `a1', `a2', `a3', and `a4' should be a single finite real number");
 
-      if (object@a1 > object@a2 || object@a2 > object@a3 || object@a3 > object@a4)
+      if (is.unsorted(c(object@a1, object@a2, object@a3, object@a4)))
          return("Please provide a1 <= a2 <= a3 <= a4");
 
-
-      if (length(formals(object@lower)) != 1)
-      {
-         return("`lower' should be a function with 1 parameter");
-      } else if (!is.na(object@lower(0)) && (object@lower(0) < 0  || object@lower(1) > 1 || object@lower(0) > object@lower(1)))
-      {
-         return("`lower' should be an increasing function [0,1]->[0,1]");
+      lower01 <- object@lower(c(0,1))
+      upper01 <- object@upper(c(0,1))
+      left01  <- object@left(c(0,1))
+      right01 <- object@right(c(0,1))
+      
+      if (length(lower01) != 2 || !is.numeric(lower01))
+         return("`lower' is not properly vectorized or doesn't give numeric results")
+      else if (!is.na(lower01[1])) {
+         if (lower01[1] < 0 || lower01[2] > 1 || lower01[1] > lower01[2])
+            return("`lower' should be an increasing function [0,1]->[0,1]");
       }
-
-      if (length(formals(object@upper)) != 1)
-      {
-         return("`upper' should be a function with 1 parameter");
-      } else if (!is.na(object@upper(0)) && (object@upper(1) < 0  || object@upper(0) > 1 || object@upper(1) > object@upper(0)))
-      {
-         return("`upper' should be a decreasing function [0,1]->[1,0]");
+      
+      if (length(upper01) != 2 || !is.numeric(upper01))
+         return("`upper' is not properly vectorized or doesn't give numeric results")
+      else if (!is.na(upper01[1])) {
+         if (upper01[2] < 0 || upper01[1] > 1 || upper01[2] > upper01[1])
+            return("`upper' should be a decreasing function [0,1]->[1,0]");
       }
-
-      if (length(formals(object@left)) != 1)
-      {
-         return("`left' should be a function with 1 parameter");
-      } else if (!is.na(object@left(0)) && (object@left(0) < 0  || object@left(1) > 1 || object@left(0) > object@left(1)))
-      {
-         return("`left' should be an increasing function [0,1]->[0,1]");
+      
+      if (length(left01) != 2 || !is.numeric(left01))
+         return("`left' is not properly vectorized or doesn't give numeric results")
+      else if (!is.na(left01[1])) {
+         if (left01[1] < 0 || left01[2] > 1 || left01[1] > left01[2])
+            return("`left' should be an increasing function [0,1]->[0,1]");
       }
-
-      if (length(formals(object@right)) != 1)
-      {
-         return("`right' should be a function with 1 parameter");
-      } else if (!is.na(object@right(0)) && (object@right(1) < 0  || object@right(0) > 1 || object@right(1) > object@right(0)))
-      {
-         return("`right' should be a decreasing function [0,1]->[1,0]");
+      
+      if (length(right01) != 2 || !is.numeric(right01))
+         return("`right' is not properly vectorized or doesn't give numeric results")
+      else if (!is.na(right01[1])) {
+         if (right01[2] < 0 || right01[1] > 1 || right01[2] > right01[1])
+            return("`right' should be a decreasing function [0,1]->[1,0]");
       }
+      
 
-
-      if (is.na(object@right(0)) != is.na(object@left(0)))
+      if (is.na(right01[1]) != is.na(left01[1]))
          return("Either all or none of `left' and `right' should return NA");
 
-      if (is.na(object@upper(0)) != is.na(object@lower(0)))
+      if (is.na(lower01[1]) != is.na(upper01[1]))
          return("Either all or none of `lower' and `upper' should return NA");
 
       # Everything is O.K.
-      return(TRUE);
+      return(TRUE)
    }
-);
+)
 
 
 #' Creates a Fuzzy Number
@@ -153,15 +153,17 @@ setClass(
 #' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
-   lower=function(x) NA, upper=function(x) NA,
-   left=function(x)  NA, right=function(x) NA)
+   lower=function(a) rep(NA_real_, length(a)),
+   upper=function(a) rep(NA_real_, length(a)),
+   left=function(x)  rep(NA_real_, length(x)),
+   right=function(x) rep(NA_real_, length(x)))
 {
    .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
        lower=lower, upper=upper, left=left, right=right);
    .Object;
 }
 
-#' Coverts a trapezoidal of a piecewise linear fuzzy number object to a fuzzy number
+#' Coverts a trapezoidal or a piecewise linear fuzzy number object to a fuzzy number
 #'
 #' @param object a trapezoidal or piecewiselinear fuzzy number
 #' @export
@@ -191,7 +193,7 @@ setMethod(
       cat(sprintf("Fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
                   object@a1, object@a4, object@a2, object@a3))
    }
-);
+)
 
 
 #' TO DO
@@ -202,13 +204,13 @@ setMethod(
    signature=(x="FuzzyNumber"),
    definition=function(x, i, j, drop)
    {
-      if (i == "a1") return(x@a1);
-      if (i == "a2") return(x@a2);
-      if (i == "a3") return(x@a3);
-      if (i == "a4") return(x@a4);
-      if (i == "left")  return(x@left);
-      if (i == "right") return(x@right);
-      if (i == "lower") return(x@lower);
-      if (i == "upper") return(x@upper);
+      if (i == "a1") return(x@a1)
+      if (i == "a2") return(x@a2)
+      if (i == "a3") return(x@a3)
+      if (i == "a4") return(x@a4)
+      if (i == "left")  return(x@left)
+      if (i == "right") return(x@right)
+      if (i == "lower") return(x@lower)
+      if (i == "upper") return(x@upper)
    }
-);
+)

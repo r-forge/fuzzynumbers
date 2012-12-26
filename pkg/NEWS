@@ -1,0 +1,15 @@
+FuzzyNumbers Package NEWS
+
+
+
+
+*******************************************************************************
+
+0.02 /under development/
+
+* FuzzyNumber class validity check for lower, upper, left, right:
+    * checks whether each function is properly vectorized
+      and gives numeric results
+    * does not check for the number of formal arguments,
+      but just uses the first from the list
+* suggests `testthat`
