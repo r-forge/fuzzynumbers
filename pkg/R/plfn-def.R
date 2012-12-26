@@ -39,37 +39,37 @@ setClass(
       knot.right="numeric"
    ),
    prototype=prototype(
-      left=function(x)  NA,
-      right=function(x) NA,
-      lower=function(alpha) NA,
-      upper=function(alpha) NA
+      lower=function(a) rep(NA_real_, length(a)),
+      upper=function(a) rep(NA_real_, length(a)),
+      left=function(x)  rep(NA_real_, length(x)),
+      right=function(x) rep(NA_real_, length(x))
    ),
    validity=function(object)
    {
-      if (object@knot.n < 0) return("`knot.n' should be >= 0");
-      if (object@knot.n != length(object@knot.alpha)) return("length of `knot.alpha' should be equal to `knot.n'");
-      if (object@knot.n != length(object@knot.left))  return("length of `knot.left' should be equal to `knot.n'");
-      if (object@knot.n != length(object@knot.right)) return("length of `knot.right' should be equal to `knot.n'");
+      if (object@knot.n < 0) return("`knot.n' should be >= 0")
+      if (object@knot.n != length(object@knot.alpha)) return("length of `knot.alpha' should be equal to `knot.n'")
+      if (object@knot.n != length(object@knot.left))  return("length of `knot.left' should be equal to `knot.n'")
+      if (object@knot.n != length(object@knot.right)) return("length of `knot.right' should be equal to `knot.n'")
 
       if (object@knot.n > 0)
       {
-         if (is.unsorted(object@knot.left))  return("`knot.left' should be sorted nondecreasingly");
-         if (is.unsorted(object@knot.right)) return("`knot.right' should be sorted nondecreasingly");
+         if (is.unsorted(object@knot.left))  return("`knot.left' should be sorted nondecreasingly")
+         if (is.unsorted(object@knot.right)) return("`knot.right' should be sorted nondecreasingly")
 
          if (!is.finite(object@knot.left)  || any(object@knot.left < object@a1 | object@knot.left > object@a2))
-            return("`knot.left' should be a vector with elements in [a1,a2]");
+            return("`knot.left' should be a vector with elements in [a1,a2]")
          if (!is.finite(object@knot.right) || any(object@knot.right < object@a3 | object@knot.left > object@a4))
-            return("`knot.right' should be a vector with elements in [a3,a4]");
+            return("`knot.right' should be a vector with elements in [a3,a4]")
 
          if (any(diff(object@knot.alpha) <= 0)) return("`knot.alpha' should be sorted nondecreasingly and be unique");
          if (!is.finite(object@knot.alpha) || any(object@knot.alpha < 0 | object@knot.alpha > 1))
-            return("`knot.alpha' should be a vector with elements in [0,1]");
+            return("`knot.alpha' should be a vector with elements in [0,1]")
       }
 
-      return(TRUE);
+      return(TRUE)
    },
    contains="FuzzyNumber"
-);
+)
 
 
 setMethod(
@@ -77,27 +77,27 @@ setMethod(
    signature("PiecewiseLinearFuzzyNumber"),
    definition=function(.Object, ...)
    {
-      .Object <- callNextMethod();
+      .Object <- callNextMethod()
 
-      kl <- c(0,(.Object@knot.left -.Object@a1)/(.Object@a2-.Object@a1),1);
-      kr <- c(0,(.Object@knot.right-.Object@a3)/(.Object@a4-.Object@a3),1);
+      kl <- c(0,(.Object@knot.left -.Object@a1)/(.Object@a2-.Object@a1),1)
+      kr <- c(0,(.Object@knot.right-.Object@a3)/(.Object@a4-.Object@a3),1)
 
-      al <- c(0,.Object@knot.alpha,1);
-      ar <- c(1,rev(.Object@knot.alpha),0);
+      al <- c(0,.Object@knot.alpha,1)
+      ar <- c(1,rev(.Object@knot.alpha),0)
 
       # be careful for equal knot positions! (ties="ordered" solves that)
       .Object@left  <- approxfun(kl, al, method="linear",
-         yleft=NA, yright=NA, ties="ordered");
+         yleft=NA, yright=NA, ties="ordered")
       .Object@right <- approxfun(kr, ar, method="linear",
-         yleft=NA, yright=NA, ties="ordered");
+         yleft=NA, yright=NA, ties="ordered")
 
       # no ties to specify - knot.alpha is unique
       .Object@lower <- approxfun(al, kl, method="linear",
-         yleft=NA, yright=NA);
+         yleft=NA, yright=NA)
       .Object@upper <- approxfun(ar, kr, method="linear",
-         yleft=NA, yright=NA);
+         yleft=NA, yright=NA)
 
-      return(.Object);
+      return(.Object)
    }
 );
 
@@ -121,8 +121,8 @@ PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
    knot.left=numeric(0), knot.right=numeric(0))
 {
    .Object <- new("PiecewiseLinearFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
-         knot.n=knot.n, knot.alpha=knot.alpha, knot.left=knot.left, knot.right=knot.right);
-   .Object;
+         knot.n=knot.n, knot.alpha=knot.alpha, knot.left=knot.left, knot.right=knot.right)
+   .Object
 }
 
 
@@ -136,19 +136,19 @@ PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
 #' @export
 as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0))
 {
-   if (class(object) != "TrapezoidalFuzzyNumber") stop("`object' is not an instance of the TrapezoidalFuzzyNumber class");
+   if (class(object) != "TrapezoidalFuzzyNumber") stop("`object' is not an instance of the TrapezoidalFuzzyNumber class")
 
-   left  <- approxfun(c(0,1), c(object@a1,object@a2), method="linear");  # no ties to specify - knot.alpha is unique
-   right <- approxfun(c(1,0), c(object@a3,object@a4), method="linear");  # no ties to specify - knot.alpha is unique
+   left  <- approxfun(c(0,1), c(object@a1,object@a2), method="linear")  # no ties to specify - knot.alpha is unique
+   right <- approxfun(c(1,0), c(object@a3,object@a4), method="linear")  # no ties to specify - knot.alpha is unique
 
-   if (knot.n < 0) stop("`knot.n' should be >= 0");
-   if (knot.n == 0) return(new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4));
+   if (knot.n < 0) stop("`knot.n' should be >= 0")
+   if (knot.n == 0) return(new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4))
 
-   if (knot.n != length(knot.alpha)) stop("length of `knot.alpha' should be equal to `knot.n'");
+   if (knot.n != length(knot.alpha)) stop("length of `knot.alpha' should be equal to `knot.n'")
 
    .Object <- new("PiecewiseLinearFuzzyNumber", a1=object@a1, a2=object@a2, a3=object@a3, a4=object@a4,
-         knot.n=knot.n, knot.alpha=knot.alpha, knot.left=left(knot.alpha), knot.right=right(rev(knot.alpha)));
-   .Object;
+         knot.n=knot.n, knot.alpha=knot.alpha, knot.left=left(knot.alpha), knot.right=right(rev(knot.alpha)))
+   .Object
 }
 
 
@@ -160,9 +160,9 @@ setMethod(
    signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object) {
       cat(sprintf("Piecewise linear fuzzy number with %g knot(s),\n   support=[%g,%g],\n      core=[%g,%g].\n",
-                  object@knot.n, object@a1, object@a4, object@a2, object@a3));
+                  object@knot.n, object@a1, object@a4, object@a2, object@a3))
    }
-);
+)
 
 
 #' TO DO
@@ -173,10 +173,10 @@ setMethod(
    signature=(x="PiecewiseLinearFuzzyNumber"),
    definition=function(x, i, j, drop)
    {
-      if (i == "knot.n")     return(x@knot.n);
-      if (i == "knot.alpha") return(x@knot.alpha);
-      if (i == "knot.left")  return(x@knot.left);
-      if (i == "knot.right") return(x@knot.right);
+      if (i == "knot.n")     return(x@knot.n)
+      if (i == "knot.alpha") return(x@knot.alpha)
+      if (i == "knot.left")  return(x@knot.left)
+      if (i == "knot.right") return(x@knot.right)
       if (i == "knots")      return(matrix(c(x@knot.alpha, x@knot.left, rev(x@knot.right)),
                                            ncol=3,
                                            dimnames=list(
@@ -190,17 +190,17 @@ setMethod(
                                               c("supp", paste("knot_", 1:x@knot.n, sep=""), "core"),
                                               c("alpha", "left", "right")
                                            )
-                                    ));
+                                    ))
 
-      if (i == "a1") return(x@a1);
-      if (i == "a2") return(x@a2);
-      if (i == "a3") return(x@a3);
-      if (i == "a4") return(x@a4);
-      if (i == "left")  return(x@left);
-      if (i == "right") return(x@right);
-      if (i == "lower") return(x@lower);
-      if (i == "upper") return(x@upper);
+      if (i == "a1") return(x@a1)
+      if (i == "a2") return(x@a2)
+      if (i == "a3") return(x@a3)
+      if (i == "a4") return(x@a4)
+      if (i == "left")  return(x@left)
+      if (i == "right") return(x@right)
+      if (i == "lower") return(x@lower)
+      if (i == "upper") return(x@upper)
 
-#     return(callNextMethod()); # does not work...
+#     return(callNextMethod()) # does not work...
    }
-);
+)

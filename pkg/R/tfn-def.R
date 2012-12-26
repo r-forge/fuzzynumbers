@@ -37,7 +37,7 @@ setClass(
       upper=function(alpha) 1-alpha
    ),
    contains="FuzzyNumber"
-);
+)
 
 
 #' Creates a trapezoidal fuzzy number
@@ -52,8 +52,8 @@ setClass(
 #' @export
 TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
 {
-   .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4);
-   .Object;
+   .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4)
+   .Object
 }
 
 
@@ -68,5 +68,5 @@ setMethod(
       cat(sprintf("Trapezoidal fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
                   object@a1, object@a4, object@a2, object@a3))
    }
-);
+)
 

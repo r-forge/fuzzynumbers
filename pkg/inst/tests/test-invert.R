@@ -16,6 +16,9 @@ test_that("inverting side/alpha-cut generators numerically", {
    fi <- approx.invert(function(x) pbeta(x, 1, 2))
    expect_that(fi(x), equals(qbeta(x, 1, 2)))
    
+   fi <- approx.invert(function(x) 1-pbeta(x, 1, 2))
+   expect_that(fi(x), equals(qbeta(1-x, 1, 2)))
+   
 #    fi <- approx.invert(function(x) pbeta(x, 0.3, 1))
 #    expect_that(fi(x), equals(qbeta(x, 0.3, 1)))
 })

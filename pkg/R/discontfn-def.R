@@ -47,28 +47,28 @@ setClass(
       if (length(object@discontinuities.left) > 1 &&
             (is.unsorted(object@discontinuities.left) ||
                any(object@discontinuities.left < 0 | object@discontinuities.left > 1)))
-         return("`discontinuities.left' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
+         return("`discontinuities.left' should be an nondecreasingly sorted numeric vector with elements in [0,1]")
 
       if (length(object@discontinuities.right) > 1 &&
             (is.unsorted(object@discontinuities.right) ||
                any(object@discontinuities.right < 0 | object@discontinuities.right >= 1)))
-         return("`discontinuities.right' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
+         return("`discontinuities.right' should be an nondecreasingly sorted numeric vector with elements in [0,1]")
 
       if (length(object@discontinuities.lower) > 1 &&
             (is.unsorted(object@discontinuities.lower) ||
                any(object@discontinuities.lower < 0 | object@discontinuities.lower > 1)))
-         return("`discontinuities.lower' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
+         return("`discontinuities.lower' should be an nondecreasingly sorted numeric vector with elements in [0,1]")
 
       if (length(object@discontinuities.upper) > 1 &&
             (is.unsorted(object@discontinuities.upper) ||
                any(object@discontinuities.upper < 0 | object@discontinuities.upper > 1)))
-         return("`discontinuities.upper' should be an nondecreasingly sorted numeric vector with elements in [0,1]");
+         return("`discontinuities.upper' should be an nondecreasingly sorted numeric vector with elements in [0,1]")
 
-      # Everything is O.K.
-      return(TRUE);
+      # OK
+      return(TRUE)
    },
    contains="FuzzyNumber"
-);
+)
 
 
 #' Creates a fuzzy number with possibly discontinuous side functions or alpha-cut bounds
@@ -90,8 +90,10 @@ setClass(
 #' @param discontinuities.upper nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
 #' @export
 DiscontinuousFuzzyNumber <- function(a1, a2, a3, a4,
-   lower=function(x) NA, upper=function(x) NA,
-   left=function(x)  NA, right=function(x) NA,
+   lower=function(a) rep(NA_real_, length(a)),
+   upper=function(a) rep(NA_real_, length(a)),
+   left=function(x)  rep(NA_real_, length(x)),
+   right=function(x) rep(NA_real_, length(x)),
    discontinuities.left =numeric(0),
    discontinuities.right=numeric(0),
    discontinuities.lower=numeric(0),
@@ -116,17 +118,17 @@ setMethod(
    signature=(x="DiscontinuousFuzzyNumber"),
    definition=function(x, i, j, drop)
    {
-      if (i == "a1") return(x@a1);
-      if (i == "a2") return(x@a2);
-      if (i == "a3") return(x@a3);
-      if (i == "a4") return(x@a4);
-      if (i == "left")  return(x@left);
-      if (i == "right") return(x@right);
-      if (i == "lower") return(x@lower);
-      if (i == "upper") return(x@upper);
-      if (i == "discontinuities.left")  return(x@discontinuities.left);
-      if (i == "discontinuities.right") return(x@discontinuities.right);
-      if (i == "discontinuities.lower") return(x@discontinuities.lower);
-      if (i == "discontinuities.upper") return(x@discontinuities.upper);
+      if (i == "a1") return(x@a1)
+      if (i == "a2") return(x@a2)
+      if (i == "a3") return(x@a3)
+      if (i == "a4") return(x@a4)
+      if (i == "left")  return(x@left)
+      if (i == "right") return(x@right)
+      if (i == "lower") return(x@lower)
+      if (i == "upper") return(x@upper)
+      if (i == "discontinuities.left")  return(x@discontinuities.left)
+      if (i == "discontinuities.right") return(x@discontinuities.right)
+      if (i == "discontinuities.lower") return(x@discontinuities.lower)
+      if (i == "discontinuities.upper") return(x@discontinuities.upper)
    }
-);
+)
