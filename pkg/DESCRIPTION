@@ -41,3 +41,4 @@ Collate:
     'plfn-ops.R'
     'tfn-ops.R'
     'convert-generators.R'
+    'invert-generators.R'

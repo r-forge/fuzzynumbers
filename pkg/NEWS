@@ -4,6 +4,10 @@ FuzzyNumbers Package NEWS
 
 0.02 /under development/
 
+* approx.invert(): a new function to find the numerical
+  inverse of a given side/alpha-cut generating function
+  (by default via Hermite monotonic spline interpolation)
+
 * convert.side(), convert.alpha():
   new functions to convert sides and alpha cuts
   to side generating funs and alpha cut generators
