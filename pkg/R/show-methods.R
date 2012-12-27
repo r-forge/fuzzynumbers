@@ -32,6 +32,7 @@
 #' @name show
 #' @aliases show,FuzzyNumber-method
 #' @rdname show-methods
+#' @family FuzzyNumber-method
 #' @docType methods
 setMethod(
    f="show",

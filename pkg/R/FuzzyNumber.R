@@ -72,6 +72,7 @@
 #' \code{\link{convert.alpha}} for creating alpha-cut bounds generators,
 #' \code{\link{approx.invert}} for inverting side functions/alpha-cuts numerically
 #' @docType class
+#' @family FuzzyNumber-method
 #' @examples
 #' showClass("FuzzyNumber")
 #' showMethods(classes="FuzzyNumber")

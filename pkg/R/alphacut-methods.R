@@ -32,6 +32,7 @@ setGeneric("alphacut",
 #' @name alphacut
 #' @aliases alphacut,FuzzyNumber,numeric-method
 #' @rdname alphacut-methods
+#' @family FuzzyNumber-method
 #' @docType methods
 setMethod(
    f="alphacut",

@@ -37,6 +37,7 @@ setGeneric("expectedValue",
 #' @aliases expectedValue,FuzzyNumber-method
 #' @rdname expectedValue-methods
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @seealso \code{\link{expectedInterval}} on which this function is based,
 #' and also \code{\link{weightedExpectedValue}}
 setMethod(

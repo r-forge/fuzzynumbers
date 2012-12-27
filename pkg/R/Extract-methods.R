@@ -31,6 +31,7 @@
 #' @rdname Extract-methods
 #' @docType methods
 #' @aliases [,FuzzyNumber-method
+#' @family FuzzyNumber-method
 #' @examples
 #' A <- FuzzyNumber(1,2,3,4)
 #' A["a1"]

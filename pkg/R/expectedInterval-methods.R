@@ -45,6 +45,7 @@ setGeneric("expectedInterval",
 #' @aliases expectedInterval,FuzzyNumber-method
 #' @rdname expectedInterval-methods
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @seealso \code{\link{integrateAlpha}}
 setMethod(
    f="expectedInterval",

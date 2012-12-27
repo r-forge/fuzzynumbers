@@ -43,6 +43,7 @@ setGeneric("alphaInterval",
 #' @rdname alphaInterval-methods
 #' @docType methods
 #' @seealso \code{\link{integrateAlpha}}
+#' @family FuzzyNumber-method
 setMethod(
    f="alphaInterval",
    signature(object="FuzzyNumber"),

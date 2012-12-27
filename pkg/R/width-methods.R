@@ -44,6 +44,7 @@ setGeneric("width",
 #' @rdname width-methods
 #' @seealso \code{\link{expectedInterval}} on which this function is based
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @references
 #' Chanas S. (2001), On the interval approximation of a fuzzy number,
 #' Fuzzy Sets and Systems 122, pp. 353-356.\cr

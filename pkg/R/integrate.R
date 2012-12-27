@@ -94,6 +94,7 @@ setGeneric("integrateAlpha",
 #' @aliases integrateAlpha,FuzzyNumber,character,numeric,numeric-method
 #' @rdname integrateAlpha-methods
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @seealso \code{\link{integrate_discont_val}}
 setMethod(
    f="integrateAlpha",

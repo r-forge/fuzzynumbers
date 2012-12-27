@@ -36,6 +36,7 @@ setGeneric("supp",
 #' @name supp
 #' @aliases supp,FuzzyNumber-method
 #' @rdname supp-methods
+#' @family FuzzyNumber-method
 #' @docType methods
 setMethod(
    f="supp",

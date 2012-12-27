@@ -37,6 +37,7 @@ setGeneric("core",
 #' @name core
 #' @aliases core,FuzzyNumber-method
 #' @rdname core-methods
+#' @family FuzzyNumber-method
 #' @docType methods
 setMethod(
    f="core",

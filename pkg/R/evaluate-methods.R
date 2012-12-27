@@ -38,6 +38,7 @@ setGeneric("evaluate",
 #' @aliases evaluate,FuzzyNumber,numeric-method
 #' @rdname evaluate-methods
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @examples
 #' T <- TrapezoidalFuzzyNumber(1,2,3,4);
 #' print(evaluate(T, seq(0,5,by=0.5)));

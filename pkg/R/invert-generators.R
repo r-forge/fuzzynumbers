@@ -29,6 +29,7 @@
 #' @param method interpolation method: "monoH.FC", "hyman" or "linear"
 #' @param n number of interpolation points
 #' @return a new function, the approximate inverse of the input
+#' @seealso \code{\linkS4class{FuzzyNumber}}
 #' @export
 approx.invert <- function(f, method=c("monoH.FC", "linear", "hyman"), n=500) 
 {

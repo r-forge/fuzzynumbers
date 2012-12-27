@@ -59,6 +59,7 @@ setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("tr
 #' @rdname trapezoidalApproximation-methods
 #' @docType methods
 #' @seealso \code{\link{piecewiseLinearApproximation}}
+#' @family FuzzyNumber-method
 #' @references
 #' Ban A.I. (2008), Approximation of fuzzy numbers by trapezoidal fuzzy numbers
 #' preserving the expected interval, Fuzzy Sets and Systems 159, pp. 1327-1344.\cr

@@ -30,6 +30,7 @@
 #' @name Arithmetic
 #' @rdname Arithmetic-methods
 #' @docType methods
+#' @family FuzzyNumber-method
 #' @aliases *,numeric,FuzzyNumber-method
 setMethod("*",
    signature(e1 = "numeric", e2 = "FuzzyNumber"),

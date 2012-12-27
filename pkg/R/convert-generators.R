@@ -28,6 +28,8 @@
 #' @param x1 numeric vector of length 1; if longer, only the first element is used
 #' @param x2 numeric vector of length 1; if longer, only the first element is used
 #' @return a new function defined on [0,1] (scaled input)
+#' @seealso \code{\linkS4class{FuzzyNumber}}
+#' @family FuzzyNumber-method
 #' @export
 convert.side <- function(f, x1, x2) 
 {
@@ -54,6 +56,7 @@ convert.side <- function(f, x1, x2)
 #' @param y1 numeric vector of length 1
 #' @param y2 numeric vector of length 1
 #' @return a new function defined on [0,1] (scaled input)
+#' @seealso \code{\linkS4class{FuzzyNumber}}
 #' @export
 convert.alpha <- function(f, y1, y2) 
 {

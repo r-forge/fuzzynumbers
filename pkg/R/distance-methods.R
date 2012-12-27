@@ -42,6 +42,7 @@ setGeneric("distance",
 #' @rdname distance-methods
 #' @docType methods
 #' @seealso \code{\link{integrate}}, \code{\link{integrate_discont_val}}
+#' @family FuzzyNumber-method
 #' @references
 #' Grzegorzewski P., Metrics and orders in space of fuzzy numbers,
 #' Fuzzy Sets and Systems 97, 1998, pp. 83-94.\cr

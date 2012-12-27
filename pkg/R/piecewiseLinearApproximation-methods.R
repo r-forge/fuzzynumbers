@@ -53,6 +53,7 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 #' @rdname piecewiseLinearApproximation-methods
 #' @docType methods
 #' @seealso \code{\link{trapezoidalApproximation}}
+#' @family FuzzyNumber-method
 #' @references
 #' Coroianu L., Gagolewski M., Grzegorzewski P. (2013),
 #' Nearest Piecewise Linear Approximation of Fuzzy Numbers, to appear in Fuzzy Sets and Systems.\cr

@@ -39,6 +39,7 @@ setGeneric("ambiguity",
 #' @rdname ambiguity-methods
 #' @docType methods
 #' @seealso \code{\link{alphaInterval}} on which the method is based
+#' @family FuzzyNumber-method
 #' @references
 #' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
 #' Fuzzy Sets and Systems 93, pp. 125-135.\cr
