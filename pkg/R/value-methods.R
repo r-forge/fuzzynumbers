@@ -30,15 +30,14 @@ setGeneric("value",
 #' 
 #' @section Methods:
 #' \describe{
-#'      \item{\code{signature(object = "FuzzyNumber")}}{
-#'      
-#'   }
+#'      \item{\code{signature(object = "FuzzyNumber")}}{ }
 #' }
 #' @exportMethod value
 #' @name value-methods
 #' @aliases value,FuzzyNumber-method
 #' @rdname value-methods
 #' @docType methods
+#' @seealso \code{\link{alphaInterval-methods}} on which this function is based
 #' @references
 #' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
 #' Fuzzy Sets and Systems 93, pp. 125-135.\cr
@@ -50,3 +49,5 @@ setMethod(
       return(sum(alphaInterval(object, ...)))
    }
 )
+
+

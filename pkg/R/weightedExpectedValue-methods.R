@@ -27,7 +27,7 @@ setGeneric("weightedExpectedValue",
 #'
 #' The weighted (\eqn{0<w<1})) expected value of \eqn{A} is defined as
 #' \eqn{EV_w(A) := (1-w) EI_U(A) - w EI_L(A)},
-#' where \eqn{EI} is the \code{\link{expectedInterval}}.
+#' where \eqn{EI} is the \code{expectedInterval}.
 #' 
 #' @section Methods:
 #' \describe{
@@ -39,6 +39,7 @@ setGeneric("weightedExpectedValue",
 #' @name weightedExpectedValue-methods
 #' @aliases weightedExpectedValue,FuzzyNumber,numeric-method
 #' @rdname weightedExpectedValue-methods
+#' @seealso \code{\link{expectedInterval-methods}} on which this function is based
 #' @docType methods
 setMethod(
    f="weightedExpectedValue",

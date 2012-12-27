@@ -18,13 +18,21 @@
 
 
 
-#' Print basic information on a FuzzyNumber
+#' Print basic information on a fuzzy number
+#'
 #' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{  }
+#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{  }
+#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{  }
+#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{  }
+#' }
 #' @exportMethod show
-#' @docType methods
+#' @name show-methods
+#' @aliases show,FuzzyNumber-method
 #' @rdname show-methods
-#' @aliases show,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
+#' @docType methods
 setMethod(
    f="show",
    signature(object="FuzzyNumber"),
@@ -38,13 +46,11 @@ setMethod(
 
 
 
-#' Print basic information on a PiecewiseLinearFuzzyNumber
-#' 
 #' @exportMethod show
-#' @docType methods
+#' @name show-methods
+#' @aliases show,PiecewiseLinearFuzzyNumber-method
 #' @rdname show-methods
-#' @aliases show,PiecewiseLinearFuzzyNumber,PiecewiseLinearFuzzyNumber-methods
-#' @family PiecewiseLinearFuzzyNumber-methods
+#' @docType methods
 setMethod(
    f="show",
    signature(object="PiecewiseLinearFuzzyNumber"),
@@ -57,8 +63,11 @@ setMethod(
 
 
 
+#' @exportMethod show
+#' @name show-methods
+#' @aliases show,TrapezoidalFuzzyNumber-method
 #' @rdname show-methods
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
+#' @docType methods
 setMethod(
    f="show",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -72,8 +81,11 @@ setMethod(
 
 
 
+#' @exportMethod show
+#' @name show-methods
+#' @aliases show,PowerFuzzyNumber-method
 #' @rdname show-methods
-#' @aliases show,PowerFuzzyNumber,PowerFuzzyNumber-method
+#' @docType methods
 setMethod(
    f="show",
    signature(object="PowerFuzzyNumber"),

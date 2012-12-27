@@ -22,9 +22,26 @@ setGeneric("expectedInterval",
 
 
 
-#' TO DO
+#' Calculate the expected interval of a fuzzy number
 #'
+#' We have \eqn{EI(A) := [\int_0^1  A_L(\alpha)\,d\alpha,\int_0^1  A_U(\alpha)\,d\alpha]
+#' }{EI(A) := [int_0^1  A_L(\alpha) d\alpha, int_0^1  A_U(\alpha) d\alpha]},
+#' see (Duboid, Prade, 1987).
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{}
+#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{}
+#' }
+#' @references
+#' Dubois D., Prade H. (1987), The mean value of a fuzzy number, Fuzzy Sets and Systems 24, pp. 279-300.\cr
 #' @exportMethod expectedInterval
+#' @name expectedInterval-methods
+#' @aliases expectedInterval,FuzzyNumber-method
+#' @rdname expectedInterval-methods
+#' @docType methods
 setMethod(
    f="expectedInterval",
    signature(object="FuzzyNumber"),
@@ -42,9 +59,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
 #' @exportMethod expectedInterval
+#' @name expectedInterval-methods
+#' @aliases expectedInterval,TrapezoidalFuzzyNumber-method
+#' @rdname expectedInterval-methods
+#' @docType methods
 setMethod(
    f="expectedInterval",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -58,9 +77,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
 #' @exportMethod expectedInterval
+#' @name expectedInterval-methods
+#' @aliases expectedInterval,PiecewiseLinearFuzzyNumber-method
+#' @rdname expectedInterval-methods
+#' @docType methods
 setMethod(
    f="expectedInterval",
    signature(object="PiecewiseLinearFuzzyNumber"),
@@ -74,6 +95,24 @@ setMethod(
       return(c(
          sum( (xl[-object@knot.n-2]+0.5*diff(xl))*dal ),
          sum(-(xr[-object@knot.n-2]+0.5*diff(xr))*dar )
+      ))
+   }
+)
+
+
+#' @exportMethod expectedInterval
+#' @name expectedInterval-methods
+#' @aliases expectedInterval,PowerFuzzyNumber-method
+#' @rdname expectedInterval-methods
+#' @docType methods
+setMethod(
+   f="expectedInterval",
+   signature(object="PowerFuzzyNumber"),
+   definition=function(object, ...)
+   {
+      return(c(
+         (object@a1+object@p.left*(object@a2-object@a1)/(object@p.left+1) ),
+         (object@a3+(object@a4-object@a3)/(object@p.right+1) )
       ))
    }
 )

@@ -28,7 +28,7 @@ setGeneric("width",
 #'
 #' The width of \eqn{A} is defined as
 #' \eqn{width(A) := EI_U(A) - EI_L(A)},
-#' where \eqn{EI} is the \code{\link{expectedInterval}}.
+#' where \eqn{EI} is the \code{expectedInterval}.
 #' 
 #' @section Methods:
 #' \describe{
@@ -40,6 +40,7 @@ setGeneric("width",
 #' @name width-methods
 #' @aliases width,FuzzyNumber-method
 #' @rdname width-methods
+#' @seealso \code{\link{expectedInterval-methods}} on which this function is based
 #' @docType methods
 setMethod(
    f="width",

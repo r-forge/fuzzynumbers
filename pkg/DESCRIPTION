@@ -41,7 +41,6 @@ Collate:
     'PiecewiseLinearFuzzyNumber.R'
     'plot-methods.R'
     'PowerFuzzyNumber.R'
-    'powfn-aux.R'
     'show-methods.R'
     'supp-methods.R'
     'TrapezoidalFuzzyNumber.R'

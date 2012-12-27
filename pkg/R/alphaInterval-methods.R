@@ -21,9 +21,24 @@
 setGeneric("alphaInterval",
            function(object, ...) standardGeneric("alphaInterval"))
 
-#' TO DO
+
+#' Calculate the so-called alpha-interval of a fuzzy number
 #'
+#' We have \eqn{\alpha-Int(A) := [\int_0^1 \alpha A_L(\alpha)\,d\alpha, \int_0^1 \alpha A_U(\alpha)\,d\alpha]
+#' }{\alpha-Int(A) := [int_0^1 \alpha A_L(\alpha) d\alpha, int_0^1 \alpha A_U(\alpha) d\alpha]}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{}
+#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{}
+#' }
 #' @exportMethod alphaInterval
+#' @name alphaInterval-methods
+#' @aliases alphaInterval,FuzzyNumber-method
+#' @rdname alphaInterval-methods
+#' @docType methods
 setMethod(
    f="alphaInterval",
    signature(object="FuzzyNumber"),
@@ -41,9 +56,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
-#' @exportMethod value
+#' @exportMethod alphaInterval
+#' @name alphaInterval-methods
+#' @aliases alphaInterval,TrapezoidalFuzzyNumber-method
+#' @rdname alphaInterval-methods
+#' @docType methods
 setMethod(
    f="alphaInterval",
    signature(object="TrapezoidalFuzzyNumber"),
@@ -60,9 +77,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
-#' @exportMethod value
+#' @exportMethod alphaInterval
+#' @name alphaInterval-methods
+#' @aliases alphaInterval,PiecewiseLinearFuzzyNumber-method
+#' @rdname alphaInterval-methods
+#' @docType methods
 setMethod(
    f="alphaInterval",
    signature(object="PiecewiseLinearFuzzyNumber"),
@@ -83,3 +102,22 @@ setMethod(
       ))
    }
 )
+
+
+#' @exportMethod alphaInterval
+#' @name alphaInterval-methods
+#' @aliases alphaInterval,PowerFuzzyNumber-method
+#' @rdname alphaInterval-methods
+#' @docType methods
+setMethod(
+   f="alphaInterval",
+   signature(object="PowerFuzzyNumber"),
+   definition=function(object, ...)
+   {
+      return(c(
+         (2*object@a2*object@p.left+object@a1)/(4*object@p.left+2),
+         (2*object@a3*object@p.right+object@a4)/(4*object@p.right+2)
+      ))
+   }
+)
+
