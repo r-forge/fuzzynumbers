@@ -24,9 +24,9 @@
 #' alpha-cut generators and inversely.
 #' 
 #' @param f a monotonic, continuous function f: [0,1]->[0,1]
-#' @param interpolation method: "monoH.FC", "hyman" or "linear"
+#' @param method interpolation method: "monoH.FC", "hyman" or "linear"
 #' @param n number of interpolation points
-#' @return a new function, its approximate inverse
+#' @return a new function, the approximate inverse of the input
 #' @export
 approx.invert <- function(f, method=c("monoH.FC", "linear", "hyman"), n=500) 
 {

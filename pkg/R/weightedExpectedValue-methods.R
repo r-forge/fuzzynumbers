@@ -23,9 +23,23 @@ setGeneric("weightedExpectedValue",
 
 
 
-#' TO DO
+#' Calculate the weighted expected value of a fuzzy number
 #'
+#' The weighted (\eqn{0<w<1})) expected value of \eqn{A} is defined as
+#' \eqn{EV_w(A) := (1-w) EI_U(A) - w EI_L(A)},
+#' where \eqn{EI} is the \code{\link{expectedInterval}}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber", w = "numeric")}}{
+#'      
+#'   }
+#' }
 #' @exportMethod weightedExpectedValue
+#' @name weightedExpectedValue-methods
+#' @aliases weightedExpectedValue,FuzzyNumber,numeric-method
+#' @rdname weightedExpectedValue-methods
+#' @docType methods
 setMethod(
    f="weightedExpectedValue",
    signature(object="FuzzyNumber", w="numeric"),

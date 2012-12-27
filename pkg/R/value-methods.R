@@ -23,9 +23,25 @@ setGeneric("value",
            function(object, ...) standardGeneric("value"))
 
 
-#' TO DO
+#' Calculate the value of a fuzzy number (defuzzify)
 #'
+#' The value of \eqn{A} (Delgrado et al, 1998) is defined as
+#' \eqn{val(A) := \int_0^1 \alpha\left(A_L(\alpha)+A_U(\alpha)\right)\,d\alpha}{val(A) := int_0^1 \alpha(A_L(\alpha) + A_U(\alpha))d\alpha}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{
+#'      
+#'   }
+#' }
 #' @exportMethod value
+#' @name value-methods
+#' @aliases value,FuzzyNumber-method
+#' @rdname value-methods
+#' @docType methods
+#' @references
+#' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
+#' Fuzzy Sets and Systems 93, pp. 125-135.\cr
 setMethod(
    f="value",
    signature(object="FuzzyNumber"),

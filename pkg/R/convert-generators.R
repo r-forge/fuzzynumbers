@@ -21,7 +21,7 @@
 #' 
 #' The resulting function linearly scales the input
 #' and passes it to the original function. 
-#' The function works for x1<x2 and x1>x2
+#' The function works for x1<x2 and x1>x2.
 #' 
 #' 
 #' @param f a function defined on [x1,x2]

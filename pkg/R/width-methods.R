@@ -24,9 +24,23 @@ setGeneric("width",
 
 
 
-#' TO DO
+#' Calculate the width of a fuzzy number
 #'
+#' The width of \eqn{A} is defined as
+#' \eqn{width(A) := EI_U(A) - EI_L(A)},
+#' where \eqn{EI} is the \code{\link{expectedInterval}}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{
+#'      
+#'   }
+#' }
 #' @exportMethod width
+#' @name width-methods
+#' @aliases width,FuzzyNumber-method
+#' @rdname width-methods
+#' @docType methods
 setMethod(
    f="width",
    signature(object="FuzzyNumber"),

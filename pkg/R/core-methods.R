@@ -23,12 +23,20 @@ setGeneric("core",
 
 
 
-#' Calculate core of a FuzzyNumber
+#' Calculate the core of a fuzzy number
 #'
+#' We have \eqn{supp(A) := [a2,a3]}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{
+#'      
+#'   }
+#' }
 #' @exportMethod core
+#' @name core-methods
+#' @aliases core,FuzzyNumber-method
 #' @rdname core-methods
-#' @aliases core,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
 #' @docType methods
 setMethod(
    f="core",

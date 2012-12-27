@@ -22,12 +22,20 @@ setGeneric("supp",
            function(object) standardGeneric("supp"))
 
 
-#' Calculate support of a FuzzyNumber
+#' Calculate the support of a fuzzy number
 #'
+#' We have \eqn{supp(A) := [a1,a4]}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{
+#'      
+#'   }
+#' }
 #' @exportMethod supp
+#' @name supp-methods
+#' @aliases supp,FuzzyNumber-method
 #' @rdname supp-methods
-#' @aliases supp,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
 #' @docType methods
 setMethod(
    f="supp",
