@@ -17,17 +17,26 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
-#' S4 class representing a fuzzy number with possibly discontinuous side functions or alpha-cut bounds
+#' S4 class representing a fuzzy number with discontinuous side functions or alpha-cut bounds
 #'
-#' TO DO
 #'
-#' Extends: 
-#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
+#' @section Slots:
+#'  \describe{
+#'    \item{\code{discontinuities.left}:}{Object of class \code{"numeric"} ~~ }
+#'    \item{\code{discontinuities.right}:}{Object of class \code{"numeric"} ~~ }
+#'    \item{\code{discontinuities.lower}:}{Object of class \code{"numeric"} ~~ }
+#'    \item{\code{discontinuities.upper}:}{Object of class \code{"numeric"} ~~ }
+#'  }
+#'
+#' @section Extends:
+#' Class \code{\linkS4class{FuzzyNumber}}, directly. 
 #'
 #' @exportClass DiscontinuousFuzzyNumber
 #' @name DiscontinuousFuzzyNumber-class
-#' @seealso \code{\link{DiscontinuousFuzzyNumber}}
+#' @seealso \code{\link{DiscontinuousFuzzyNumber}} for a convenient constructor
 #' @docType class
+#' @examples
+#' showClass("DiscontinuousFuzzyNumber")
 setClass(
    Class="DiscontinuousFuzzyNumber",
    representation(
@@ -73,21 +82,22 @@ setClass(
 
 #' Creates a fuzzy number with possibly discontinuous side functions or alpha-cut bounds
 #'
-#' For convenience, objects of class \code{DiscontinuousFuzzyNumber} (see \code{\link{DiscontinuousFuzzyNumber-class}})
+#' For convenience, objects of class \code{\linkS4class{DiscontinuousFuzzyNumber}}
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support
 #' @param a2 a number specyfing left bound of the core
 #' @param a3 a number specyfing right bound of the core
 #' @param a4 a number specyfing right bound of the support
-#' @param lower lower alpha-cut bound generator; a nondecreasing function [0,1]->[0,1] or returning NA
-#' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA
-#' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA
-#' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
+#' @param lower lower alpha-cut bound generator; a nondecreasing function [0,1]->[0,1] or returning NA_real_
+#' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
+#' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA_real_
+#' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
 #' @param discontinuities.left  nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
 #' @param discontinuities.right nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
 #' @param discontinuities.lower nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
 #' @param discontinuities.upper nondecreasingly sorted numeric vector with elements in (0,1), possibly of length 0
+#' @return Object of class \code{\linkS4class{DiscontinuousFuzzyNumber}}
 #' @export
 DiscontinuousFuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(a) rep(NA_real_, length(a)),

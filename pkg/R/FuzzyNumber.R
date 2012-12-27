@@ -19,7 +19,6 @@
 
 #' S4 class representing a fuzzy number
 #'
-#'
 #' Formally, a fuzzy number \eqn{A} (Dubois, Prade, 1978) is a fuzzy subset of the
 #' real line \eqn{R}  with membership function \eqn{\mu} given by:
 #' \tabular{lll}{
@@ -46,8 +45,15 @@
 #' \cr
 #' Please note that many algorithms that deal with fuzzy numbers often use
 #' \eqn{\alpha}-cuts rather than side functions.
-#'
-#' Slots:
+#' 
+#' Note that the \pkg{FuzzyNumbers} package also deals with particular types
+#' of fuzzy numbers like trapezoidal, piecewise linear, or ``parametric'' FNs
+#' (see \code{\link{TrapezoidalFuzzyNumber-class}}
+#' \code{\link{PiecewiseLinearFuzzyNumber-class}},
+#' \code{\link{PowerFuzzyNumber-class}},
+#' \code{\link{DiscontinuousFuzzyNumber-class}})
+#' 
+#' @section Slots:
 #'  \describe{
 #'    \item{\code{a1}:}{Single numeric value specifying the left bound for the support.}
 #'    \item{\code{a2}:}{Single numeric value specifying the left bound for the core.}
@@ -61,8 +67,14 @@
 #' 
 #' @exportClass FuzzyNumber
 #' @name FuzzyNumber-class
-#' @seealso \code{\link{FuzzyNumber}} for a convenient constructor
+#' @seealso \code{\link{FuzzyNumber}} for a convenient constructor,
+#' \code{\link{convert.side}} for creating side functions generators,
+#' \code{\link{convert.alpha}} for creating alpha-cut bounds generators,
+#' \code{\link{approx.invert}} for inverting side functions/alpha-cuts numerically
 #' @docType class
+#' @examples
+#' showClass("FuzzyNumber")
+#' showMethods(classes="FuzzyNumber")
 setClass(
    Class="FuzzyNumber",
    representation(
@@ -150,7 +162,7 @@ setClass(
 #' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
 #' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA_real_
 #' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
-#' @return An object of class \code{FuzzyNumber}
+#' @return Object of class \code{FuzzyNumber}
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
    lower=function(a) rep(NA_real_, length(a)),
@@ -171,7 +183,7 @@ FuzzyNumber <- function(a1, a2, a3, a4,
 #' used in normal computations.
 #' 
 #' @param object a trapezoidal or piecewiselinear fuzzy number
-#' @return An object of class \code{FuzzyNumber}
+#' @return Object of class \code{FuzzyNumber}
 #' @export
 #' @seealso \code{\link{FuzzyNumber-class}},
 #' \code{\link{TrapezoidalFuzzyNumber-class}},

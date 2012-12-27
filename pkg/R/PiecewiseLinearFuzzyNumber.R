@@ -23,13 +23,23 @@
 #' and alpha-cut bounds that linearly interpolate a given set of points
 #' (at fixed alpha-cuts).
 #'
-#' Entends:
-#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#'
+#' @section Slots:
+#'  \describe{
+#'     \item{\code{knot.n}:}{Object of class \code{"numeric"} ~~ }
+#'     \item{\code{knot.alpha}:}{Object of class \code{"numeric"} ~~ }
+#'     \item{\code{knot.left}:}{Object of class \code{"numeric"} ~~ }
+#'     \item{\code{knot.right}:}{Object of class \code{"numeric"} ~~ }
+#'  }
+#'  
+#' @section Extends:
+#' Class \code{\linkS4class{FuzzyNumber}}, directly.
+#' 
 #' @exportClass PiecewiseLinearFuzzyNumber
 #' @name PiecewiseLinearFuzzyNumber-class
+#' @seealso \code{\link{PiecewiseLinearFuzzyNumber}} for a convenient constructor
 #' @docType class
-#' @seealso \code{\link{PiecewiseLinearFuzzyNumber}}
+#' @examples
+#' showClass("PiecewiseLinearFuzzyNumber")
 setClass(
    Class="PiecewiseLinearFuzzyNumber",
    representation(
@@ -99,12 +109,12 @@ setMethod(
 
       return(.Object)
    }
-);
+)
 
 
 #' Creates a piecewise linear fuzzy number
 #'
-#' For convenience, objects of class \code{PiecewiseLinearFuzzyNumber} (see \code{\link{PiecewiseLinearFuzzyNumber-class}})
+#' For convenience, objects of class \code{\linkS4class{PiecewiseLinearFuzzyNumber}}
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support
@@ -115,7 +125,7 @@ setMethod(
 #' @param knot.alpha \code{knot.n} alpha-cut values at knots
 #' @param knot.left \code{knot.n} knots on the left side; a nondecreasingly sorted vector with elements in [\code{a1},\code{a2}]
 #' @param knot.right \code{knot.n} knots on the right side; a nondecreasingly sorted vector with elements in [\code{a3},\code{a4}]
-#' @return An object of the PiecewiseLinearFuzzyNumber classs
+#' @return Object of class \code{\linkS4class{PiecewiseLinearFuzzyNumber}}
 #' @export
 PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
    knot.n=0, knot.alpha=numeric(0),
@@ -134,6 +144,7 @@ PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
 #' @param object a trapezoidal fuzzy number
 #' @param knot.n the number of knots
 #' @param knot.alpha \code{knot.n} alpha-cut values at knots
+#' @return Object of class \code{\linkS4class{PiecewiseLinearFuzzyNumber}}
 #' @export
 as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0))
 {

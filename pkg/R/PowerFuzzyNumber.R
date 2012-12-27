@@ -20,15 +20,22 @@
 
 #' S4 class representing a fuzzy number with sides given by power functions
 #'
-#' TO DO
 #'
-#' Extends:
-#' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#' 
+#' @section Slots:
+#'  \describe{
+#'    \item{\code{p.left}:}{Object of class \code{"numeric"}; 1.0 to get a trapezoidal FN }
+#'    \item{\code{p.right}:}{Object of class \code{"numeric"}; 1.0 to get a trapezoidal FN }
+#'  }
+#'
+#' @section Extends:
+#' Class \code{\linkS4class{FuzzyNumber}}, directly. 
+#'
 #' @exportClass PowerFuzzyNumber
 #' @name PowerFuzzyNumber-class
-#' @seealso \code{\link{PowerFuzzyNumber}}
+#' @seealso \code{\link{PowerFuzzyNumber}} for a convenient constructor
 #' @docType class
+#' @examples
+#' showClass("PowerFuzzyNumber")
 setClass(
    Class="PowerFuzzyNumber",
    representation(
@@ -41,13 +48,13 @@ setClass(
    ),
    validity=function(object)
    {
-      if (object@p.left <= 0) return("`p.left' should be > 0");
-      if (object@p.right <= 0) return("`p.right' should be > 0");
+      if (object@p.left <= 0) return("`p.left' should be > 0")
+      if (object@p.right <= 0) return("`p.right' should be > 0")
 
       return(TRUE);
    },
    contains="FuzzyNumber"
-);
+)
 
 
 
@@ -73,14 +80,14 @@ setMethod(
       environment(.Object@lower) <- e
       environment(.Object@upper) <- e
 
-      return(.Object);
+      return(.Object)
    }
-);
+)
 
 
 #' Creates a ``parametric'' fuzzy number with sides given by power functions
 #'
-#' For convenience, objects of class \code{PowerFuzzyNumber} (see \code{\link{PowerFuzzyNumber-class}})
+#' For convenience, objects of class \code{\linkS4class{PowerFuzzyNumber}}
 #' may be created with this function.
 #'
 #' @param a1 a number specyfing left bound of the support
@@ -89,12 +96,13 @@ setMethod(
 #' @param a4 a number specyfing right bound of the support
 #' @param p.left a positive number specyfing the exponent for the left side
 #' @param p.right a positive number specyfing the exponent for the right side
+#' @return Object of class \code{\linkS4class{PowerFuzzyNumber}}
 #' @export
 PowerFuzzyNumber <- function(a1, a2, a3, a4, p.left=1.0, p.right=1.0)
 {
    .Object <- new("PowerFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
-                                      p.left=p.left, p.right=p.right);
-   .Object;
+                                      p.left=p.left, p.right=p.right)
+   .Object
 }
 
 
