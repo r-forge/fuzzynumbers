@@ -12,7 +12,7 @@ Description: The FuzzyNumbers package provides S4 classes and methods
     random FN generation, etc.
 Version: 0.02
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
-Date: 2012-12-26
+Date: 2012-12-27
 Depends:
     R (>= 2.15.0),
     graphics,
@@ -20,25 +20,31 @@ Depends:
 Suggests:
     testthat
 Collate:
-    'fn-def.R'
-    'fn-plot.R'
-    'tfn-def.R'
-    'FuzzyNumbers-package.R'
-    'tfn-plot.R'
-    'plfn-def.R'
-    'plfn-plot.R'
+    'FuzzyNumber.R'
+    'alphacut-methods.R'
+    'alphaInterval-methods.R'
+    'ambiguity-methods.R'
     'approx-pl.R'
     'approx-t.R'
-    'discontfn-def.R'
-    'distance.R'
-    'fn-aux.R'
-    'integrate.R'
-    'plfn-aux.R'
-    'tfn-aux.R'
-    'powfn-def.R'
-    'powfn-aux.R'
-    'fn-ops.R'
-    'plfn-ops.R'
-    'tfn-ops.R'
+    'Arithmetic-methods.R'
     'convert-generators.R'
+    'core-methods.R'
+    'DiscontinuousFuzzyNumber.R'
+    'distance-methods.R'
+    'evaluate-methods.R'
+    'expectedInterval-methods.R'
+    'expectedValue-methods.R'
+    'Extract-methods.R'
+    'FuzzyNumbers-package.R'
+    'integrate.R'
     'invert-generators.R'
+    'PiecewiseLinearFuzzyNumber.R'
+    'plot-methods.R'
+    'PowerFuzzyNumber.R'
+    'powfn-aux.R'
+    'show-methods.R'
+    'supp-methods.R'
+    'TrapezoidalFuzzyNumber.R'
+    'value-methods.R'
+    'weightedExpectedValue-methods.R'
+    'width-methods.R'
