@@ -36,10 +36,10 @@ setGeneric("weightedExpectedValue",
 #'   }
 #' }
 #' @exportMethod weightedExpectedValue
-#' @name weightedExpectedValue-methods
+#' @name weightedExpectedValue
 #' @aliases weightedExpectedValue,FuzzyNumber,numeric-method
 #' @rdname weightedExpectedValue-methods
-#' @seealso \code{\link{expectedInterval-methods}} on which this function is based
+#' @seealso \code{\link{expectedInterval}} on which this function is based
 #' @docType methods
 setMethod(
    f="weightedExpectedValue",

@@ -34,7 +34,7 @@ setGeneric("core",
 #'   }
 #' }
 #' @exportMethod core
-#' @name core-methods
+#' @name core
 #' @aliases core,FuzzyNumber-method
 #' @rdname core-methods
 #' @docType methods

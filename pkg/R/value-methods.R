@@ -33,11 +33,11 @@ setGeneric("value",
 #'      \item{\code{signature(object = "FuzzyNumber")}}{ }
 #' }
 #' @exportMethod value
-#' @name value-methods
+#' @name value
 #' @aliases value,FuzzyNumber-method
 #' @rdname value-methods
 #' @docType methods
-#' @seealso \code{\link{alphaInterval-methods}} on which this function is based
+#' @seealso \code{\link{alphaInterval}} on which this function is based
 #' @references
 #' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
 #' Fuzzy Sets and Systems 93, pp. 125-135.\cr

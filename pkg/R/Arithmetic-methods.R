@@ -17,13 +17,20 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
-#' TO DO
+#' Arithmetic operations on fuzzy numbers
 #' 
+#' Currently implemented:
+#' Fuzzy number scalar multiplication,
+#' change sign, trapezoidal fuzzy number addition and subtraction.
+#' 
+#' TO DO: more ops
+#' 
+#' @return A fuzzy number
 #' @exportMethod *
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
 #' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
+#' @aliases *,numeric,FuzzyNumber-method
 setMethod("*",
    signature(e1 = "numeric", e2 = "FuzzyNumber"),
    function (e1, e2)
@@ -32,13 +39,11 @@ setMethod("*",
    }
 )
 
-#' TO DO
-#' 
 #' @exportMethod -
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
 #' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
+#' @aliases -,FuzzyNumber,ANY-method
 setMethod("-",
    signature(e1 = "FuzzyNumber"),
    function (e1, e2)
@@ -47,6 +52,55 @@ setMethod("-",
    }
 )
 
+
+
+
+
+#' @exportMethod +
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
+#' @docType methods
+#' @aliases +,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
+setMethod("+",
+          signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
+          function (e1, e2)
+          {
+             TrapezoidalFuzzyNumber(e1@a1+e2@a1, e1@a2+e2@a2, e1@a3+e2@a3, e1@a4+e2@a4)
+          }
+)
+
+
+
+#' @exportMethod -
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
+#' @docType methods
+#' @aliases -,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
+setMethod("-",
+          signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
+          function (e1, e2)
+          {
+             TrapezoidalFuzzyNumber(e1@a1-e2@a4, e1@a2-e2@a3, e1@a3-e2@a2, e1@a4-e2@a1)
+          }
+)
+
+#' @exportMethod *
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
+#' @docType methods
+#' @aliases *,TrapezoidalFuzzyNumber,numeric-method
+setMethod("*",
+   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "numeric"),
+   function (e1, e2)
+   {
+      stopifnot(length(e2) == 1);
+      TrapezoidalFuzzyNumber(min(e2*e1@a1, e2*e1@a4),
+                             min(e2*e1@a2, e2*e1@a3),
+                             max(e2*e1@a2, e2*e1@a3),
+                             max(e2*e1@a1, e2*e1@a4)
+      )
+   }
+)
 
 
 
@@ -66,84 +120,31 @@ setMethod("-",
 #    }
 # );
 
-#' TO DO
-#' 
 #' @exportMethod *
+#' @name Arithmetic
+#' @rdname Arithmetic-methods
 #' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,PiecewiseLinearTrapezoidalFuzzyNumber,PiecewiseLinearTrapezoidalFuzzyNumber-methods
-#' @family PiecewiseLinearTrapezoidalFuzzyNumber-methods
+#' @aliases *,PiecewiseLinearFuzzyNumber,numeric-method
 setMethod("*",
-   signature(e1 = "PiecewiseLinearFuzzyNumber", e2 = "numeric"),
-   function (e1, e2)
-   {
-      stopifnot(length(e2) == 1);
-      kl <-     c(e1@a1, e1@knot.left,  e1@a2);
-      kr <- rev(c(e1@a3, e1@knot.right, e1@a4));
-      kmin <- pmin(e2*kl, e2*kr);
-      kmax <- pmax(e2*kl, e2*kr);
-      
-      PiecewiseLinearFuzzyNumber(
-         kmin[1],
-         kmin[length(kmin)],
-         kmax[length(kmax)],
-         kmax[1],
-         knot.n=e1@knot.n,
-         knot.alpha=e1@knot.alpha,
-         knot.left= kmin[-c(1,length(kmin))],
-         knot.right=rev(kmax[-c(1,length(kmax))])
-      )
-   }
-)
-
-
-
-#' TO DO
-#' 
-#' @exportMethod +
-#' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-methods
-#' @family TrapezoidalFuzzyNumber-methods
-setMethod("+",
-          signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
+          signature(e1 = "PiecewiseLinearFuzzyNumber", e2 = "numeric"),
           function (e1, e2)
           {
-             TrapezoidalFuzzyNumber(e1@a1+e2@a1, e1@a2+e2@a2, e1@a3+e2@a3, e1@a4+e2@a4)
+             stopifnot(length(e2) == 1);
+             kl <-     c(e1@a1, e1@knot.left,  e1@a2);
+             kr <- rev(c(e1@a3, e1@knot.right, e1@a4));
+             kmin <- pmin(e2*kl, e2*kr);
+             kmax <- pmax(e2*kl, e2*kr);
+             
+             PiecewiseLinearFuzzyNumber(
+                kmin[1],
+                kmin[length(kmin)],
+                kmax[length(kmax)],
+                kmax[1],
+                knot.n=e1@knot.n,
+                knot.alpha=e1@knot.alpha,
+                knot.left= kmin[-c(1,length(kmin))],
+                knot.right=rev(kmax[-c(1,length(kmax))])
+             )
           }
 )
 
-#' TO DO
-#' 
-#' @exportMethod -
-#' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-methods
-#' @family TrapezoidalFuzzyNumber-methods
-setMethod("-",
-          signature(e1 = "TrapezoidalFuzzyNumber", e2 = "TrapezoidalFuzzyNumber"),
-          function (e1, e2)
-          {
-             TrapezoidalFuzzyNumber(e1@a1-e2@a4, e1@a2-e2@a3, e1@a3-e2@a2, e1@a4-e2@a1)
-          }
-)
-
-#' TO DO
-#' 
-#' @exportMethod *
-#' @docType methods
-#' @rdname Arithmetic
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-methods
-#' @family TrapezoidalFuzzyNumber-methods
-setMethod("*",
-   signature(e1 = "TrapezoidalFuzzyNumber", e2 = "numeric"),
-   function (e1, e2)
-   {
-      stopifnot(length(e2) == 1);
-      TrapezoidalFuzzyNumber(min(e2*e1@a1, e2*e1@a4),
-                             min(e2*e1@a2, e2*e1@a3),
-                             max(e2*e1@a2, e2*e1@a3),
-                             max(e2*e1@a1, e2*e1@a4)
-      )
-   }
-)

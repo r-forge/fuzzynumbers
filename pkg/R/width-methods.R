@@ -26,6 +26,8 @@ setGeneric("width",
 
 #' Calculate the width of a fuzzy number
 #'
+#' The width is a measure of nonspecificity of a fuzzy number.
+#' 
 #' The width of \eqn{A} is defined as
 #' \eqn{width(A) := EI_U(A) - EI_L(A)},
 #' where \eqn{EI} is the \code{expectedInterval}.
@@ -37,11 +39,14 @@ setGeneric("width",
 #'   }
 #' }
 #' @exportMethod width
-#' @name width-methods
+#' @name width
 #' @aliases width,FuzzyNumber-method
 #' @rdname width-methods
-#' @seealso \code{\link{expectedInterval-methods}} on which this function is based
+#' @seealso \code{\link{expectedInterval}} on which this function is based
 #' @docType methods
+#' @references
+#' Chanas S. (2001), On the interval approximation of a fuzzy number,
+#' Fuzzy Sets and Systems 122, pp. 353-356.\cr
 setMethod(
    f="width",
    signature(object="FuzzyNumber"),

@@ -22,9 +22,23 @@ setGeneric("expectedValue",
 
 
 
-#' TO DO
+#' Calculate the expected value of a fuzzy number (defuzzify)
 #'
+#' The expected value of \eqn{A} is defined as
+#' \eqn{EV_w(A) := EI_U(A) - EI_L(A)},
+#' where \eqn{EI} is the \code{expectedInterval}.
+#' 
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{ }
+#' }
 #' @exportMethod expectedValue
+#' @name expectedValue
+#' @aliases expectedValue,FuzzyNumber-method
+#' @rdname expectedValue-methods
+#' @docType methods
+#' @seealso \code{\link{expectedInterval}} on which this function is based,
+#' and also \code{\link{weightedExpectedValue}}
 setMethod(
    f="expectedValue",
    signature(object="FuzzyNumber"),

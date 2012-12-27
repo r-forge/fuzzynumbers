@@ -17,6 +17,8 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
+
+
 #' Approximate the inverse of a given side generating functions using interpolation
 #' 
 #' The function is a wrapper to splinefun() and approxfun().

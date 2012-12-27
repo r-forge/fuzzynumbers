@@ -23,11 +23,25 @@ setGeneric("ambiguity",
 
 
 
-
-
-#' TO DO
+#' Calculate the ambiguity of a fuzzy number
+#' 
+#' The ambiguity is a measure of nonspecificity of a fuzzy number.
+#' It is defined as
+#' \eqn{amb(A) := \int_0^1 \alpha\left(A_U(\alpha)-A_L(\alpha)\right)\,d\alpha}{val(A) := int_0^1 \alpha(A_U(\alpha) - A_L(\alpha))d\alpha}.
 #'
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber")}}{}
+#' }
 #' @exportMethod ambiguity
+#' @name ambiguity
+#' @aliases ambiguity,FuzzyNumber-method
+#' @rdname ambiguity-methods
+#' @docType methods
+#' @seealso \code{\link{alphaInterval}} on which the method is based
+#' @references
+#' Delgado M., Vila M.A., Voxman W. (1998), On a canonical representation of a fuzzy number,
+#' Fuzzy Sets and Systems 93, pp. 125-135.\cr
 setMethod(
    f="ambiguity",
    signature(object="FuzzyNumber"),

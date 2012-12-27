@@ -23,21 +23,28 @@ setGeneric("alphacut",
 
 #' Calculate given alpha-cuts
 #'
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber", alpha = "numeric")}}{}
+#' }
+#' @return a matrix with two columns or a vector of length two
 #' @exportMethod alphacut
+#' @name alphacut
+#' @aliases alphacut,FuzzyNumber,numeric-method
 #' @rdname alphacut-methods
-#' @aliases alphacut,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
 #' @docType methods
 setMethod(
    f="alphacut",
    signature(object="FuzzyNumber", alpha="numeric"),
    definition=function(object, alpha)
    {
-      x <- matrix(NA, nrow=length(alpha), ncol=2);
-      x[alpha >= 0 & alpha <= 1, ] <-
+      x <- matrix(NA_real_, nrow=length(alpha), ncol=2)
+      
+      wh <- which(alpha >= 0 & alpha <= 1)
+      x[wh, ] <-
         c(
-            object@a1+(object@a2-object@a1)*object@lower(alpha[alpha >= 0 & alpha <= 1]),
-            object@a3+(object@a4-object@a3)*object@upper(alpha[alpha >= 0 & alpha <= 1])
+            object@a1+(object@a2-object@a1)*object@lower(alpha[wh]),
+            object@a3+(object@a4-object@a3)*object@upper(alpha[wh])
          )
 
       if (length(alpha) <= 1)

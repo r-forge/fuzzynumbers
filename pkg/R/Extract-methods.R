@@ -20,15 +20,17 @@
 
 #' FuzzyNumber slot accessor (read-only)
 #'
-#' Possible slot names are: "a1", "a2", "a3", "a4", "left", "right", "lower", "upper"
+#' For possible slot names see man pages for class FuzzyNumber and its derivatives
 #' 
 #' @param i slot name
+#' @param j not used
+#' @param drop not used
 #' @return slot value
 #' @exportMethod [
+#' @name Extract
 #' @rdname Extract-methods
 #' @docType methods
-#' @family FuzzyNumber-methods
-#' @aliases Extract,FuzzyNumber,FuzzyNumber-methods
+#' @aliases [,FuzzyNumber-method
 #' @examples
 #' A <- FuzzyNumber(1,2,3,4)
 #' A["a1"]
@@ -52,9 +54,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
 #' @exportMethod [
+#' @name Extract
+#' @rdname Extract-methods
+#' @docType methods
+#' @aliases [,PiecewiseLinearFuzzyNumber-method
 setMethod(
    f="[",
    signature=(x="PiecewiseLinearFuzzyNumber"),
@@ -93,12 +97,14 @@ setMethod(
 )
 
 
-#' TO DO
-#'
 #' @exportMethod [
+#' @name Extract
+#' @rdname Extract-methods
+#' @docType methods
+#' @aliases [,PowerFuzzyNumber-method
 setMethod(
    f="[",
-   signature=(x="FuzzyNumber"),
+   signature=(x="PowerFuzzyNumber"),
    definition=function(x, i, j, drop)
    {
       if (i == "a1") return(x@a1)
@@ -118,9 +124,11 @@ setMethod(
 
 
 
-#' TO DO
-#'
 #' @exportMethod [
+#' @name Extract
+#' @rdname Extract-methods
+#' @docType methods
+#' @aliases [,DiscontinuousFuzzyNumber-method
 setMethod(
    f="[",
    signature=(x="DiscontinuousFuzzyNumber"),

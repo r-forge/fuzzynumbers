@@ -28,20 +28,24 @@ setGeneric("expectedInterval",
 #' }{EI(A) := [int_0^1  A_L(\alpha) d\alpha, int_0^1  A_U(\alpha) d\alpha]},
 #' see (Duboid, Prade, 1987).
 #' 
+#' Note that this may be done with numeric integration
+#' (for instances of the \code{FuzzyNumber} and \code{DiscontinuousFuzzyNumber} class)
+#' 
 #' @section Methods:
 #' \describe{
-#'      \item{\code{signature(object = "FuzzyNumber")}}{}
-#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{}
-#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{}
-#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "FuzzyNumber")}}{(numerical integration used)}
+#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{(exact)}
+#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{(exact)}
+#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{(exact)}
 #' }
 #' @references
 #' Dubois D., Prade H. (1987), The mean value of a fuzzy number, Fuzzy Sets and Systems 24, pp. 279-300.\cr
 #' @exportMethod expectedInterval
-#' @name expectedInterval-methods
+#' @name expectedInterval
 #' @aliases expectedInterval,FuzzyNumber-method
 #' @rdname expectedInterval-methods
 #' @docType methods
+#' @seealso \code{\link{integrateAlpha}}
 setMethod(
    f="expectedInterval",
    signature(object="FuzzyNumber"),
@@ -60,7 +64,7 @@ setMethod(
 
 
 #' @exportMethod expectedInterval
-#' @name expectedInterval-methods
+#' @name expectedInterval
 #' @aliases expectedInterval,TrapezoidalFuzzyNumber-method
 #' @rdname expectedInterval-methods
 #' @docType methods
@@ -78,7 +82,7 @@ setMethod(
 
 
 #' @exportMethod expectedInterval
-#' @name expectedInterval-methods
+#' @name expectedInterval
 #' @aliases expectedInterval,PiecewiseLinearFuzzyNumber-method
 #' @rdname expectedInterval-methods
 #' @docType methods
@@ -101,7 +105,7 @@ setMethod(
 
 
 #' @exportMethod expectedInterval
-#' @name expectedInterval-methods
+#' @name expectedInterval
 #' @aliases expectedInterval,PowerFuzzyNumber-method
 #' @rdname expectedInterval-methods
 #' @docType methods

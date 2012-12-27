@@ -33,7 +33,7 @@ setGeneric("supp",
 #'   }
 #' }
 #' @exportMethod supp
-#' @name supp-methods
+#' @name supp
 #' @aliases supp,FuzzyNumber-method
 #' @rdname supp-methods
 #' @docType methods

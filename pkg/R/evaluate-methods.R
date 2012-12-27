@@ -24,17 +24,19 @@ setGeneric("evaluate",
 
 
 #' Evaluate the membership function
-#'
+#' 
 #' This function returns the value(s) of the membership function
 #' of a fuzzy number at given point(s).
 #'
-#' @param object an instance of \code{FuzzyNumber} class
-#' @param x a numeric vector
-#' @return Value of the membership function at \code{x}
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object = "FuzzyNumber", alpha = "numeric")}}{}
+#' }
+#' @return Value of the membership function at given points
 #' @exportMethod evaluate
+#' @name evaluate
+#' @aliases evaluate,FuzzyNumber,numeric-method
 #' @rdname evaluate-methods
-#' @aliases evaluate,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
 #' @docType methods
 #' @examples
 #' T <- TrapezoidalFuzzyNumber(1,2,3,4);
@@ -44,11 +46,13 @@ setMethod(
    signature(object="FuzzyNumber", x="numeric"),
    definition=function(object, x)
    {
-#       print("DEBUG: Evaluate call for PiecewiseLinearFuzzyNumber");
-
-      y <- rep(0.0, length(x))
-      y[x >= object@a1 & x <  object@a2] <- object@left ((x[x >= object@a1 & x <  object@a2]-object@a1)/(object@a2-object@a1))
-      y[x >  object@a3 & x <= object@a4] <- object@right((x[x >  object@a3 & x <= object@a4]-object@a3)/(object@a4-object@a3))
+#       y <- rep(0.0, length(x))
+      y <- numeric(length(x)) # faster
+      
+      wh1 <- which(x >= object@a1 & x <  object@a2)
+      y[wh1] <- object@left ((x[wh1]-object@a1)/(object@a2-object@a1))
+      wh2 <- which(x >  object@a3 & x <= object@a4)
+      y[wh2] <- object@right((x[wh2]-object@a3)/(object@a4-object@a3))
       y[x >= object@a2 & x <= object@a3] <- 1.0
       y
    }

@@ -32,17 +32,33 @@ setGeneric("piecewiseLinearApproximation", function(object, ...) standardGeneric
 #' \item \code{Naive}:
 #' We have core(A)==core(T(A)) and supp(A)==supp(T(A)) and the knots are
 #' taken directly from the specified alpha cuts (linear interpolation).
-#' \item \code{NearestEuclidean}: ....
+#' \item \code{NearestEuclidean}: see (Coroianu, Gagolewski, Grzegorzewski, 2013),
+#' only for \code{knot.n==1}; uses numerical integration, see \code{\link{integrateAlpha}}
 #'
-#' \item \code{ApproximateNearestEuclidean}: ....
+#' \item \code{ApproximateNearestEuclidean}: this is done via numeric optimization ("Nelder-Mead" algorithm);
+#' uses numerical integration, see \code{\link{integrateAlpha}}
 #'
 #' }
-#'
+#' 
+#' @param method one of: \code{"NearestEuclidean"}, \code{"ApproximateNearestEuclidean"}, \code{"Naive"}
+#' @param verbose logical
+#' @param ... further arguments passed to \code{\link{integrateAlpha}}
+#' @param knot.n number of knots
+#' @param knot.alpha alpha-cuts for knots
+#' @param optim.control a list of control params for \code{\link{optim}}
+#' 
+#' @exportMethod piecewiseLinearApproximation
+#' @name piecewiseLinearApproximation
+#' @aliases piecewiseLinearApproximation,FuzzyNumber-method
+#' @rdname piecewiseLinearApproximation-methods
+#' @docType methods
+#' @seealso \code{\link{trapezoidalApproximation}}
+#' @references
+#' Coroianu L., Gagolewski M., Grzegorzewski P. (2013),
+#' Nearest Piecewise Linear Approximation of Fuzzy Numbers, to appear in Fuzzy Sets and Systems.\cr
 #' @examples
 #' (A <- FuzzyNumber(-1,0,1,3,lower=function(x) sqrt(x),upper=function(x) 1-sqrt(x)))
 #' (PA <- piecewiseLinearApproximation(A, "NearestEuclidean", knot.n=1, knot.alpha=0.2))
-#'
-#' @exportMethod piecewiseLinearApproximation
 setMethod(
    f="piecewiseLinearApproximation",
    signature(object="FuzzyNumber"),

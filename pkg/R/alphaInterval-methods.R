@@ -27,18 +27,22 @@ setGeneric("alphaInterval",
 #' We have \eqn{\alpha-Int(A) := [\int_0^1 \alpha A_L(\alpha)\,d\alpha, \int_0^1 \alpha A_U(\alpha)\,d\alpha]
 #' }{\alpha-Int(A) := [int_0^1 \alpha A_L(\alpha) d\alpha, int_0^1 \alpha A_U(\alpha) d\alpha]}.
 #' 
+#' Note that this may be done with numeric integration
+#' (for instances of the \code{FuzzyNumber} and \code{DiscontinuousFuzzyNumber} class)
+#' 
 #' @section Methods:
 #' \describe{
-#'      \item{\code{signature(object = "FuzzyNumber")}}{}
-#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{}
-#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{}
-#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{}
+#'      \item{\code{signature(object = "FuzzyNumber")}}{(numerical integration used)}
+#'      \item{\code{signature(object = "TrapezoidalFuzzyNumber")}}{(exact)}
+#'      \item{\code{signature(object = "PiecewiseLinearFuzzyNumber")}}{(exact)}
+#'      \item{\code{signature(object = "PowerFuzzyNumber")}}{(exact)}
 #' }
 #' @exportMethod alphaInterval
-#' @name alphaInterval-methods
+#' @name alphaInterval
 #' @aliases alphaInterval,FuzzyNumber-method
 #' @rdname alphaInterval-methods
 #' @docType methods
+#' @seealso \code{\link{integrateAlpha}}
 setMethod(
    f="alphaInterval",
    signature(object="FuzzyNumber"),
@@ -57,7 +61,7 @@ setMethod(
 
 
 #' @exportMethod alphaInterval
-#' @name alphaInterval-methods
+#' @name alphaInterval
 #' @aliases alphaInterval,TrapezoidalFuzzyNumber-method
 #' @rdname alphaInterval-methods
 #' @docType methods
@@ -78,7 +82,7 @@ setMethod(
 
 
 #' @exportMethod alphaInterval
-#' @name alphaInterval-methods
+#' @name alphaInterval
 #' @aliases alphaInterval,PiecewiseLinearFuzzyNumber-method
 #' @rdname alphaInterval-methods
 #' @docType methods
@@ -105,7 +109,7 @@ setMethod(
 
 
 #' @exportMethod alphaInterval
-#' @name alphaInterval-methods
+#' @name alphaInterval
 #' @aliases alphaInterval,PowerFuzzyNumber-method
 #' @rdname alphaInterval-methods
 #' @docType methods

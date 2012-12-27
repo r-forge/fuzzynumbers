@@ -19,67 +19,129 @@
 
 
 setGeneric("distance",
-           function(object1, object2, ...) standardGeneric("distance"));
+           function(object1, object2, ...) standardGeneric("distance"))
 
 
-#' TO DO
+#' Calculate the distance between two FNs
 #'
+#' This is done by numerical integration
+#'
+#' @param type one of \code{"Euclidean"}, \code{"EuclideanSquared"}
+#' @param rel.tol numeric;
+#' @section Methods:
+#' \describe{
+#'      \item{\code{signature(object1 = "FuzzyNumber", object2 = "FuzzyNumber")}}{}
+#'      \item{\code{signature(object1 = "DiscontinuousFuzzyNumber", object2 = "FuzzyNumber")}}{}
+#'      \item{\code{signature(object1 = "FuzzyNumber", object2 = "DiscontinuousFuzzyNumber")}}{}
+#'      \item{\code{signature(object1 = "DiscontinuousFuzzyNumber", object2 = "DiscontinuousFuzzyNumber")}}{}
+#' }
+#' @return the calculated distance
 #' @exportMethod distance
+#' @name distance
+#' @aliases distance,FuzzyNumber,FuzzyNumber-method
+#' @rdname distance-methods
+#' @docType methods
+#' @seealso \code{\link{integrate}}, \code{\link{integrate_discont_val}}
+#' @references
+#' Grzegorzewski P., Metrics and orders in space of fuzzy numbers,
+#' Fuzzy Sets and Systems 97, 1998, pp. 83-94.\cr
+setMethod(
+   f="distance",
+   signature(object1="FuzzyNumber", object2="FuzzyNumber"),
+   definition=function(object1, object2,
+                       type=c("Euclidean", "EuclideanSquared"), ...,
+                       rel.tol = .Machine$double.eps^0.35)
+   {
+      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
+      type = match.arg(type)
+      
+      if (type == "Euclidean" || type == "EuclideanSquared")
+      {
+         dL <- integrate(function(alpha) {
+            (  object1@a1+(object1@a2-object1@a1)*object1@lower(alpha)
+               -object2@a1-(object2@a2-object2@a1)*object2@lower(alpha)
+            )^2
+         }, 0, 1, rel.tol=rel.tol, ...)$value
+         
+         dU <- integrate(function(alpha) {
+            (  object1@a3+(object1@a4-object1@a3)*object1@upper(alpha)
+               -object2@a3-(object2@a4-object2@a3)*object2@upper(alpha)
+            )^2
+         }, 0, 1, rel.tol=rel.tol, ...)$value
+         
+         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU)
+      } else
+      {
+         return(NA)
+      }
+   }
+)
+
+
+#' @exportMethod distance
+#' @name distance
+#' @aliases distance,DiscontinuousFuzzyNumber,DiscontinuousFuzzyNumber-method
+#' @rdname distance-methods
+#' @docType methods
 setMethod(
    f="distance",
    signature(object1="DiscontinuousFuzzyNumber", object2="DiscontinuousFuzzyNumber"),
    definition=function(object1, object2,
       type=c("Euclidean", "EuclideanSquared"), ...)
    {
-      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
-      type = match.arg(type);
+      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA)
+      type = match.arg(type)
 
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
-         discontL <- c(object1@discontinuities.lower, object2@discontinuities.lower);
-         discontL <- unique(sort(discontL));
+         discontL <- c(object1@discontinuities.lower, object2@discontinuities.lower)
+         discontL <- unique(sort(discontL))
          dL <- integrate_discont_val(function(alpha) {
             (  object1@a1+(object1@a2-object1@a1)*object1@lower(alpha)
               -object2@a1-(object2@a2-object2@a1)*object2@lower(alpha)
             )^2
-         }, 0, 1, discontinuities=discontL, ...);
+         }, 0, 1, discontinuities=discontL, ...)
 
-         discontU <- c(object1@discontinuities.upper, object2@discontinuities.upper);
-         discontU <- unique(sort(discontU));
+         discontU <- c(object1@discontinuities.upper, object2@discontinuities.upper)
+         discontU <- unique(sort(discontU))
          dU <- integrate_discont_val(function(alpha) {
             (   object1@a3+(object1@a4-object1@a3)*object1@upper(alpha)
               - object2@a3-(object2@a4-object2@a3)*object2@upper(alpha)
             )^2
-         }, 0, 1, discontinuities=discontU, ...);
+         }, 0, 1, discontinuities=discontU, ...)
 
-         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
+         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU)
       } else
       {
-         return(NA);
+         return(NA)
       }
    }
-);
+)
 
 
 
-#' TO DO
-#'
 #' @exportMethod distance
+#' @name distance
+#' @aliases distance,FuzzyNumber,DiscontinuousFuzzyNumber-method
+#' @rdname distance-methods
+#' @docType methods
 setMethod(
    f="distance",
    signature(object1="FuzzyNumber", object2="DiscontinuousFuzzyNumber"),
    definition=function(object1, object2,
       type=c("Euclidean", "EuclideanSquared"), ...)
    {
-      stopifnot(class(object1)!="DiscontinuousFuzzyNumber");
-      return(distance(object2, object1, type=type, ...));
+      stopifnot(class(object1)!="DiscontinuousFuzzyNumber")
+      return(distance(object2, object1, type=type, ...))
    }
-);
+)
 
 
-#' TO DO
-#'
 #' @exportMethod distance
+#' @name distance
+#' @aliases distance,DiscontinuousFuzzyNumber,FuzzyNumber-method
+#' @rdname distance-methods
+#' @docType methods
 setMethod(
    f="distance",
    signature(object1="DiscontinuousFuzzyNumber", object2="FuzzyNumber"),
@@ -87,8 +149,8 @@ setMethod(
       type=c("Euclidean", "EuclideanSquared"), ...)
    {
       stopifnot(class(object2)!="DiscontinuousFuzzyNumber");
-      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
-      type = match.arg(type);
+      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA)
+      type = match.arg(type)
 
       if (type == "Euclidean" || type == "EuclideanSquared")
       {
@@ -96,59 +158,20 @@ setMethod(
             (  object1@a1+(object1@a2-object1@a1)*object1@lower(alpha)
               -object2@a1-(object2@a2-object2@a1)*object2@lower(alpha)
             )^2
-         }, 0, 1, discontinuities=object1@discontinuities.lower, ...);
+         }, 0, 1, discontinuities=object1@discontinuities.lower, ...)
 
          dU <- integrate_discont_val(function(alpha) {
             (  object1@a3+(object1@a4-object1@a3)*object1@upper(alpha)
               -object2@a3-(object2@a4-object2@a3)*object2@upper(alpha)
             )^2
-         }, 0, 1, discontinuities=object1@discontinuities.upper, ...);
+         }, 0, 1, discontinuities=object1@discontinuities.upper, ...)
 
-         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
+         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU)
       } else
       {
-         return(NA);
+         return(NA)
       }
    }
-);
-
-
-
-
-#' TO DO
-#'
-#' @exportMethod distance
-setMethod(
-   f="distance",
-   signature(object1="FuzzyNumber", object2="FuzzyNumber"),
-   definition=function(object1, object2,
-      type=c("Euclidean", "EuclideanSquared"), ...,
-      rel.tol = .Machine$double.eps^0.35)
-   {
-      if (is.na(object1@lower(0)) || is.na(object2@lower(0))) return(NA);
-      type = match.arg(type);
-
-      if (type == "Euclidean" || type == "EuclideanSquared")
-      {
-         dL <- integrate(function(alpha) {
-            (  object1@a1+(object1@a2-object1@a1)*object1@lower(alpha)
-              -object2@a1-(object2@a2-object2@a1)*object2@lower(alpha)
-            )^2
-         }, 0, 1, rel.tol=rel.tol, ...)$value;
-
-         dU <- integrate(function(alpha) {
-            (  object1@a3+(object1@a4-object1@a3)*object1@upper(alpha)
-              -object2@a3-(object2@a4-object2@a3)*object2@upper(alpha)
-            )^2
-         }, 0, 1, rel.tol=rel.tol, ...)$value;
-
-         if (type == "Euclidean") return (sqrt(dL+dU)) else return (dL+dU);
-      } else
-      {
-         return(NA);
-      }
-   }
-);
-
+)
 
 

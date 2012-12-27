@@ -29,7 +29,7 @@
 #'      \item{\code{signature(object = "PowerFuzzyNumber")}}{  }
 #' }
 #' @exportMethod show
-#' @name show-methods
+#' @name show
 #' @aliases show,FuzzyNumber-method
 #' @rdname show-methods
 #' @docType methods
@@ -47,7 +47,7 @@ setMethod(
 
 
 #' @exportMethod show
-#' @name show-methods
+#' @name show
 #' @aliases show,PiecewiseLinearFuzzyNumber-method
 #' @rdname show-methods
 #' @docType methods
@@ -64,7 +64,7 @@ setMethod(
 
 
 #' @exportMethod show
-#' @name show-methods
+#' @name show
 #' @aliases show,TrapezoidalFuzzyNumber-method
 #' @rdname show-methods
 #' @docType methods
@@ -82,7 +82,7 @@ setMethod(
 
 
 #' @exportMethod show
-#' @name show-methods
+#' @name show
 #' @aliases show,PowerFuzzyNumber-method
 #' @rdname show-methods
 #' @docType methods
