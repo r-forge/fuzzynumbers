@@ -2,7 +2,7 @@ FuzzyNumbers Package NEWS
 
 ***************************************************************************
 
-0.02 /under development/
+0.02 /2012-12-27/
 
 * approx.invert(): a new function to find the numerical
   inverse of a given side/alpha-cut generating function
