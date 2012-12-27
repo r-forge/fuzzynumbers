@@ -10,7 +10,7 @@ Description: The FuzzyNumbers package provides S4 classes and methods
     to deal with Fuzzy Numbers. It allows for computations of arithmetic
     operations on FNs, approximation by trapezoidal and piecewise linear FNs,
     random FN generation, etc.
-Version: 0.02
+Version: 0.03
 URL: http://www.ibspan.waw.pl/~gagolews/FuzzyNumbers/
 Date: 2012-12-27
 Depends:
