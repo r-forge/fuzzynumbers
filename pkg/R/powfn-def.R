@@ -22,9 +22,9 @@
 #'
 #' TO DO
 #'
-#' \section{Extends}{
+#' Extends:
 #' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#' }
+#' 
 #' @exportClass PowerFuzzyNumber
 #' @name PowerFuzzyNumber-class
 #' @seealso \code{\link{PowerFuzzyNumber}}
@@ -56,22 +56,22 @@ setMethod(
    signature("PowerFuzzyNumber"),
    definition=function(.Object, ...)
    {
-      .Object <- callNextMethod();
-
-      .Object@left   <- function(x)             x^(p.left);
-      .Object@right  <- function(x)         (1-x)^(p.right);
-      .Object@lower  <- function(alpha)     alpha^(1.0/p.left);
-      .Object@upper  <- function(alpha)   1-alpha^(1.0/p.right);
-
+      .Object <- callNextMethod()
+      
       e <- new.env();
-      environment(.Object@left)  <- e;
-      environment(.Object@right) <- e;
-      environment(.Object@lower) <- e;
-      environment(.Object@upper) <- e;
+      
+      e$p.left  <- p.left  <- .Object@p.left    # p.left <- ... to avoid
+      e$p.right <- p.right <- .Object@p.right   # PKG CHECK problems
 
-      # Unfortunately, we have to copy these objects.....
-      assign("p.left",  .Object@p.left,  envir=e);
-      assign("p.right", .Object@p.right, envir=e);
+      .Object@left   <- function(x)             x^(p.left)
+      .Object@right  <- function(x)         (1-x)^(p.right)
+      .Object@lower  <- function(alpha)     alpha^(1.0/p.left)
+      .Object@upper  <- function(alpha)   1-alpha^(1.0/p.right)
+
+      environment(.Object@left)  <- e
+      environment(.Object@right) <- e
+      environment(.Object@lower) <- e
+      environment(.Object@upper) <- e
 
       return(.Object);
    }
@@ -97,39 +97,4 @@ PowerFuzzyNumber <- function(a1, a2, a3, a4, p.left=1.0, p.right=1.0)
    .Object;
 }
 
-
-
-#' @rdname show-methods
-#' @aliases show,PowerFuzzyNumber,PowerFuzzyNumber-method
-setMethod(
-   f="show",
-   signature(object="PowerFuzzyNumber"),
-   definition=function(object)
-   {
-      cat(sprintf("Fuzzy number given by power functions, and:\n   support=[%g,%g],\n      core=[%g,%g].\n",
-                  object@a1, object@a4, object@a2, object@a3))
-   }
-);
-
-
-#' TO DO
-#'
-#' @exportMethod [
-setMethod(
-   f="[",
-   signature=(x="FuzzyNumber"),
-   definition=function(x, i, j, drop)
-   {
-      if (i == "a1") return(x@a1);
-      if (i == "a2") return(x@a2);
-      if (i == "a3") return(x@a3);
-      if (i == "a4") return(x@a4);
-      if (i == "left")  return(x@left);
-      if (i == "right") return(x@right);
-      if (i == "lower") return(x@lower);
-      if (i == "upper") return(x@upper);
-      if (i == "p.left") return(x@p.left);
-      if (i == "p.right") return(x@p.right);
-   }
-);
 

@@ -21,9 +21,9 @@
 #'
 #' TO DO
 #'
-#' \section{Extends}{
+#' Extends:
 #' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#' }
+#' 
 #' @exportClass TrapezoidalFuzzyNumber
 #' @name TrapezoidalFuzzyNumber-class
 #' @seealso \code{\link{TrapezoidalFuzzyNumber}}
@@ -55,18 +55,4 @@ TrapezoidalFuzzyNumber <- function(a1, a2, a3, a4)
    .Object <- new("TrapezoidalFuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4)
    .Object
 }
-
-
-
-#' @rdname show-methods
-#' @aliases show,TrapezoidalFuzzyNumber,TrapezoidalFuzzyNumber-method
-setMethod(
-   f="show",
-   signature(object="TrapezoidalFuzzyNumber"),
-   definition=function(object)
-   {
-      cat(sprintf("Trapezoidal fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
-                  object@a1, object@a4, object@a2, object@a3))
-   }
-)
 

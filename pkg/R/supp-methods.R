@@ -18,18 +18,22 @@
 
 
 
-setMethod("*",
-   signature(e1 = "numeric", e2 = "FuzzyNumber"),
-   function (e1, e2)
-   {
-      e2*e1;
-   }
-);
+setGeneric("supp",
+           function(object) standardGeneric("supp"))
 
-setMethod("-",
-   signature(e1 = "FuzzyNumber"),
-   function (e1, e2)
+
+#' Calculate support of a FuzzyNumber
+#'
+#' @exportMethod supp
+#' @rdname supp-methods
+#' @aliases supp,FuzzyNumber,FuzzyNumber-methods
+#' @family FuzzyNumber-methods
+#' @docType methods
+setMethod(
+   f="supp",
+   signature(object="FuzzyNumber"),
+   definition=function(object)
    {
-      e1*(-1);
+      c(object@a1, object@a4)
    }
-);
+)

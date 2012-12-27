@@ -296,24 +296,24 @@ setMethod(
 ## ----------------------------------------------------------------------
 ## ---------------------------------------------- NearestEuclidean ---------
 
-         # This exact method was proposed by Coroianu, Gagolewski, Grzegorzewski (submitted)
+         # This exact method was proposed by Coroianu, Gagolewski, Grzegorzewski (FSS 2013)
 
-         if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1");
+         if (knot.n != 1) stop("this method currently may only be used only for knot.n == 1")
 
 
-         w1   <- integrateAlpha(object, "lower", 0, knot.alpha, ...);
-         w3   <- integrateAlpha(object, "lower", knot.alpha, 1, ...);
-         w5   <- integrateAlpha(object, "upper", 0, knot.alpha, ...);
-         w7   <- integrateAlpha(object, "upper", knot.alpha, 1, ...);
-         int2 <- integrateAlpha(object, "lower", 0, knot.alpha, weight=identity, ...);
-         int4 <- integrateAlpha(object, "lower", knot.alpha, 1, weight=identity, ...);
-         int6 <- integrateAlpha(object, "upper", 0, knot.alpha, weight=identity, ...);
-         int8 <- integrateAlpha(object, "upper", knot.alpha, 1, weight=identity, ...);
+         w1   <- integrateAlpha(object, "lower", 0, knot.alpha, ...)
+         w3   <- integrateAlpha(object, "lower", knot.alpha, 1, ...)
+         w5   <- integrateAlpha(object, "upper", 0, knot.alpha, ...)
+         w7   <- integrateAlpha(object, "upper", knot.alpha, 1, ...)
+         int2 <- integrateAlpha(object, "lower", 0, knot.alpha, weight=identity, ...)
+         int4 <- integrateAlpha(object, "lower", knot.alpha, 1, weight=identity, ...)
+         int6 <- integrateAlpha(object, "upper", 0, knot.alpha, weight=identity, ...)
+         int8 <- integrateAlpha(object, "upper", knot.alpha, 1, weight=identity, ...)
 
-         w2 <- int2/knot.alpha;
-         w4 <- (int4-knot.alpha*w3)/(1-knot.alpha);
-         w6 <- w5-int6/knot.alpha;
-         w8 <- (w7-int8)/(1-knot.alpha);
+         w2 <- int2/knot.alpha
+         w4 <- (int4-knot.alpha*w3)/(1-knot.alpha)
+         w6 <- w5-int6/knot.alpha
+         w8 <- (w7-int8)/(1-knot.alpha)
 
          b <- c(w1+w3+w5+w7,
                 w2+w3+w5+w7,
@@ -321,7 +321,7 @@ setMethod(
                       w5+w7,
                       w5+w8,
                          w6
-                   );
+                   )
 
 
          PhiInv <- matrix(c(
@@ -333,14 +333,14 @@ setMethod(
                                        0,                            0,                                0, -(3*knot.alpha-6)/(knot.alpha-1), (9*knot.alpha-12)/(knot.alpha-1),                          -9,
                                        0,                            0,                                0,                                3,                               -9, (9*knot.alpha+3)/knot.alpha
 
-         ), nrow=6, ncol=6, byrow=TRUE);
+         ), nrow=6, ncol=6, byrow=TRUE)
 
 
-         iter <- 1;
-         z <- rep(0, 6);
-         K <- rep(FALSE, 6);
-         d <- as.numeric(PhiInv %*% b);
-         m <- which.min(d[-1])+1;
+         iter <- 1
+         z <- rep(0, 6)
+         K <- rep(FALSE, 6)
+         d <- as.numeric(PhiInv %*% b)
+         m <- which.min(d[-1])+1
          EPS <- 1e-9;
 
          if (verbose)
@@ -348,45 +348,45 @@ setMethod(
             cat(sprintf("Pass  %g: K={%5s}, d=(%s)\n                    z=(%s)\n",
                iter,  paste(as.numeric(which(K)),collapse=""),
                paste(sprintf("%8.2g", d), collapse=", "),
-               paste(sprintf("%8.2g", z), collapse=", ")));
+               paste(sprintf("%8.2g", z), collapse=", ")))
          }
 
          while(d[m] < -EPS)
          {
-            K[m] <- TRUE;
+            K[m] <- TRUE
 
 #             z <- rep(0, 6); # for better accuracy?
 #             d <- as.numeric(PhiInv %*% b);  # for better accuracy?
 
-            deltaz <- rep(0.0, 6);
-            deltaz[K] <- as.numeric(solve(PhiInv[K,K], -d[K], tol=.Machine$double.eps));
-            if (min(deltaz[K]) < -EPS) warning(sprintf("min(deltaz[K])==%g", min(deltaz[K])));
+            deltaz <- rep(0.0, 6)
+            deltaz[K] <- as.numeric(solve(PhiInv[K,K], -d[K], tol=.Machine$double.eps))
+            if (min(deltaz[K]) < -EPS) warning(sprintf("min(deltaz[K])==%g", min(deltaz[K])))
 
-            z <- z+deltaz;
+            z <- z+deltaz
 
             d <- as.numeric(PhiInv%*%(b+z))
-#             for (k in which(K)) d <- d+PhiInv[k,]*deltaz[k]; # ALTERNATIVE, BUT MORE INACCURATE
+#             for (k in which(K)) d <- d+PhiInv[k,]*deltaz[k] # ALTERNATIVE, BUT MORE INACCURATE
 
-            m <- which.min(d[-1])+1;
-            iter <- iter+1;
+            m <- which.min(d[-1])+1
+            iter <- iter+1
 
-            stopifnot(all(z>=0));
-            if (max(abs(d[K])) > EPS) warning(sprintf("max(abs(d[K]))==%g", max(abs(d[K]))));
-            d[K] <- 0.0; # for better accuracy
+            stopifnot(all(z>=0))
+            if (max(abs(d[K])) > EPS) warning(sprintf("max(abs(d[K]))==%g", max(abs(d[K]))))
+            d[K] <- 0.0 # for better accuracy
 
             if (verbose)
             {
                cat(sprintf("Pass  %g: K={%5s}, d=(%s)\n                    z=(%s)\n",
                   iter,  paste(as.numeric(which(K)),collapse=""),
                   paste(sprintf("%8.2g", d), collapse=", "),
-                  paste(sprintf("%8.2g", z), collapse=", ")));
+                  paste(sprintf("%8.2g", z), collapse=", ")))
             }
          }
 
          d[c(F,T,T,T,T,T) & (d < 0)] <- 0.0; # kill EPS-error
-         res <- cumsum(d);
+         res <- cumsum(d)
          return(PiecewiseLinearFuzzyNumber(res[1], res[knot.n+2], res[knot.n+3], res[2*knot.n+4],
-               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]));
+               knot.n=knot.n, knot.alpha=knot.alpha, knot.left=res[2:(knot.n+1)], knot.right=res[(knot.n+4):(2*knot.n+3)]))
 
 
 # ## ================== OLD NearestEuclidean: PASS 1: try with z==0
@@ -500,5 +500,5 @@ setMethod(
 
       # None shall pass here
    }
-);
+)
 

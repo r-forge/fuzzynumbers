@@ -35,7 +35,7 @@ convert.side <- function(f, x1, x2)
    e <- new.env()
    e$f <- f
    e$x1 <- x1[1]
-   e$dx <- x2[1]-x1[1]
+   e$dx <- dx <- x2[1]-x1[1] # dx <- ... to avoid CHECK problems
    stopifnot(e$dx != 0 && is.finite(e$x1) && is.finite(e$dx))
    side <- function(x) {
       f(x1+dx*x)
@@ -61,7 +61,7 @@ convert.alpha <- function(f, y1, y2)
    e <- new.env()
    e$f <- f
    e$y1 <- y1[1]
-   e$dy <- y2[1]-y1[1]
+   e$dy <- dy <- y2[1]-y1[1] # dy <- ... to avoid CHECK problems
    stopifnot(e$dy != 0 && is.finite(e$y1) && is.finite(e$dy))
    alpha <- function(x) {
       (f(x)-y1)/dy

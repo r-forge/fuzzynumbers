@@ -17,6 +17,30 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
+setGeneric("expectedInterval",
+           function(object, ...) standardGeneric("expectedInterval"))
+
+
+
+#' TO DO
+#'
+#' @exportMethod expectedInterval
+setMethod(
+   f="expectedInterval",
+   signature(object="FuzzyNumber"),
+   definition=function(object, ...)
+   {
+      if (is.na(object@lower(0))) return(c(NA, NA))
+
+      return(c(
+         integrateAlpha(object, "lower", 0, 1, ...),
+         integrateAlpha(object, "upper", 0, 1, ...)
+      ))
+   }
+)
+
+
+
 
 #' TO DO
 #'
@@ -26,23 +50,31 @@ setMethod(
    signature(object="TrapezoidalFuzzyNumber"),
    definition=function(object, ...)
    {
-      return(0.5*c((object@a2+object@a1), (object@a4+object@a3)));
+      return(0.5*c((object@a2+object@a1), (object@a4+object@a3)))
    }
-);
+)
+
+
 
 
 
 #' TO DO
 #'
-#' @exportMethod value
+#' @exportMethod expectedInterval
 setMethod(
-   f="alphaInterval",
-   signature(object="TrapezoidalFuzzyNumber"),
+   f="expectedInterval",
+   signature(object="PiecewiseLinearFuzzyNumber"),
    definition=function(object, ...)
    {
+      xl <- c(object@a1, object@knot.left,  object@a2)
+      xr <- c(object@a3, object@knot.right, object@a4)
+      dal <- diff(c(0,     object@knot.alpha,  1))
+      dar <- diff(c(1, rev(object@knot.alpha), 0))
+      
       return(c(
-         object@a1*0.5+(object@a2-object@a1)/3,
-         object@a3*0.5+(object@a4-object@a3)/6
-      ));
+         sum( (xl[-object@knot.n-2]+0.5*diff(xl))*dal ),
+         sum(-(xr[-object@knot.n-2]+0.5*diff(xr))*dar )
+      ))
    }
-);
+)
+

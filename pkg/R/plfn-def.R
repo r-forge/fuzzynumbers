@@ -19,13 +19,13 @@
 
 #' S4 class representing a piecewise linear fuzzy number
 #'
+#' A piecewise linear fuzzy number (PLFN) has side functions
+#' and alpha-cut bounds that linearly interpolate a given set of points
+#' (at fixed alpha-cuts).
 #'
-#'
-#' TO DO
-#'
-#' \section{Extends}{
+#' Entends:
 #' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#' }
+#'
 #' @exportClass PiecewiseLinearFuzzyNumber
 #' @name PiecewiseLinearFuzzyNumber-class
 #' @docType class
@@ -115,6 +115,7 @@ setMethod(
 #' @param knot.alpha \code{knot.n} alpha-cut values at knots
 #' @param knot.left \code{knot.n} knots on the left side; a nondecreasingly sorted vector with elements in [\code{a1},\code{a2}]
 #' @param knot.right \code{knot.n} knots on the right side; a nondecreasingly sorted vector with elements in [\code{a3},\code{a4}]
+#' @return An object of the PiecewiseLinearFuzzyNumber classs
 #' @export
 PiecewiseLinearFuzzyNumber <- function(a1, a2, a3, a4,
    knot.n=0, knot.alpha=numeric(0),
@@ -150,57 +151,3 @@ as.PiecewiseLinearFuzzyNumber <- function(object, knot.n=0, knot.alpha=numeric(0
          knot.n=knot.n, knot.alpha=knot.alpha, knot.left=left(knot.alpha), knot.right=right(rev(knot.alpha)))
    .Object
 }
-
-
-
-#' @rdname show-methods
-#' @aliases show,PiecewiseLinearFuzzyNumber,PiecewiseLinearFuzzyNumber-method
-setMethod(
-   f="show",
-   signature(object="PiecewiseLinearFuzzyNumber"),
-   definition=function(object) {
-      cat(sprintf("Piecewise linear fuzzy number with %g knot(s),\n   support=[%g,%g],\n      core=[%g,%g].\n",
-                  object@knot.n, object@a1, object@a4, object@a2, object@a3))
-   }
-)
-
-
-#' TO DO
-#'
-#' @exportMethod [
-setMethod(
-   f="[",
-   signature=(x="PiecewiseLinearFuzzyNumber"),
-   definition=function(x, i, j, drop)
-   {
-      if (i == "knot.n")     return(x@knot.n)
-      if (i == "knot.alpha") return(x@knot.alpha)
-      if (i == "knot.left")  return(x@knot.left)
-      if (i == "knot.right") return(x@knot.right)
-      if (i == "knots")      return(matrix(c(x@knot.alpha, x@knot.left, rev(x@knot.right)),
-                                           ncol=3,
-                                           dimnames=list(
-                                              paste("knot_", 1:x@knot.n, sep=""),
-                                              c("alpha", "left", "right")
-                                           )
-                                    ));
-      if (i == "allknots")   return(matrix(c(0,x@knot.alpha,1,  x@a1, x@knot.left, x@a2, x@a4, rev(x@knot.right), x@a3),
-                                           ncol=3,
-                                           dimnames=list(
-                                              c("supp", paste("knot_", 1:x@knot.n, sep=""), "core"),
-                                              c("alpha", "left", "right")
-                                           )
-                                    ))
-
-      if (i == "a1") return(x@a1)
-      if (i == "a2") return(x@a2)
-      if (i == "a3") return(x@a3)
-      if (i == "a4") return(x@a4)
-      if (i == "left")  return(x@left)
-      if (i == "right") return(x@right)
-      if (i == "lower") return(x@lower)
-      if (i == "upper") return(x@upper)
-
-#     return(callNextMethod()) # does not work...
-   }
-)

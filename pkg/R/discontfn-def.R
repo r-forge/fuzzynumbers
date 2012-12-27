@@ -21,9 +21,9 @@
 #'
 #' TO DO
 #'
-#' \section{Extends}{
+#' Extends: 
 #' Class \code{FuzzyNumber}, see \code{\link{FuzzyNumber-class}}.
-#' }
+#'
 #' @exportClass DiscontinuousFuzzyNumber
 #' @name DiscontinuousFuzzyNumber-class
 #' @seealso \code{\link{DiscontinuousFuzzyNumber}}
@@ -104,31 +104,7 @@ DiscontinuousFuzzyNumber <- function(a1, a2, a3, a4,
        discontinuities.left =discontinuities.left,
        discontinuities.right=discontinuities.right,
        discontinuities.lower=discontinuities.lower,
-       discontinuities.upper=discontinuities.upper);
-   .Object;
+       discontinuities.upper=discontinuities.upper)
+   .Object
 }
 
-
-
-#' TO DO
-#'
-#' @exportMethod [
-setMethod(
-   f="[",
-   signature=(x="DiscontinuousFuzzyNumber"),
-   definition=function(x, i, j, drop)
-   {
-      if (i == "a1") return(x@a1)
-      if (i == "a2") return(x@a2)
-      if (i == "a3") return(x@a3)
-      if (i == "a4") return(x@a4)
-      if (i == "left")  return(x@left)
-      if (i == "right") return(x@right)
-      if (i == "lower") return(x@lower)
-      if (i == "upper") return(x@upper)
-      if (i == "discontinuities.left")  return(x@discontinuities.left)
-      if (i == "discontinuities.right") return(x@discontinuities.right)
-      if (i == "discontinuities.lower") return(x@discontinuities.lower)
-      if (i == "discontinuities.upper") return(x@discontinuities.upper)
-   }
-)

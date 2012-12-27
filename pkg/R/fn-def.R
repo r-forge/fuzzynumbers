@@ -47,7 +47,7 @@
 #' Please note that many algorithms that deal with fuzzy numbers often use
 #' \eqn{\alpha}-cuts rather than side functions.
 #'
-#'\section{Slots}{
+#' Slots:
 #'  \describe{
 #'    \item{\code{a1}:}{Single numeric value specifying the left bound for the support.}
 #'    \item{\code{a2}:}{Single numeric value specifying the left bound for the core.}
@@ -58,7 +58,6 @@
 #'    \item{\code{left}:}{A nondecreasing function [0,1]->[0,1] that gives the left side function.}
 #'    \item{\code{right}:}{A nonincreasing function [0,1]->[1,0] that gives the right side function.}
 #'  }
-#' }
 #' 
 #' @exportClass FuzzyNumber
 #' @name FuzzyNumber-class
@@ -87,10 +86,10 @@ setClass(
       if (length(object@a1) != 1 || length(object@a2) != 1 ||
           length(object@a3) != 1 || length(object@a4) != 1 ||
           any(!is.finite(c(object@a1, object@a2, object@a3, object@a4))))
-         return("Each of `a1', `a2', `a3', and `a4' should be a single finite real number");
+         return("Each of `a1', `a2', `a3', and `a4' should be a single finite real number")
 
       if (is.unsorted(c(object@a1, object@a2, object@a3, object@a4)))
-         return("Please provide a1 <= a2 <= a3 <= a4");
+         return("Please provide a1 <= a2 <= a3 <= a4")
 
       lower01 <- object@lower(c(0,1))
       upper01 <- object@upper(c(0,1))
@@ -101,36 +100,36 @@ setClass(
          return("`lower' is not properly vectorized or doesn't give numeric results")
       else if (!is.na(lower01[1])) {
          if (lower01[1] < 0 || lower01[2] > 1 || lower01[1] > lower01[2])
-            return("`lower' should be an increasing function [0,1]->[0,1]");
+            return("`lower' should be an increasing function [0,1]->[0,1]")
       }
       
       if (length(upper01) != 2 || !is.numeric(upper01))
          return("`upper' is not properly vectorized or doesn't give numeric results")
       else if (!is.na(upper01[1])) {
          if (upper01[2] < 0 || upper01[1] > 1 || upper01[2] > upper01[1])
-            return("`upper' should be a decreasing function [0,1]->[1,0]");
+            return("`upper' should be a decreasing function [0,1]->[1,0]")
       }
       
       if (length(left01) != 2 || !is.numeric(left01))
          return("`left' is not properly vectorized or doesn't give numeric results")
       else if (!is.na(left01[1])) {
          if (left01[1] < 0 || left01[2] > 1 || left01[1] > left01[2])
-            return("`left' should be an increasing function [0,1]->[0,1]");
+            return("`left' should be an increasing function [0,1]->[0,1]")
       }
       
       if (length(right01) != 2 || !is.numeric(right01))
          return("`right' is not properly vectorized or doesn't give numeric results")
       else if (!is.na(right01[1])) {
          if (right01[2] < 0 || right01[1] > 1 || right01[2] > right01[1])
-            return("`right' should be a decreasing function [0,1]->[1,0]");
+            return("`right' should be a decreasing function [0,1]->[1,0]")
       }
       
 
       if (is.na(right01[1]) != is.na(left01[1]))
-         return("Either all or none of `left' and `right' should return NA");
+         return("Either all or none of `left' and `right' should return NA")
 
       if (is.na(lower01[1]) != is.na(upper01[1]))
-         return("Either all or none of `lower' and `upper' should return NA");
+         return("Either all or none of `lower' and `upper' should return NA")
 
       # OK
       return(TRUE)
@@ -147,10 +146,10 @@ setClass(
 #' @param a2 a number specyfing left bound of the core
 #' @param a3 a number specyfing right bound of the core
 #' @param a4 a number specyfing right bound of the support
-#' @param lower lower alpha-cut bound generator; a nondecreasing function [0,1]->[0,1] or returning NA
-#' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA
-#' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA
-#' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA
+#' @param lower lower alpha-cut bound generator; a nondecreasing function [0,1]->[0,1] or returning NA_real_
+#' @param upper upper alpha-cut bound generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
+#' @param left lower side function generator; a nondecreasing function [0,1]->[0,1] or returning NA_real_
+#' @param right upper side function generator; a nonincreasing function [0,1]->[1,0] or returning NA_real_
 #' @return An object of class \code{FuzzyNumber}
 #' @export
 FuzzyNumber <- function(a1, a2, a3, a4,
@@ -160,8 +159,8 @@ FuzzyNumber <- function(a1, a2, a3, a4,
    right=function(x) rep(NA_real_, length(x)))
 {
    .Object <- new("FuzzyNumber", a1=a1, a2=a2, a3=a3, a4=a4,
-       lower=lower, upper=upper, left=left, right=right);
-   .Object;
+       lower=lower, upper=upper, left=left, right=right)
+   .Object
 }
 
 #' Coverts a trapezoidal or a piecewise linear fuzzy number object to a (general) FuzzyNumber
@@ -188,53 +187,3 @@ as.FuzzyNumber <- function(object)
          lower=object@lower, upper=object@upper)
    .Object
 }
-
-
-#' Print basic information on a FuzzyNumber
-#' 
-#' @exportMethod show
-#' @docType methods
-#' @rdname show-methods
-#' @aliases show,FuzzyNumber,FuzzyNumber-methods
-#' @family FuzzyNumber-methods
-setMethod(
-   f="show",
-   signature(object="FuzzyNumber"),
-   definition=function(object)
-   {
-      cat(sprintf("Fuzzy number with:\n   support=[%g,%g],\n      core=[%g,%g].\n",
-                  object@a1, object@a4, object@a2, object@a3))
-   }
-)
-
-
-#' FuzzyNumber slot accessor (read-only)
-#'
-#' Possible slot names are: "a1", "a2", "a3", "a4", "left", "right", "lower", "upper"
-#' 
-#' @param i slot name
-#' @return slot value
-#' @exportMethod [
-#' @rdname Extract-methods
-#' @docType methods
-#' @family FuzzyNumber-methods
-#' @aliases Extract,FuzzyNumber,FuzzyNumber-methods
-#' @examples
-#' A <- FuzzyNumber(1,2,3,4)
-#' A["a1"]
-#' A["right"]
-setMethod(
-   f="[",
-   signature=(x="FuzzyNumber"),
-   definition=function(x, i, j, drop)
-   {
-      if (i == "a1") return(x@a1)
-      if (i == "a2") return(x@a2)
-      if (i == "a3") return(x@a3)
-      if (i == "a4") return(x@a4)
-      if (i == "left")  return(x@left)
-      if (i == "right") return(x@right)
-      if (i == "lower") return(x@lower)
-      if (i == "upper") return(x@upper)
-   }
-)

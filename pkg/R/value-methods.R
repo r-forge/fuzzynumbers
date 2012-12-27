@@ -17,24 +17,20 @@
 ## along with FuzzyNumbers. If not, see <http://www.gnu.org/licenses/>.
 
 
+
+
+setGeneric("value",
+           function(object, ...) standardGeneric("value"))
+
+
 #' TO DO
 #'
-#' @export
-#' @rdname plot-methods
-#' @docType methods
+#' @exportMethod value
 setMethod(
-   f="plot",
-   signature(x="PiecewiseLinearFuzzyNumber", y="missing"),
-   definition=function(x, y, from=NULL, to=NULL,
-      draw.membership.function=TRUE, draw.alphacuts=!draw.membership.function,
-      xlab=NULL, ylab=NULL, xlim=NULL, ylim=NULL,
-      type="l", col=1, lty=1, pch=1, lwd=1,
-      add=FALSE, ...)
+   f="value",
+   signature(object="FuzzyNumber"),
+   definition=function(object, ...)
    {
-      callNextMethod(x, at.alpha=x@knot.alpha,
-         from=from, to=to, type=type, xlab=xlab, ylab=ylab,
-         xlim=xlim, ylim=ylim, col=col, lty=lty, pch=pch, lwd=lwd,
-         draw.membership.function=draw.membership.function,
-         draw.alphacuts=draw.alphacuts, add=add, ...);
+      return(sum(alphaInterval(object, ...)))
    }
-);
+)

@@ -42,7 +42,7 @@ setGeneric("trapezoidalApproximation", function(object, ...) standardGeneric("tr
 #' \item \code{SupportCoreRestricted}:
 #' This method was proposed in (Grzegorzewski, Pasternak-Winiarska, 2011).
 #' L2-nearest trapezoidal approximation with constraints
-#' core(A) \subseteq core(T(A)) and supp(T(A)) \subseteq supp(A), i.e.
+#' core(A) \eqn{\subseteq}{SUBSETS} core(T(A)) and supp(T(A)) \eqn{\subseteq}{SUBSETS} supp(A), i.e.
 #' for which each point that surely belongs to A also belongs to T(A),
 #' and each point that surely does not belong to A also does not belong to T(A).
 #' }
